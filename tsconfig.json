@@ -16,8 +16,38 @@
       "jest"
     ],
     "paths": {
+      "@root/*": [
+        "./*"
+      ],
+      "@root": [
+        "./index.ts",
+        "./index.js",
+        "./index.json",
+        "./index.vue",
+        "./index.scss",
+        "./index.css"
+      ],
       "@/*": [
         "src/*"
+      ],
+      "@": [
+        "src/index.ts",
+        "src/index.js",
+        "src/index.json",
+        "src/index.vue",
+        "src/index.scss",
+        "src/index.css"
+      ],
+      "~/*": [
+        "public/*"
+      ],
+      "~": [
+        "public/index.ts",
+        "public/index.js",
+        "public/index.json",
+        "public/index.vue",
+        "public/index.scss",
+        "public/index.css"
       ]
     },
     "lib": [

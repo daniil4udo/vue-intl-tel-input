@@ -1,0 +1,14 @@
+/node_modules/
+/config/
+/build/
+/dist/
+/*.js
+
+/src/plugins/vti/**
+
+/tests/unit/coverage/
+
+output.js
+/src/plugins/debug.js
+
+*.d.ts

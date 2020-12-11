@@ -26,3 +26,9 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Vue CLi inspect file
+output.js
+output.json
+eslint-rules.json
+.eslintrc.json

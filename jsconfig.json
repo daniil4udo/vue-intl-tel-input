@@ -1,0 +1,43 @@
+{
+    "include": [
+        "src/**/*",
+        "tests/**/*"
+    ],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "target": "esnext",
+        "module": "esnext",
+        "paths": {
+            "@root/*": [
+                "./*"
+            ],
+            "@root": [
+                "./index.js",
+                "./index.json",
+                "./index.vue",
+                "./index.scss",
+                "./index.css"
+            ],
+            "@/*": [
+                "src/*"
+            ],
+            "@": [
+                "src/index.js",
+                "src/index.json",
+                "src/index.vue",
+                "src/index.scss",
+                "src/index.css"
+            ],
+            "~/*": [
+                "public/*"
+            ],
+            "~": [
+                "public/index.js",
+                "public/index.json",
+                "public/index.vue",
+                "public/index.scss",
+                "public/index.css"
+            ]
+        }
+    }
+}
