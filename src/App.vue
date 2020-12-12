@@ -1,11 +1,15 @@
 <template>
-    <div id="app">
-        <img alt="Vue logo" src="./assets/logo.png">
+    <div id="app" class="container">
         <example-component
             title="Example component"
             active
             :todos="todos"
             :meta="meta"
+        />
+        <DmcTelInput
+            id="asdasdasdasd"
+            v-model="phone"
+            :enabled-country-name="false"
         />
     </div>
 </template>
@@ -13,14 +17,15 @@
 <script lang="ts">
     import { defineComponent, ref } from '@vue/composition-api';
 
+    import ExampleComponent from '@/components/CompositionComponent.vue';
+    import DmcTelInput from '@/components/DmcTelInput';
     import { ITodo, IMeta } from '@/components/models';
-
-    import ExampleComponent from './components/CompositionComponent.vue';
 
     export default defineComponent({
         name: 'App',
         components: {
             ExampleComponent,
+            DmcTelInput,
         },
         setup() {
             const todos = ref<ITodo[]>([
@@ -48,18 +53,14 @@
             const meta = ref<IMeta>({
                 totalCount: 1200,
             });
-            return { todos, meta };
+
+            const phone = ref('');
+
+            return { todos, meta, phone };
         },
     });
 </script>
 
 <style lang="scss">
-#app {
-    margin-top: 60px;
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    color: #2c3e50;
-    text-align: center;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
+    //
 </style>

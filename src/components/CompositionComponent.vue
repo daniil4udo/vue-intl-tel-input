@@ -13,6 +13,7 @@
         <p>Count: {{ todoCount }} / {{ meta.totalCount }}</p>
         <p>Active: {{ active ? 'yes' : 'no' }}</p>
         <p>Clicks on todos: {{ clickCount }}</p>
+        <!--  -->
     </div>
 </template>
 
@@ -21,6 +22,7 @@
         defineComponent, PropType, computed, ref, toRef, Ref,
     } from '@vue/composition-api';
 
+    // TS
     import { ITodo, IMeta } from './models';
 
     function useClickCount() {
@@ -58,7 +60,10 @@
             },
         },
         setup(props) {
-            return { ...useClickCount(), ...useDisplayTodo(toRef(props, 'todos')) };
+            return {
+                ...useClickCount(),
+                ...useDisplayTodo(toRef(props, 'todos')),
+            };
         },
     });
 </script>
