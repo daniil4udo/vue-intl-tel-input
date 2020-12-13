@@ -17,7 +17,8 @@
 import _countries from './countries.json';
 import _emojiCountries from './emojiCountries.json';
 
-const countries: ICountry[] = [];
+const countriesArr: ICountry[] = [];
+const countries: Record<string, ICountry> = {};
 const countriesIso: Set<string> = new Set();
 
 // loop over all of the countries above, restructuring the data to be objects with named keys
@@ -31,16 +32,19 @@ for (const country of _countries) {
         // name[2] = escapeUnicode(name[2]);
     }
 
-    countriesIso.add(String(country[1]).toUpperCase());
-
-    countries.push({
+    const iso2 = String(country[1]).toUpperCase();
+    const countryDict = {
         name: name.join(''), // country[0],
-        iso2: String(country[1]).toUpperCase(),
+        iso2,
         dialCode: String(country[2]),
         priority: Number(country[3]) || 0,
         areaCodes: country[4] || null,
-        ..._emojiCountries[String(country[1]).toUpperCase()],
-    });
+        ..._emojiCountries[iso2],
+    };
+
+    countriesIso.add(iso2);
+    countriesArr.push(countryDict);
+    Object.assign(countries, { [iso2]: countryDict });
 }
 
 export interface ICountry {
@@ -55,6 +59,7 @@ export interface ICountry {
 }
 
 export {
-    countries,
     countriesIso,
+    countriesArr,
+    countries,
 };

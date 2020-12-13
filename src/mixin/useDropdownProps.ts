@@ -18,6 +18,10 @@ export default {
         type: (Number as unknown) as PropType<number>,
         default: () => 0,
     },
+    dropdownPlaceholder: {
+        type: (String as unknown) as PropType<string>,
+        default: () => '🇦🇪 +971',
+    },
     disableCountryCode: {
         type: (Boolean as unknown) as PropType<boolean>,
         default: () => false,

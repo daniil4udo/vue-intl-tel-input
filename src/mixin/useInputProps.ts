@@ -22,13 +22,13 @@ export default {
         type: (Boolean as unknown) as PropType<boolean>,
         default: () => true,
     },
-    placeholder: {
+    inputPlaceholder: {
         type: (String as unknown) as PropType<string>,
         default: () => '5x xxx xxxx',
     },
     dynamicPlaceholder: {
         type: (Boolean as unknown) as PropType<boolean>,
-        default: () => false,
+        default: () => true,
     },
     // },
 };

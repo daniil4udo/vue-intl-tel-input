@@ -2,7 +2,8 @@
     <div>
         dropdown.selectedCountry {{ dropdown.selectedCountry }}
         input.phoneText {{ input.phoneText }}
-        <pre>{{ activeCountry }}</pre>
+        <!-- <pre>{{ activeCountry }}</pre> -->
+        <strong>parsedPlaceholder - {{ input.parsedPlaceholder }}</strong>
         <pre>{{ input.phoneObject }}</pre>
         <B-Field
             ref="dmcPhoneField"
@@ -15,12 +16,12 @@
                 v-model="dropdown.selectedCountry"
                 :data="filteredDataObj"
                 :tabindex="dropdownTabIndex"
-                placeholder="🇦🇪 +971"
+                :placeholder="dropdownPlaceholder"
                 keep-first
                 :open-on-focus="true"
                 clearable
                 :disabled="disabled || disabledDialCode"
-                :custom-formatter="dropdown.getCountryNameTitle"
+                :custom-formatter="countries.getCountryFormat"
                 @select="onSelect"
             >
                 <template slot-scope="props">
@@ -39,11 +40,11 @@
             </B-Autocomplete>
             <B-Input
                 ref="dmcPhoneInput"
-                v-model="input.phone"
+                v-model="input.proxyPhone"
                 :tabindex="inputTabIndex"
                 v-bind="$attrs"
                 :disabled="disabled"
-                placeholder="052 204 8185"
+                :placeholder="input.parsedPlaceholder"
                 maxlength="30"
                 expanded
                 @input="onInput"
@@ -53,26 +54,28 @@
 </template>
 
 <script lang="ts">
-    import { defineComponent, PropType, ref, reactive, computed } from '@vue/composition-api';
+    import { defineComponent, PropType, ref, reactive, computed, watch } from '@vue/composition-api';
+    import isNil from 'lodash/isNil';
     import toLower from 'lodash/toLower';
 
     import { ICountry } from '@/assets/all-countries';
-    import CheckRadioMixin from '@/mixin/dmcWidgetMixin';
+    import useCountries from '@/mixin/useCountries';
     import useDropdow from '@/mixin/useDropdown';
     import useDropdownProps from '@/mixin/useDropdownProps';
     import useInput from '@/mixin/useInput';
     import useInputProps from '@/mixin/useInputProps';
 
     export default defineComponent({
-        mixins: [
-            CheckRadioMixin,
-            // Props
-        ],
         props: {
             ...useDropdownProps,
             ...useInputProps,
             value: {
                 type: (String as unknown) as PropType<string>,
+                default: () => '',
+            },
+            mode: {
+                type: (String as unknown) as PropType<string>,
+                validator: prop => [ 'international', 'national', '' ].includes(String(prop)),
                 default: () => '',
             },
             required: {
@@ -92,7 +95,7 @@
             /**
              * Data
              */
-            const activeCountry: Partial<ICountry> = reactive({ iso2: '' });
+            const activeCountry: Partial<ICountry> = reactive({ iso2: props.defaultCountry });
 
             /**
              * Tempalte refs
@@ -104,17 +107,38 @@
             /**
              * Dropdown setup
              */
+            const countries = useCountries(props);
             const dropdown = useDropdow(props);
             const input = useInput(props, ctx, activeCountry as ICountry);
 
             /**
              * Computed
              */
-            const filteredDataObj = computed(() => dropdown.sortedCountries.value.filter(option => {
+            const filteredDataObj = computed(() => countries.sortedCountries.value.filter(option => {
                 const hasVal = str => String.prototype.includes.call(str, toLower(dropdown.selectedCountry.value));
 
                 return hasVal(option.name) || hasVal(option.dialCode);
             }));
+
+            /**
+             * Watchers
+             */
+            watch(activeCountry, (value: ICountry) => {
+                dropdown.selectedCountry.value = countries.getCountryFormat(value);
+
+                ctx.root.$nextTick(() => {
+                    if (!isNil(value)) {
+                        // emit country change event for the actual country select
+                        ctx.emit('country-changed', value);
+
+                        focus();
+
+                        if (input.proxyPhone.value !== '') {
+                            select();
+                        }
+                    }
+                });
+            });
 
             /**
              * Methods
@@ -125,9 +149,6 @@
                 if (!option?.preferred) {
                     activeCountry.preferred = false;
                 }
-                ctx.root.$nextTick(() => {
-                    dmcPhoneInput.value.focus();
-                });
 
                 return activeCountry;
             }
@@ -140,7 +161,7 @@
                 }
 
                 // Set custm HTML5 validation error msg
-                // dmcPhoneInput.setCustomValidity(input.input.phoneObject.value.valid ? '' : this.invalidMsg);
+                // dmcPhoneInput.value.$refs.input.setCustomValidity(input.phoneObject.value.valid ? '' : this.invalidMsg);
 
                 // Returns response.number to assign it to v-model (if being used)
                 // Returns full response for cases @input is used
@@ -153,9 +174,28 @@
                     input.cursorPosition.value = e.target.selectionStart;
                 }
             }
+            function focus() {
+                dmcPhoneInput.value.focus();
+            }
+            function select() {
+                // Accesing Buefy's input ref
+                dmcPhoneInput.value.$refs.input.select();
+            }
+            async function fetchCountryCode() {
+                try {
+                    const response = await fetch('https://ip2c.org/s');
+                    const responseText = await response.text();
+                    const result = (responseText || '').toString();
+                    if (result && result[0] === '1') return result.substr(2, 2);
+                }
+                catch (err) {
+                    return new Error('Error while fetching country code');
+                }
+            }
 
             return {
                 // Setup mixins
+                countries,
                 dropdown,
                 input,
 
@@ -173,11 +213,24 @@
                 // Methods
                 onSelect,
                 onInput,
+                fetchCountryCode,
             };
         },
     });
 </script>
 
 <style lang="scss">
-    @import '~@/assets/styles.scss';
+@import '~@/assets/styles.scss';
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+    appearance: textfield;
+}
 </style>

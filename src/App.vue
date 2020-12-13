@@ -54,7 +54,7 @@
                 totalCount: 1200,
             });
 
-            const phone = ref('');
+            const phone = ref('+971522048185');
 
             return { todos, meta, phone };
         },
