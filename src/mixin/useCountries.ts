@@ -6,13 +6,9 @@ import { IProps, ICountry } from '@/components/models';
 
 import { countries } from '../assets/all-countries';
 
-export default function ({
-    onlyCountries,
-    ignoredCountries,
-    preferredCountries,
-}: IProps) {
+export default function (props: IProps) {
     const isFetchCountryCode = ref(false);
-    const preferredISOs = ref(preferredCountries);
+    const preferredISOs = ref(props.preferredCountries);
 
     /**
      * Computed
@@ -28,23 +24,23 @@ export default function ({
     });
     const _filtered: ComputedRef<Record<string, ICountry>> = computed(() => {
         // List countries after filtered
-        if (onlyCountries.length !== 0) {
-            return onlyCountries.reduce((a, iso2) => Object.assign(a, { [iso2]: getCountryByISO(iso2) }), {});
-            // return onlyCountries.map(iso2 => getCountryByISO(iso2));
+        if (props.onlyCountries.length !== 0) {
+            return props.onlyCountries.reduce((a, iso2) => Object.assign(a, { [iso2]: getCountryByISO(iso2) }), {});
+            // return props.onlyCountries.map(iso2 => getCountryByISO(iso2));
         }
 
-        if (ignoredCountries.length !== 0) {
+        if (props.ignoredCountries.length !== 0) {
             const filterIgnored = {};
 
             for (const iso2 in countries) {
-                if (!ignoredCountries.includes(iso2)) {
+                if (!props.ignoredCountries.includes(iso2)) {
                     filterIgnored[iso2] = getCountryByISO(iso2);
                 }
             }
 
             return filterIgnored;
 
-            // for (const iso2 of ignoredCountries) {
+            // for (const iso2 of props.ignoredCountries) {
             //     getCountryByISO(iso2) = undefined;
             // }
             // return Object.values(countries).filter(Boolean);
