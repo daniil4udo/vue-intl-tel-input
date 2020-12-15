@@ -1,47 +1,34 @@
 import { ref, Ref, computed, ComputedRef, watch, SetupContext } from '@vue/composition-api';
 import PhoneNumber from 'awesome-phonenumber';
 
-import { ICountry } from '@/assets/all-countries';
-import useCountries from '@/mixin/useCountries';
+import { IProps, IPhoneObject, ParseMode } from '@/components/models';
+import useDropdow from '@/mixin/useDropdown';
+// import useCountries from '@/mixin/useCountries';
 
-interface IPhoneObject {
-    number: {
-        input: string;
-        international: string;
-        national: string;
-        e164: string;
-        rfc3966: string;
-        significant: string;
-    };
-    regionCode: string;
-    valid: boolean;
-    possible: boolean;
-    canBeInternationallyDialled: boolean;
-    type: string;
-    possibility: string;
-    country: ICountry;
-}
-export default function (props, ctx: SetupContext, country: ICountry) {
-    const phone: Ref<string> = ref(props.value || '');
+export default function (props: IProps, ctx: SetupContext) {
+    const dropdown = useDropdow(props, ctx);
+
+    // const proxyPhone: Ref<string> = ref(props.value);
+    const phone: Ref<string> = ref(props.value.trim());
     const cursorPosition = ref(0);
 
-    const { findCountry } = useCountries(props);
+    // const { findCountry } = useCountries(props);
     /**
      * Computed
      */
-
+    const isAllowedInternationalInput = computed(() => !props.disabledDropdown);
     const parsedPlaceholder: ComputedRef<string> = computed(() => {
-        if (props.dynamicPlaceholder && country.iso2) {
+        if (props.dynamicPlaceholder && dropdown.activeCountry.iso2) {
             // As for me doesnt make sense to confuse user and show hint with country code
             // const mode = props.mode || 'international';
 
-            return PhoneNumber.getExample(country.iso2, 'mobile').getNumber('national');
+            return PhoneNumber.getExample(dropdown.activeCountry.iso2, 'mobile').getNumber('national');
         }
 
         return props.inputPlaceholder;
     });
-    const parsedMode: ComputedRef<string> = computed(() => {
-        if (props.customValidate) {
+    const parsedMode: ComputedRef<ParseMode> = computed(() => {
+        if (props.customRegExp) {
             return 'input';
         }
         if (props.mode) {
@@ -60,11 +47,11 @@ export default function (props, ctx: SetupContext, country: ICountry) {
         return 'international';
     });
     const phoneObject: ComputedRef<IPhoneObject> = computed(() => ({
-        ...new PhoneNumber(phone.value, country.iso2).toJSON(),
-        country,
+        ...new PhoneNumber(phone.value, dropdown.activeCountry.iso2).toJSON(),
+        country: dropdown.activeCountry,
     }));
     const phoneText: ComputedRef<string> = computed(() => {
-        let key = 'input';
+        let key: ParseMode = 'input';
 
         if (phoneObject.value.valid) {
             key = parsedMode.value;
@@ -73,84 +60,107 @@ export default function (props, ctx: SetupContext, country: ICountry) {
         return phoneObject.value.number[key] || '';
     });
 
-    const proxyPhone = computed({
-        get: () => phone.value,
-        set: value => {
-            phone.value = value;
-            ctx.emit('input', value);
-
-            if (isInternationalInput(value)) {
-                // const code = PhoneNumber.call(null, value).getRegionCode();
-                const code = PhoneNumber.call(null, phoneObject.value.number.international || '').getRegionCode();
-
-                if (code && findCountry(code)) {
-                    Object.assign(country, findCountry(code));
-
-                    if (!findCountry(code)?.preferred) {
-                        country.preferred = false;
-                    }
-                }
-            }
-        },
-    });
     /**
      * Watchers
      */
-    function watchValue(value) {
+    function watchPhone(value = '', oldValue = '') {
+        // phone.value = value;
+        // ctx.emit('input', value);
+
+        const isValidCharactersOnly = props.validCharactersOnly && !testCharacters();
+        const isCustomValidate = props.customRegExp && !testCustomValidate();
+
+        if (isValidCharactersOnly || isCustomValidate) {
+            ctx.root.$nextTick(() => {
+                phone.value = oldValue;
+            });
+        }
+        else if (value && isInternationalInput(value) && isAllowedInternationalInput.value) {
+            const code = PhoneNumber.call(null, phoneObject.value.number.international || '').getRegionCode();
+
+            dropdown.selectCountry(code);
+        }
+
+        // Reset the cursor to current position if it's not the last character.
+        if (cursorPosition.value < oldValue.length) {
+            ctx.root.$nextTick(() => {
+                // setCaretPosition(this.$refs.input, cursorPosition);
+            });
+        }
+    }
+    watch(() => phone.value, watchPhone, { immediate: true });
+
+    function watchValue(value = '') {
         phone.value = value;
     }
-    watch(() => props.value, watchValue, { immediate: true });
+    watch(() => props.value, watchValue);
 
-    function watchPhoneObject(value) {
+    function watchPhoneValidity(value = false) {
         if (value) {
             phone.value = phoneText.value;
         }
-        ctx.emit('validate', phoneObject.value);
+
+        ctx.root.$nextTick(() => {
+            ctx.emit('validate', phoneObject.value);
+        });
     }
-    watch(() => phoneObject.value.valid, watchPhoneObject);
+    watch(() => phoneObject.value.valid, watchPhoneValidity);
 
     /**
      * Methods
      */
     function testCharacters() {
-        const re = /^[()\-+0-9\s]*$/;
+        // const _re = /^[()\-+0-9\s]*$/;
+        const re = (!isAllowedInternationalInput.value && isInternationalInput(phone.value))
+            ? /^(?!00|\+)[()\-0-9\s]*$/
+            : /^[()\-+0-9\s]*$/;
+
         return re.test(phone.value);
     }
     function testCustomValidate(): boolean {
-        return props.customValidate instanceof RegExp
-            ? props.customValidate.test(phone.value)
+        return props.customRegExp instanceof RegExp
+            ? props.customRegExp.test(phone.value)
             : false;
     }
-    function isInternationalInput(phoneInput: string) {
-        return phoneInput[0] === '+' || phoneInput.startsWith('00');
+    function isInternationalInput(phoneInput = '') {
+        if (typeof phoneInput === 'string') {
+            // return /^(?!00|\+)[()\-\d\s]*$/gi.test()
+            return phoneInput[0] === '+' || (phoneInput.length > 2 && phoneInput.startsWith('00'));
+        }
+
+        throw new TypeError(`DmcTelInput: phoneInput in isInternationalInput has to be as string. Got ${typeof phoneInput}`);
     }
-    // function setCaretPosition(ctrl, pos) {
-    //     // Modern browsers
-    //     if (ctrl.setSelectionRange) {
-    //         ctrl.focus();
-    //         ctrl.setSelectionRange(pos, pos);
-    //     }
-    //     // IE8 and below
-    //     else if (ctrl.createTextRange) {
-    //         const range = ctrl.createTextRange();
-    //         range.collapse(true);
-    //         range.moveEnd('character', pos);
-    //         range.moveStart('character', pos);
-    //         range.select();
-    //     }
-    // }
+    function setCaretPosition(ctrl, pos) {
+        // Modern browsers
+        if (ctrl.setSelectionRange) {
+            ctrl.focus();
+            ctrl.setSelectionRange(pos, pos);
+        }
+        // IE8 and below
+        else if (ctrl.createTextRange) {
+            const range = ctrl.createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', pos);
+            range.moveStart('character', pos);
+            range.select();
+        }
+    }
 
     return {
-        phone,
+        ...dropdown,
+
+        isAllowedInternationalInput,
         cursorPosition,
 
-        proxyPhone,
+        phone,
         parsedPlaceholder,
         parsedMode,
         phoneObject,
         phoneText,
 
+        isInternationalInput,
         testCharacters,
         testCustomValidate,
+        setCaretPosition,
     };
 }

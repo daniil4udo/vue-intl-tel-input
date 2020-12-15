@@ -1,21 +1,36 @@
-import { computed, ComputedRef } from '@vue/composition-api';
+import { ref, computed, ComputedRef } from '@vue/composition-api';
+import has from 'lodash/has';
 import uniqBy from 'lodash/uniqBy';
 
-import { countries, ICountry } from '../assets/all-countries';
+import { IProps, ICountry } from '@/components/models';
+
+import { countries } from '../assets/all-countries';
 
 export default function ({
     onlyCountries,
     ignoredCountries,
     preferredCountries,
-}) {
+}: IProps) {
+    const isFetchCountryCode = ref(false);
+    const preferredISOs = ref(preferredCountries);
+
     /**
      * Computed
      */
-    const filteredCountries: ComputedRef<ICountry[]> = computed(() => {
+    const _preferred: ComputedRef<ICountry[]> = computed(() => {
+        const lastI = preferredISOs.value.length - 1;
+
+        return getCountries(preferredISOs.value).map((c, i) => ({
+            ...c,
+            preferred: true,
+            ...(lastI === i) && { lastPreffered: true },
+        }));
+    });
+    const _filtered: ComputedRef<Record<string, ICountry>> = computed(() => {
         // List countries after filtered
         if (onlyCountries.length !== 0) {
-            return onlyCountries.reduce((a, iso2) => Object.assign(a, { [iso2]: countries[iso2] }), {});
-            // return onlyCountries.map(iso2 => countries[iso2]);
+            return onlyCountries.reduce((a, iso2) => Object.assign(a, { [iso2]: getCountryByISO(iso2) }), {});
+            // return onlyCountries.map(iso2 => getCountryByISO(iso2));
         }
 
         if (ignoredCountries.length !== 0) {
@@ -23,14 +38,14 @@ export default function ({
 
             for (const iso2 in countries) {
                 if (!ignoredCountries.includes(iso2)) {
-                    filterIgnored[iso2] = countries[iso2];
+                    filterIgnored[iso2] = getCountryByISO(iso2);
                 }
             }
 
             return filterIgnored;
 
             // for (const iso2 of ignoredCountries) {
-            //     countries[iso2] = undefined;
+            //     getCountryByISO(iso2) = undefined;
             // }
             // return Object.values(countries).filter(Boolean);
         }
@@ -38,38 +53,60 @@ export default function ({
         return countries;
         // return Object.values(countries);
     });
-    const sortedCountries: ComputedRef<ICountry[]> = computed(() => {
-        // Sort the list countries: from preferred countries to all countries
-        const _preferredCountries = getCountries(preferredCountries).map(country => ({ ...country, preferred: true }));
+    const sortedCountries: ComputedRef<ICountry[]> = computed(() => uniqBy([].concat(_preferred.value, Object.values(_filtered.value)), 'iso2'));
 
-        return uniqBy([].concat(_preferredCountries, Object.values(filteredCountries.value)), 'iso2');
-    });
-    /**
-     * Get the list of countries from the list of iso2 code
-     */
-    function findCountry(iso = '') {
-        return filteredCountries.value[iso] || {};
-        // return filteredCountries.value.find(country => country.iso2.toUpperCase() === iso.toUpperCase());
+    function isCountryAvailable(iso2 = '') {
+        if (has(_filtered.value, iso2)) {
+            return true;
+        }
+        throw new Error(`DmcTelInput: The country ${iso2} is not available`);
+    }
+    function getCountryByISO(iso2 = ''): ICountry {
+        iso2 = iso2.toUpperCase();
+
+        if (isCountryAvailable(iso2)) {
+            return _filtered.value[iso2];
+        }
     }
     /**
      * Get the list of countries from the list of iso2 code
      */
     function getCountries(iso2List: string[] = []) {
         return iso2List
-            .map(findCountry)
+            .map(getCountryByISO)
             .filter(Boolean);
     }
 
-    function getCountryFormat(country: ICountry) {
-        return `${country.emoji} +${country.dialCode}`;
+    /**
+     * Fetch country code via https://ip2c.org/s - Network needed - (Do not use it with default-country-code options)
+     */
+    async function fetchCountryCode() {
+        try {
+            isFetchCountryCode.value = true;
+
+            const response = await fetch('https://ip2c.org/s');
+            const responseText = await response.text();
+            const result = String(responseText || '').toUpperCase();
+            if (result && result[0] === '1') {
+                return result.substr(2, 2);
+            }
+        }
+        catch (err) {
+            throw new Error('DmcTelInput: Error while fetching country code');
+        }
+        finally {
+            isFetchCountryCode.value = false;
+        }
     }
 
     return {
-        filteredCountries,
+        preferredISOs,
+        isFetchCountryCode,
+
         sortedCountries,
 
-        findCountry,
+        getCountryByISO,
         getCountries,
-        getCountryFormat,
+        fetchCountryCode,
     };
 }

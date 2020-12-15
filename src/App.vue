@@ -7,10 +7,10 @@
             :meta="meta"
         />
         <DmcTelInput
-            id="asdasdasdasd"
             v-model="phone"
             :enabled-country-name="false"
         />
+        <input v-model="phone">
     </div>
 </template>
 
@@ -54,7 +54,7 @@
                 totalCount: 1200,
             });
 
-            const phone = ref('+971522048185');
+            const phone = ref('+380973008444');
 
             return { todos, meta, phone };
         },

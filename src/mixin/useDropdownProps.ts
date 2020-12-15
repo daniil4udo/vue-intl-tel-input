@@ -1,46 +1,44 @@
 import { PropType } from '@vue/composition-api';
+import { isMobile } from 'buefy/src/utils/helpers';
 
-export interface IDropdownProps {
-    dropdownTabIndex?: PropType<number>;
-    disableCountryCode?: PropType<boolean>;
-    disableCountryName?: PropType<boolean>;
-    disableFlags?: PropType<boolean>;
-    disabledDialCode?: PropType<boolean>;
-    defaultCountry?: PropType<string>;
-    onlyCountries?: PropType<string[]>;
-    ignoredCountries?: PropType<string[]>;
-    preferredCountries?: PropType<string[]>;
-}
+import { IDropdowButton } from '@/components/models';
+
 export default {
-    // props: {
-    // Dropdown props
     dropdownTabIndex: {
         type: (Number as unknown) as PropType<number>,
         default: () => 0,
     },
     dropdownPlaceholder: {
         type: (String as unknown) as PropType<string>,
-        default: () => '🇦🇪 +971',
+        default: () => 'Search by country name or code',
     },
-    disableCountryCode: {
+    hideCountryCode: {
+        type: [ Boolean as unknown, Object as unknown ] as PropType<boolean | IDropdowButton>,
+        default: () => false,
+    },
+    hideCountryName: {
+        type: [ Boolean as unknown, Object as unknown ] as PropType<boolean | IDropdowButton>,
+        default: () => false,
+    },
+    hideFlags: {
+        type: [ Boolean as unknown, Object as unknown ] as PropType<boolean | IDropdowButton>,
+        default: () => false,
+    },
+    emojiFlags: {
+        type: [ Boolean as unknown, Object as unknown ] as PropType<boolean | IDropdowButton>,
+        default: () => isMobile.any(),
+    },
+    disabledDropdown: {
         type: (Boolean as unknown) as PropType<boolean>,
         default: () => false,
     },
-    disableCountryName: {
+    fetchCountry: {
         type: (Boolean as unknown) as PropType<boolean>,
-        default: () => false,
-    },
-    disableFlags: {
-        type: (Boolean as unknown) as PropType<boolean>,
-        default: () => false,
-    },
-    disabledDialCode: {
-        type: (Boolean as unknown) as PropType<boolean>,
-        default: () => false,
+        default: () => true,
     },
     defaultCountry: {
         type: (String as unknown) as PropType<string>,
-        default: () => 'AE',
+        default: () => '',
     },
     onlyCountries: {
         type: (Array as unknown) as PropType<string[]>,
@@ -52,7 +50,6 @@ export default {
     },
     preferredCountries: {
         type: (Array as unknown) as PropType<string[]>,
-        default: () => [ 'AE' ],
+        default: () => [ 'ae' ],
     },
-    // },
 };

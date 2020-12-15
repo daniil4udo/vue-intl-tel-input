@@ -6,60 +6,44 @@
 // - It has a flag in the region-flags project: https://github.com/behdad/region-flags/tree/gh-pages/png
 // - It is supported by libphonenumber (it must be listed on this page): https://github.com/googlei18n/libphonenumber/blob/master/resources/ShortNumberMetadata.xml
 
-// Each country array has the following information:
-// [
-//    Country name,
-//    iso2 code,
-//    International dial code,
-//    Order (if >1 country with same dial code),
-//    Area codes
-// ]
+import { ICountry } from '@/components/models';
+
 import _countries from './countries.json';
 import _emojiCountries from './emojiCountries.json';
 
-const countriesArr: ICountry[] = [];
+// const countriesArr: ICountry[] = [];
 const countries: Record<string, ICountry> = {};
 const countriesIso: Set<string> = new Set();
 
 // loop over all of the countries above, restructuring the data to be objects with named keys
-for (const country of _countries) {
-    const name = String(country[0]).split(/([\\(||//)])/g).filter(el => el !== '');
-    if (name.includes('(') && name.includes(')')) {
-        /**
-         * We may want to encode to unicode
-         * name[2] is a non latinic country name
-         */
-        // name[2] = escapeUnicode(name[2]);
-    }
+for (const c of _countries) {
+    /**
+     * We may want to encode to unicode
+     * name[2] is a non latinic c name
+     */
+    const name = String(c[0]).split(/([\\(||//)])/g).filter(el => el !== '');
+    // if (name.includes('(') && name.includes(')')) {
+    //     name[2] = escapeUnicode(name[2]);
+    // }
 
-    const iso2 = String(country[1]).toUpperCase();
+    const iso2 = String(c[1]).toUpperCase();
     const countryDict = {
-        name: name.join(''), // country[0],
-        iso2,
-        dialCode: String(country[2]),
-        priority: Number(country[3]) || 0,
-        areaCodes: country[4] || null,
+        name: name.join(''), // c[0], // Country name,
+        enname: name[0], // c[0], // Country name,
+        iso2, // iso2 code,
+        dialCode: String(c[2]), // International dial code,
+        priority: Number(c[3]) || 0, // Order (if >1 country with same dial code),
+        areaCodes: c[4] || null, // Area codes
         ..._emojiCountries[iso2],
     };
 
     countriesIso.add(iso2);
-    countriesArr.push(countryDict);
+    // countriesArr.push(countryDict);
     Object.assign(countries, { [iso2]: countryDict });
-}
-
-export interface ICountry {
-    name: string;
-    iso2: string;
-    dialCode: string;
-    priority: number;
-    areaCodes: string[] | null;
-    preferred?: boolean;
-    emoji: string;
-    unicode: string;
 }
 
 export {
     countriesIso,
-    countriesArr,
+    // countriesArr,
     countries,
 };
