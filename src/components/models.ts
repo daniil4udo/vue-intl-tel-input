@@ -57,6 +57,7 @@ export interface IPhoneObject {
     };
     regionCode: string;
     valid: boolean;
+    isIntlInput: boolean;
     possible: boolean;
     canBeInternationallyDialled: boolean;
     type: string;
@@ -65,7 +66,7 @@ export interface IPhoneObject {
 }
 
 export type ParseMode = 'input' | 'international' | 'national' | 'e164' | 'rfc3966' | 'significant'
-export type DropdowPosition = 'auto' | 'top' | 'bottom'
+export type DropdowPosition = 'is-top-right' | 'is-top-left' | 'is-bottom-left' | 'is-bottom-right'
 
 export interface ITodo {
   id: number;
