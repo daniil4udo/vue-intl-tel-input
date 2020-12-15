@@ -19,7 +19,7 @@ export default function (props: IProps) {
         return getCountries(preferredISOs.value).map((c, i) => ({
             ...c,
             preferred: true,
-            ...(lastI === i) && { lastPreffered: true },
+            lastPreffered: lastI === i,
         }));
     });
     const _filtered: ComputedRef<Record<string, ICountry>> = computed(() => {
