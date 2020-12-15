@@ -1,7 +1,8 @@
-import { reactive, ref, Ref, SetupContext } from '@vue/composition-api';
+import { reactive, ref, Ref, computed, SetupContext } from '@vue/composition-api';
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import isPlainObject from 'lodash/isPlainObject';
+import toLower from 'lodash/toLower';
 
 import { IProps, ICountry, DropdowPosition } from '@/components/models';
 
@@ -17,19 +18,26 @@ export default function (props: IProps, ctx: SetupContext) {
      */
     const countries = useCountries(props);
 
-    const activeCountry: Partial<ICountry & { model: string }> = reactive({
-        model: '', // v-model for autocomplete
+    const activeCountry: Partial<ICountry> = reactive({
         iso2: props.defaultCountry, // selected country object
     });
-    const dropdownOpenDirection: Ref<DropdowPosition> = ref('auto');
+    // const dropdown: Partial<ICountry> = reactive({});
+    const dropdownSearch: Ref<string> = ref('');
+    const dropdownOpenDirection: Ref<DropdowPosition> = ref('is-bottom-right');
 
+    /**
+     * Computed
+     */
+    const fileredCountriesModel = computed(() => countries.sortedCountries.value.filter(option => matchInputCountry(option.name) || matchInputCountry(option.dialCode)));
+
+    /**
+     * Methods
+     */
+    function matchInputCountry(c = '') {
+        return String.prototype.includes.call(toLower(c), toLower(dropdownSearch.value));
+    }
     function selectCountry(country: ICountry | string) {
-        if (isNil(country)) {
-            // for (const key in activeCountry) {
-            //     if (has(activeCountry, key)) {
-            //         activeCountry[key] = '';
-            //     }
-            // }
+        if (isNil(country) || country === '') {
             return activeCountry;
         }
         if (typeof country !== 'string' && !isPlainObject(country)) {
@@ -45,27 +53,22 @@ export default function (props: IProps, ctx: SetupContext) {
                 selected,
                 {
                     preferred: !!selected.preferred,
-                    model: getCountryFormat(selected),
+                    lastPreffered: !!selected.lastPreffered,
                 },
         );
     }
-    function setDropdownPosition() {
-        const spaceBelow = window.innerHeight - this.$el.getBoundingClientRect().bottom;
-        const hasEnoughSpaceBelow = spaceBelow > 200;
+    function setDropdownPosition(el: HTMLElement, minOffset = 200) {
+        const spaceBelow = window.innerHeight - el.getBoundingClientRect().bottom;
+        const hasEnoughSpaceBelow = spaceBelow > minOffset;
 
         if (hasEnoughSpaceBelow) {
-            dropdownOpenDirection.value = 'bottom';
+            dropdownOpenDirection.value = 'is-bottom-right';
         }
         else {
-            dropdownOpenDirection.value = 'top';
+            dropdownOpenDirection.value = 'is-top-right';
         }
-    }
 
-    /**
-     * Template to displain in the countries autocomplete
-     */
-    function getCountryFormat(country: ICountry) {
-        return `${country.emoji} +${country.dialCode}`;
+        return dropdownOpenDirection.value;
     }
 
     function getBoolean(prop, key) {
@@ -78,10 +81,13 @@ export default function (props: IProps, ctx: SetupContext) {
         ...countries,
 
         activeCountry,
+        // dropdown,
+        dropdownSearch,
         dropdownOpenDirection,
 
+        fileredCountriesModel,
+
         selectCountry,
-        getCountryFormat,
         setDropdownPosition,
         getBoolean,
     };

@@ -1,5 +1,10 @@
 <template>
     <div>
+        <p>dmcTel.activeCountry</p>
+        <pre>{{ dmcTel.activeCountry }}</pre>
+        <strong>parsedPlaceholder - {{ dmcTel.parsedPlaceholder }}</strong>
+        <p>dmcTel.phoneObject</p>
+        <pre>{{ dmcTel.phoneObject }}</pre>
         <B-Field
             ref="refPhoneField"
             class="iti"
@@ -9,41 +14,12 @@
             :disabled="disabled"
             expanded
         >
-            <!-- <B-Autocomplete
-                ref="refPhoneDropdown"
-                v-model="dmcTel.activeCountry.model"
-                :data="fileredCountriesModel"
-                :tabindex="dropdownTabIndex"
-                :placeholder="dropdownPlaceholder"
-                keep-first
-                :open-on-focus="true"
-                clearable
-                :disabled="disabled || disabledDropdown"
-                :custom-formatter="dmcTel.getCountryFormat"
-                @select="onSelect"
-            >
-                <template slot-scope="props">
-                    <div class="media">
-                        <template v-if="!hideFlags">
-                            <div v-if="emojiFlags" class="flag">
-                                <span v-text="props.option.emoji" />
-                            </div>
-                            <div v-else :class="`iti__flag iti__${props.option.iso2.toLowerCase()}`" />
-                        </template>
-                        <div class="country">
-                            <span v-if="!hideCountryCode" class="dial-code">
-                                +{{ props.option.dialCode }}
-                            </span>
-                            <small v-if="!hideCountryName" v-html="props.option.name" />
-                        </div>
-                    </div>
-                </template>
-            </B-Autocomplete> -->
             <B-Dropdown
                 ref="refPhoneDropdown"
                 aria-role="list"
                 class="iti__dropdown"
                 scrollable
+                :position="dmcTel.dropdownOpenDirection"
                 :max-height="400"
                 :disabled="disabled || disabledDropdown || dmcTel.isFetchCountryCode"
                 :tabindex="dropdownTabIndex"
@@ -93,23 +69,24 @@
                 <B-Field class="dropdown-item">
                     <B-Input
                         ref="refPhoneDropdownInput"
-                        v-model="dropDownInputModel"
+                        v-model="dmcTel.dropdownSearch"
                         class="iti__dropdown-input"
                         size="is-small"
                         :placeholder="dropdownPlaceholder"
                         icon-right="close-circle"
                         icon-right-clickable
-                        @icon-right-click="dropDownInputModel = ''"
+                        @icon-right-click="dmcTel.dropdownSearch = ''"
                     />
                 </B-Field>
 
-                <template v-for="(c, i) in fileredCountriesModel">
+                <template v-for="(c, i) in dmcTel.fileredCountriesModel">
                     <B-Dropdown-item
                         :key="`${i}-item`"
                         :value="c"
                         aria-role="listitem"
                         :class="{
-                            preffered: c.preferred
+                            preffered: c.preferred,
+                            'is-active': dmcTel.activeCountry.iso2 === c.iso2
                         }"
                     >
                         <div class="media">
@@ -155,21 +132,13 @@
                 @input="onInput"
             />
         </B-Field>
-        dmcTel.selectedCountry {{ dmcTel.selectedCountry }}
-        dmcTel.phoneText {{ dmcTel.phoneText }}
-        <pre>{{ dmcTel.activeCountry }}</pre>
-        <strong>parsedPlaceholder - {{ dmcTel.parsedPlaceholder }}</strong>
-        <pre>{{ dmcTel.phoneObject }}</pre>
     </div>
 </template>
 
 <script lang="ts">
-    import { defineComponent, PropType, ref, computed, onMounted, SetupContext } from '@vue/composition-api';
+    import { defineComponent, PropType, ref, Ref, computed, onMounted, SetupContext, ComponentRenderProxy } from '@vue/composition-api';
     import PhoneNumber from 'awesome-phonenumber';
-    import toLower from 'lodash/toLower';
 
-    // import useCountries from '@/mixin/useCountries';
-    // import useDropdow from '@/mixin/useDropdown';
     import useDropdownProps from '@/mixin/useDropdownProps';
     import useInput from '@/mixin/useInput';
     import useInputProps from '@/mixin/useInputProps';
@@ -210,27 +179,21 @@
             /**
              * Tempalte refs
              */
-            const refPhoneField = ref(null);
-            const refPhoneDropdown = ref(null);
-            const refPhoneDropdownInput = ref(null);
-            const refPhoneInput = ref(null);
+            const refPhoneField: Ref<ComponentRenderProxy<HTMLElement>> = ref(null);
+            const refPhoneDropdown: Ref<ComponentRenderProxy<HTMLElement>> = ref(null);
+            const refPhoneDropdownInput: Ref<ComponentRenderProxy<HTMLElement>> = ref(null);
+            const refPhoneInput: Ref<ComponentRenderProxy<HTMLElement>> = ref(null);
 
             /**
              * Dropdown setup
              */
             // useInput inherits countries, dropdown and input
-            const dropDownInputModel = ref('');
             const dmcTel = useInput(props, ctx);
 
             /**
              * Computed
              */
-            const fileredCountriesModel = computed(() => dmcTel.sortedCountries.value.filter(option => {
-                const hasVal = str => String.prototype.includes.call(toLower(str), toLower(dropDownInputModel.value));
-
-                return hasVal(option.name) || hasVal(option.dialCode);
-            }));
-            const isValid = computed(() => dmcTel.phoneObject.value.valid && !!dmcTel.activeCountry.model);
+            const isValid = computed(() => dmcTel.phoneObject.value.valid && !!dmcTel.phone);
             const validationClasses = computed(() => {
                 if (dmcTel.phone.value === '') {
                     return {
@@ -252,7 +215,7 @@
                 // if we have no value passign from the parent
                 const country = await initCountry();
 
-                return dmcTel.selectCountry(country);
+                dmcTel.selectCountry(country);
             });
 
             /**
@@ -263,12 +226,14 @@
                 if (dmcTel.phone.value && dmcTel.isInternationalInput(dmcTel.phone.value)) {
                     const activeCountry = new PhoneNumber(dmcTel.phone.value);
 
-                    // Most possible scenario tha we gonna get intl phone fro mthe parent
-                    // so we'l replace it with national format instead
-                    dmcTel.phone.value = activeCountry.getNumber('national');
+                    if (activeCountry.isValid()) {
+                        // Most possible scenario tha we gonna get intl phone fro mthe parent
+                        // so we'l replace it with national format instead
+                        dmcTel.phone.value = activeCountry.getNumber('national');
 
-                    // return dmcTel.selectCountry(activeCountry.getRegionCode());
-                    return activeCountry.getRegionCode();
+                        // return dmcTel.selectCountry(activeCountry.getRegionCode());
+                        return activeCountry.getRegionCode();
+                    }
                 }
                 // 2. if phone is empty, but have DEFAULT COUNTRY
                 if (props.defaultCountry) {
@@ -281,28 +246,27 @@
                     return ISO2;
                 }
                 // 4. if don't have get fallback country from preffered or just a first option
-                const fallbackCountry = props.preferredCountries[0] || dmcTel.sortedCountries.value[0];
-
-                // return dmcTel.selectCountry(fallbackCountry);
-                return fallbackCountry;
+                return props.preferredCountries[0] || dmcTel.sortedCountries.value[0].iso2;
             }
 
-            function onSelect(country: ICountry | string) {
-                const parsedCountry = dmcTel.selectCountry(country);
-
+            async function onSelect(c: ICountry) {
                 // Move countries, that has been selected to the top of the list
                 // Like a recently chosen
-                dmcTel.preferredISOs.value.push(parsedCountry.iso2);
+                if (!dmcTel.preferredISOs.value.includes(c.iso2)) {
+                    dmcTel.preferredISOs.value.push(c.iso2);
+                }
 
-                ctx.root.$nextTick(() => {
+                const country = dmcTel.selectCountry(c);
+
+                await ctx.root.$nextTick(() => {
                     // emit country change event for the actual country select
-                    ctx.emit('country-changed', parsedCountry);
+                    ctx.emit('country-changed', country);
                     ctx.emit('input', dmcTel.phoneText.value, dmcTel.phoneObject.value);
 
                     focusInput();
                 });
 
-                return parsedCountry;
+                return country;
             }
             function onInput(e, $event = window.event) {
                 if (props.validCharactersOnly && !dmcTel.testCharacters()) {
@@ -328,11 +292,15 @@
                     dmcTel.cursorPosition.value = e.target.selectionStart;
                 }
             }
-            function onActiveChange(state) {
+            function onActiveChange(state, prevModel) {
                 if (state === true) {
                     // dmcTel.activeCountry.model = '';
-                    dropDownInputModel.value = '';
+                    dmcTel.dropdownSearch.value = '';
                     focusDropdownInput();
+
+                    if (refPhoneDropdown.value.$el instanceof HTMLElement) {
+                        dmcTel.setDropdownPosition(refPhoneDropdown.value.$el);
+                    }
                 }
             }
 
@@ -354,12 +322,11 @@
             function selectInput() {
                 ctx.root.$nextTick(() => {
                     // Accesing Buefy's input ref
-                    refPhoneInput.value.$refs.dmcTel.select();
+                    refPhoneInput.value.$refs.input.select();
                 });
             }
 
             return {
-                dropDownInputModel,
                 // Setup mixins
                 dmcTel,
 
@@ -372,7 +339,6 @@
                 // Computed
                 isValid,
                 validationClasses,
-                fileredCountriesModel,
 
                 // Methods
                 onActiveChange,

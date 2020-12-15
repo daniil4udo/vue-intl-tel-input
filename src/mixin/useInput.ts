@@ -10,7 +10,7 @@ export default function (props: IProps, ctx: SetupContext) {
 
     // const proxyPhone: Ref<string> = ref(props.value);
     const phone: Ref<string> = ref(props.value.trim());
-    const cursorPosition = ref(0);
+    const cursorPosition: Ref<number> = ref(0);
 
     // const { findCountry } = useCountries(props);
     /**
@@ -27,6 +27,11 @@ export default function (props: IProps, ctx: SetupContext) {
 
         return props.inputPlaceholder;
     });
+    const phoneObject: ComputedRef<IPhoneObject> = computed(() => ({
+        ...new PhoneNumber(phone.value, dropdown.activeCountry.iso2).toJSON(),
+        isIntlInput: isInternationalInput(phone.value),
+        country: dropdown.activeCountry,
+    }));
     const parsedMode: ComputedRef<ParseMode> = computed(() => {
         if (props.customRegExp) {
             return 'input';
@@ -40,16 +45,12 @@ export default function (props: IProps, ctx: SetupContext) {
             }
         }
 
-        if (!phone.value || !isInternationalInput(phone.value)) {
+        if (!phone.value || !phoneObject.value.isIntlInput) {
             return 'national';
         }
 
         return 'international';
     });
-    const phoneObject: ComputedRef<IPhoneObject> = computed(() => ({
-        ...new PhoneNumber(phone.value, dropdown.activeCountry.iso2).toJSON(),
-        country: dropdown.activeCountry,
-    }));
     const phoneText: ComputedRef<string> = computed(() => {
         let key: ParseMode = 'input';
 
@@ -88,7 +89,7 @@ export default function (props: IProps, ctx: SetupContext) {
             });
         }
     }
-    watch(() => phone.value, watchPhone, { immediate: true });
+    watch(() => phone.value, watchPhone, { immediate: false });
 
     function watchValue(value = '') {
         phone.value = value;
@@ -110,10 +111,7 @@ export default function (props: IProps, ctx: SetupContext) {
      * Methods
      */
     function testCharacters() {
-        // const _re = /^[()\-+0-9\s]*$/;
-        const re = (!isAllowedInternationalInput.value && isInternationalInput(phone.value))
-            ? /^(?!00|\+)[()\-0-9\s]*$/
-            : /^[()\-+0-9\s]*$/;
+        const re = /^[()\-+0-9\s]*$/;
 
         return re.test(phone.value);
     }
@@ -124,7 +122,7 @@ export default function (props: IProps, ctx: SetupContext) {
     }
     function isInternationalInput(phoneInput = '') {
         if (typeof phoneInput === 'string') {
-            // return /^(?!00|\+)[()\-\d\s]*$/gi.test()
+            // return /^(?!00|\+)[()\-0-9\s]*$/gi.test()
             return phoneInput[0] === '+' || (phoneInput.length > 2 && phoneInput.startsWith('00'));
         }
 

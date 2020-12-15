@@ -50,6 +50,6 @@ export default {
     },
     preferredCountries: {
         type: (Array as unknown) as PropType<string[]>,
-        default: () => [ 'ae' ],
+        default: () => [ 'AE' ],
     },
 };

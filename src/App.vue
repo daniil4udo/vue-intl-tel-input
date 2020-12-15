@@ -10,7 +10,6 @@
             v-model="phone"
             :enabled-country-name="false"
         />
-        <input v-model="phone">
     </div>
 </template>
 
@@ -54,7 +53,7 @@
                 totalCount: 1200,
             });
 
-            const phone = ref('+380973008444');
+            const phone = ref('+3');
 
             return { todos, meta, phone };
         },
