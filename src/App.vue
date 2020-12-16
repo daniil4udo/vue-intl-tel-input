@@ -53,7 +53,7 @@
                 totalCount: 1200,
             });
 
-            const phone = ref('+3');
+            const phone = ref('');
 
             return { todos, meta, phone };
         },

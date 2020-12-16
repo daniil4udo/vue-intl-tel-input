@@ -2,6 +2,16 @@ export interface IDropdowButton {
     button: boolean;
     dropdown: boolean;
 }
+
+export interface IProps extends IInputProps, IDropdownProps {
+    value?: string;
+    mode?: '' | 'international' | 'national';
+    allowedPhoneTypes?: AllowedPhoneNumberTypes;
+    required?: boolean;
+    name?: string;
+    invalidMsg?: string;
+    disabled?: boolean;
+}
 export interface IDropdownProps {
     dropdownTabIndex?: number;
     dropdownPlaceholder?: string;
@@ -16,21 +26,12 @@ export interface IDropdownProps {
     ignoredCountries?: string[];
     preferredCountries?: string[];
 }
-
 export interface IInputProps {
     inputTabIndex?: number;
     customRegExp?: RegExp;
     validCharactersOnly?: boolean;
     inputPlaceholder?: string;
     dynamicPlaceholder?: boolean;
-}
-export interface IProps extends IInputProps, IDropdownProps {
-    value?: string;
-    mode?: '' | 'international' | 'national';
-    required?: boolean;
-    name?: string;
-    invalidMsg?: string;
-    disabled?: boolean;
 }
 
 export interface ICountry {
@@ -60,19 +61,20 @@ export interface IPhoneObject {
     isIntlInput: boolean;
     possible: boolean;
     canBeInternationallyDialled: boolean;
-    type: string;
+    type: PhoneNumberTypes;
     possibility: string;
     country: ICountry;
 }
 
 export type ParseMode = 'input' | 'international' | 'national' | 'e164' | 'rfc3966' | 'significant'
+export type PhoneNumberTypes = 'fixed-line' | 'mobile' | 'fixed-line-or-mobile' | 'toll-free' | 'premium-rate' | 'shared-cost' | 'voip' | 'personal-number' | 'pager' | 'uan' | 'voicemail' | 'unknown'
+export type AllowedPhoneNumberTypes = Array<PhoneNumberTypes>;
 export type DropdowPosition = 'is-top-right' | 'is-top-left' | 'is-bottom-left' | 'is-bottom-right'
 
 export interface ITodo {
   id: number;
   content: string;
 }
-
 export interface IMeta {
   totalCount: number;
 }

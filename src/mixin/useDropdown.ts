@@ -2,7 +2,6 @@ import { reactive, ref, Ref, computed, SetupContext } from '@vue/composition-api
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import isPlainObject from 'lodash/isPlainObject';
-import toLower from 'lodash/toLower';
 
 import { IProps, ICountry, DropdowPosition } from '@/components/models';
 
@@ -34,7 +33,7 @@ export default function (props: IProps, ctx: SetupContext) {
      * Methods
      */
     function matchInputCountry(c = '') {
-        return String.prototype.includes.call(toLower(c), toLower(dropdownSearch.value));
+        return String.prototype.includes.call(c.toLowerCase(), dropdownSearch.value.toLowerCase());
     }
     function selectCountry(country: ICountry | string) {
         if (isNil(country) || country === '') {

@@ -68,15 +68,15 @@ export default function (props: IProps, ctx: SetupContext) {
         // phone.value = value;
         // ctx.emit('input', value);
 
-        const isValidCharactersOnly = props.validCharactersOnly && !testCharacters();
-        const isCustomValidate = props.customRegExp && !testCustomValidate();
+        // const isValidCharactersOnly = props.validCharactersOnly && !testCharacters();
+        // const isCustomValidate = props.customRegExp && !testCustomValidate();
 
-        if (isValidCharactersOnly || isCustomValidate) {
-            ctx.root.$nextTick(() => {
-                phone.value = oldValue;
-            });
-        }
-        else if (value && isInternationalInput(value) && isAllowedInternationalInput.value) {
+        // if (isValidCharactersOnly || isCustomValidate) {
+        //     ctx.root.$nextTick(() => {
+        //         phone.value = oldValue;
+        //     });
+        // }
+        if (value && isInternationalInput(value) && isAllowedInternationalInput.value) {
             const code = PhoneNumber.call(null, phoneObject.value.number.international || '').getRegionCode();
 
             dropdown.selectCountry(code);
@@ -110,17 +110,17 @@ export default function (props: IProps, ctx: SetupContext) {
     /**
      * Methods
      */
-    function testCharacters() {
+    function testCharacters(value = phone.value) {
         const re = /^[()\-+0-9\s]*$/;
 
-        return re.test(phone.value);
+        return re.test(value);
     }
-    function testCustomValidate(): boolean {
+    function testCustomValidate(value = phone.value): boolean {
         return props.customRegExp instanceof RegExp
-            ? props.customRegExp.test(phone.value)
+            ? props.customRegExp.test(value)
             : false;
     }
-    function isInternationalInput(phoneInput = '') {
+    function isInternationalInput(phoneInput = phone.value) {
         if (typeof phoneInput === 'string') {
             // return /^(?!00|\+)[()\-0-9\s]*$/gi.test()
             return phoneInput[0] === '+' || (phoneInput.length > 2 && phoneInput.startsWith('00'));
@@ -146,15 +146,14 @@ export default function (props: IProps, ctx: SetupContext) {
 
     return {
         ...dropdown,
-
-        isAllowedInternationalInput,
+        phone,
         cursorPosition,
 
-        phone,
         parsedPlaceholder,
         parsedMode,
         phoneObject,
         phoneText,
+        isAllowedInternationalInput,
 
         isInternationalInput,
         testCharacters,

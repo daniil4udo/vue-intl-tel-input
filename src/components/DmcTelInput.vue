@@ -1,10 +1,6 @@
 <template>
     <div>
-        <p>dmcTel.activeCountry</p>
-        <pre>{{ dmcTel.activeCountry }}</pre>
-        <strong>parsedPlaceholder - {{ dmcTel.parsedPlaceholder }}</strong>
-        <p>dmcTel.phoneObject</p>
-        <pre>{{ dmcTel.phoneObject }}</pre>
+        isRegionlessNanp – {{ dmcTel.isRegionlessNanp }}
         <B-Field
             ref="refPhoneField"
             class="iti"
@@ -126,12 +122,19 @@
                 :tabindex="inputTabIndex"
                 v-bind="$attrs"
                 type="tel"
+                :name="name"
                 :disabled="disabled"
                 :placeholder="dmcTel.parsedPlaceholder"
                 expanded
                 @input="onInput"
+                @keypress.native="onKeyPress"
             />
         </B-Field>
+        <p>dmcTel.activeCountry</p>
+        <pre>{{ dmcTel.activeCountry }}</pre>
+        <strong>parsedPlaceholder - {{ dmcTel.parsedPlaceholder }}</strong>
+        <p>dmcTel.phoneObject</p>
+        <pre>{{ dmcTel.phoneObject }}</pre>
     </div>
 </template>
 
@@ -143,7 +146,7 @@
     import useInput from '@/mixin/useInput';
     import useInputProps from '@/mixin/useInputProps';
 
-    import { IProps, ICountry } from './models';
+    import { IProps, ICountry, AllowedPhoneNumberTypes } from './models';
 
     export default defineComponent({
         props: {
@@ -157,6 +160,11 @@
                 type: (String as unknown) as PropType<string>,
                 validator: prop => [ 'international', 'national', '' ].includes(String(prop)),
                 default: () => 'national',
+            },
+            allowedPhoneTypes: {
+                type: (Array as unknown) as PropType<AllowedPhoneNumberTypes>,
+                default: () => [ 'mobile', 'fixed-line', 'fixed-line-or-mobile' ],
+                validator: (value: string[]) => [ 'fixed-line', 'mobile', 'fixed-line-or-mobile', 'toll-free', 'premium-rate', 'shared-cost', 'voip', 'personal-number', 'pager', 'uan', 'voicemail', 'unknown' ].some(v => value.includes(v)),
             },
             required: {
                 type: (Boolean as unknown) as PropType<boolean>,
@@ -193,7 +201,7 @@
             /**
              * Computed
              */
-            const isValid = computed(() => dmcTel.phoneObject.value.valid && !!dmcTel.phone);
+            const isValid = computed(() => dmcTel.phone.value !== '' && dmcTel.phoneObject.value.valid && props.allowedPhoneTypes.includes(dmcTel.phoneObject.value.type));
             const validationClasses = computed(() => {
                 if (dmcTel.phone.value === '') {
                     return {
@@ -216,6 +224,8 @@
                 const country = await initCountry();
 
                 dmcTel.selectCountry(country);
+
+                // TODO: Sanitize if number looks like Intl but we are no allowing intl
             });
 
             /**
@@ -223,7 +233,7 @@
              */
             async function initCountry() {
                 // 1. if already have PHONE passed from the parent - parse it
-                if (dmcTel.phone.value && dmcTel.isInternationalInput(dmcTel.phone.value)) {
+                if (dmcTel.phone.value && dmcTel.phoneObject.value.isIntlInput) {
                     const activeCountry = new PhoneNumber(dmcTel.phone.value);
 
                     if (activeCountry.isValid()) {
@@ -268,7 +278,20 @@
 
                 return country;
             }
-            function onInput(e, $event = window.event) {
+            function onKeyPress($event: KeyboardEvent) {
+                const { key } = $event;
+                const { value: prevValue } = $event.target as HTMLInputElement;
+                const newValue = `${prevValue}${key}`;
+
+                const isValidCharactersOnly = props.validCharactersOnly && !dmcTel.testCharacters(key);
+                const isCustomValidate = props.customRegExp && !dmcTel.testCustomValidate(key);
+                const intlCheck = !dmcTel.isAllowedInternationalInput.value && dmcTel.isInternationalInput(newValue);
+
+                if (isValidCharactersOnly || isCustomValidate || intlCheck) {
+                    $event.preventDefault();
+                }
+            }
+            function onInput(e) {
                 if (props.validCharactersOnly && !dmcTel.testCharacters()) {
                     return;
                 }
@@ -276,7 +299,7 @@
                     return;
                 }
 
-                // Set custm HTML5 validation error msg
+                // TODO: Set custm HTML5 validation error msg
                 // refPhoneInput.value.$refs.input.setCustomValidity(dmcTel.phoneObject.value.valid ? '' : props.invalidMsg);
 
                 // Returns response.number to assign it to v-model (if being used)
@@ -286,11 +309,12 @@
                     ctx.emit('input', dmcTel.phoneText.value, dmcTel.phoneObject.value);
                 });
 
+                // TODO: Bind native event
                 // Keep the current cursor position just in case the input reformatted
                 // and it gets moved to the last character.
-                if (e && e.target) {
-                    dmcTel.cursorPosition.value = e.target.selectionStart;
-                }
+                // if ($event && $event.target) {
+                //     dmcTel.cursorPosition.value = $event.target.selectionStart;
+                // }
             }
             function onActiveChange(state, prevModel) {
                 if (state === true) {
@@ -343,6 +367,7 @@
                 // Methods
                 onActiveChange,
                 onSelect,
+                onKeyPress,
                 onInput,
                 focusDropdown,
                 focusDropdownInput,

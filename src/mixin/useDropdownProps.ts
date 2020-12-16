@@ -30,7 +30,7 @@ export default {
     },
     disabledDropdown: {
         type: (Boolean as unknown) as PropType<boolean>,
-        default: () => false,
+        default: () => true,
     },
     fetchCountry: {
         type: (Boolean as unknown) as PropType<boolean>,
