@@ -139,7 +139,7 @@
 </template>
 
 <script lang="ts">
-    import { defineComponent, PropType, ref, Ref, computed, onMounted, SetupContext, ComponentRenderProxy } from '@vue/composition-api';
+    import { defineComponent, PropType, ref, Ref, computed, onMounted, SetupContext, ComponentRenderProxy, getCurrentInstance } from '@vue/composition-api';
     import PhoneNumber from 'awesome-phonenumber';
 
     import useDropdownProps from '@/mixin/useDropdownProps';
@@ -184,6 +184,7 @@
             },
         },
         setup(props: IProps, ctx: SetupContext) {
+            const { $root } = getCurrentInstance();
             /**
              * Tempalte refs
              */
@@ -268,7 +269,7 @@
 
                 const country = dmcTel.selectCountry(c);
 
-                await ctx.root.$nextTick(() => {
+                await $root.$nextTick(() => {
                     // emit country change event for the actual country select
                     ctx.emit('country-changed', country);
                     ctx.emit('input', dmcTel.phoneText.value, dmcTel.phoneObject.value);
@@ -305,7 +306,7 @@
                 // Returns response.number to assign it to v-model (if being used)
                 // Returns full response for cases @input is used
                 // and parent wants to return the whole response.
-                ctx.root.$nextTick(() => {
+                $root.$nextTick(() => {
                     ctx.emit('input', dmcTel.phoneText.value, dmcTel.phoneObject.value);
                 });
 
@@ -329,22 +330,22 @@
             }
 
             function focusInput() {
-                ctx.root.$nextTick(() => {
+                $root.$nextTick(() => {
                     refPhoneInput.value.focus();
                 });
             }
             function focusDropdownInput() {
-                ctx.root.$nextTick(() => {
+                $root.$nextTick(() => {
                     refPhoneDropdownInput.value.focus();
                 });
             }
             function focusDropdown() {
-                ctx.root.$nextTick(() => {
+                $root.$nextTick(() => {
                     refPhoneDropdown.value.focus();
                 });
             }
             function selectInput() {
-                ctx.root.$nextTick(() => {
+                $root.$nextTick(() => {
                     // Accesing Buefy's input ref
                     refPhoneInput.value.$refs.input.select();
                 });

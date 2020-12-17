@@ -1,4 +1,4 @@
-import { ref, Ref, computed, ComputedRef, watch, SetupContext } from '@vue/composition-api';
+import { ref, Ref, computed, ComputedRef, watch, SetupContext, getCurrentInstance } from '@vue/composition-api';
 import PhoneNumber from 'awesome-phonenumber';
 
 import { IProps, IPhoneObject, ParseMode } from '@/components/models';
@@ -6,6 +6,8 @@ import useDropdow from '@/mixin/useDropdown';
 // import useCountries from '@/mixin/useCountries';
 
 export default function (props: IProps, ctx: SetupContext) {
+    const { $root } = getCurrentInstance();
+
     const dropdown = useDropdow(props, ctx);
 
     // const proxyPhone: Ref<string> = ref(props.value);
@@ -72,7 +74,7 @@ export default function (props: IProps, ctx: SetupContext) {
         // const isCustomValidate = props.customRegExp && !testCustomValidate();
 
         // if (isValidCharactersOnly || isCustomValidate) {
-        //     ctx.root.$nextTick(() => {
+        //     $root.$nextTick(() => {
         //         phone.value = oldValue;
         //     });
         // }
@@ -84,7 +86,7 @@ export default function (props: IProps, ctx: SetupContext) {
 
         // Reset the cursor to current position if it's not the last character.
         if (cursorPosition.value < oldValue.length) {
-            ctx.root.$nextTick(() => {
+            $root.$nextTick(() => {
                 // setCaretPosition(this.$refs.input, cursorPosition);
             });
         }
@@ -101,7 +103,7 @@ export default function (props: IProps, ctx: SetupContext) {
             phone.value = phoneText.value;
         }
 
-        ctx.root.$nextTick(() => {
+        $root.$nextTick(() => {
             ctx.emit('validate', phoneObject.value);
         });
     }
