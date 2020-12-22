@@ -1,6 +1,6 @@
 <template>
     <div>
-        isRegionlessNanp – {{ dmcTel.isRegionlessNanp }}
+        isRegionlessNanp – {{ isRegionlessNanp }}
         <B-Field
             ref="refPhoneField"
             class="iti"
@@ -15,9 +15,9 @@
                 aria-role="list"
                 class="iti__dropdown"
                 scrollable
-                :position="dmcTel.dropdownOpenDirection"
+                :position="dropdownOpenDirection"
                 :max-height="400"
-                :disabled="disabled || disabledDropdown || dmcTel.isFetchCountryCode"
+                :disabled="disabled || disabledDropdown || isFetchCountryCode"
                 :tabindex="dropdownTabIndex"
                 @input="onSelect"
                 @active-change="onActiveChange"
@@ -25,7 +25,7 @@
                 <b-button
                     slot="trigger"
                     slot-scope="{ active }"
-                    :loading="dmcTel.isFetchCountryCode"
+                    :loading="isFetchCountryCode"
                     :class="[
                         'button is-outlined',
                         'iti__button',
@@ -33,23 +33,23 @@
                     ]"
                     type="button"
                 >
-                    <template v-if="!dmcTel.isFetchCountryCode">
-                        <template v-if="!dmcTel.getBoolean(hideFlags, 'button')">
+                    <template v-if="!isFetchCountryCode">
+                        <template v-if="!getBoolean(hideFlags, 'button')">
                             <div
-                                v-if="dmcTel.getBoolean(emojiFlags, 'button')"
+                                v-if="getBoolean(emojiFlags, 'button')"
                                 class="iti__eflag"
                             >
-                                <span v-text="dmcTel.activeCountry.emoji" />
+                                <span v-text="activeCountry.emoji" />
                             </div>
                             <div
                                 v-else
-                                :class="`iti__flag flag-${dmcTel.activeCountry.iso2.toLowerCase()}`"
+                                :class="`iti__flag flag-${activeCountry.iso2.toLowerCase()}`"
                             />
                         </template>
-                        <div v-if="!dmcTel.getBoolean(hideCountryCode, 'button')" class="iti__country">
+                        <div v-if="!getBoolean(hideCountryCode, 'button')" class="iti__country">
                             <span
                                 class="iti__country-dial"
-                                v-text="`+${dmcTel.activeCountry.dialCode}`"
+                                v-text="`+${activeCountry.dialCode}`"
                             />
                         </div>
                     </template>
@@ -65,30 +65,30 @@
                 <B-Field class="dropdown-item">
                     <B-Input
                         ref="refPhoneDropdownInput"
-                        v-model="dmcTel.dropdownSearch"
+                        v-model="dropdownSearch"
                         class="iti__dropdown-input"
                         size="is-small"
                         :placeholder="dropdownPlaceholder"
                         icon-right="close-circle"
                         icon-right-clickable
-                        @icon-right-click="dmcTel.dropdownSearch = ''"
+                        @icon-right-click="dropdownSearch = ''"
                     />
                 </B-Field>
 
-                <template v-for="(c, i) in dmcTel.fileredCountriesModel">
+                <template v-for="(c, i) in fileredCountriesModel">
                     <B-Dropdown-item
                         :key="`${i}-item`"
                         :value="c"
                         aria-role="listitem"
                         :class="{
                             preffered: c.preferred,
-                            'is-active': dmcTel.activeCountry.iso2 === c.iso2
+                            'is-active': activeCountry.iso2 === c.iso2
                         }"
                     >
                         <div class="media">
-                            <template v-if="!dmcTel.getBoolean(hideFlags, 'dropdown')">
+                            <template v-if="!getBoolean(hideFlags, 'dropdown')">
                                 <div
-                                    v-if="dmcTel.getBoolean(emojiFlags, 'dropdown')"
+                                    v-if="getBoolean(emojiFlags, 'dropdown')"
                                     class="iti__eflag"
                                 >
                                     <span v-text="c.emoji" />
@@ -100,11 +100,11 @@
                             </template>
                             <div class="iti__country">
                                 <span
-                                    v-if="!dmcTel.getBoolean(hideCountryCode, 'dropdown')"
+                                    v-if="!getBoolean(hideCountryCode, 'dropdown')"
                                     class="iti__country-dial"
                                     v-text="`+${c.dialCode}`"
                                 />
-                                <small v-if="!dmcTel.getBoolean(hideCountryName, 'dropdown')" v-html="c.name" />
+                                <small v-if="!getBoolean(hideCountryName, 'dropdown')" v-html="c.name" />
                             </div>
                         </div>
                     </B-Dropdown-item>
@@ -117,266 +117,196 @@
             </B-Dropdown>
             <B-Input
                 ref="refPhoneInput"
-                v-model="dmcTel.phone"
+                v-model="phone"
                 class="iti__input"
                 :tabindex="inputTabIndex"
                 v-bind="$attrs"
                 type="tel"
                 :name="name"
                 :disabled="disabled"
-                :placeholder="dmcTel.parsedPlaceholder"
+                :placeholder="parsedPlaceholder"
                 expanded
                 @input="onInput"
                 @keypress.native="onKeyPress"
             />
         </B-Field>
-        <p>dmcTel.activeCountry</p>
-        <pre>{{ dmcTel.activeCountry }}</pre>
-        <strong>parsedPlaceholder - {{ dmcTel.parsedPlaceholder }}</strong>
-        <p>dmcTel.phoneObject</p>
-        <pre>{{ dmcTel.phoneObject }}</pre>
+        <p>activeCountry</p>
+        <pre>{{ activeCountry }}</pre>
+        <strong>parsedPlaceholder - {{ parsedPlaceholder }}</strong>
+        <p>phoneObject</p>
+        <pre>{{ phoneObject }}</pre>
     </div>
 </template>
 
 <script lang="ts">
-    import { defineComponent, PropType, ref, Ref, computed, onMounted, SetupContext, ComponentRenderProxy, getCurrentInstance } from '@vue/composition-api';
     import PhoneNumber from 'awesome-phonenumber';
+    import { Component, Mixins, Ref } from 'vue-property-decorator';
 
-    import useDropdownProps from '@/mixin/useDropdownProps';
-    import useInput from '@/mixin/useInput';
-    import useInputProps from '@/mixin/useInputProps';
+    import Input from '@/mixin/useInput';
 
-    import { IProps, ICountry, AllowedPhoneNumberTypes } from './models';
+    import { ICountry } from './models';
 
-    export default defineComponent({
-        props: {
-            ...useDropdownProps,
-            ...useInputProps,
-            value: {
-                type: (String as unknown) as PropType<string>,
-                default: () => '',
-            },
-            mode: {
-                type: (String as unknown) as PropType<string>,
-                validator: prop => [ 'international', 'national', '' ].includes(String(prop)),
-                default: () => 'national',
-            },
-            allowedPhoneTypes: {
-                type: (Array as unknown) as PropType<AllowedPhoneNumberTypes>,
-                default: () => [ 'mobile', 'fixed-line', 'fixed-line-or-mobile' ],
-                validator: (value: string[]) => [ 'fixed-line', 'mobile', 'fixed-line-or-mobile', 'toll-free', 'premium-rate', 'shared-cost', 'voip', 'personal-number', 'pager', 'uan', 'voicemail', 'unknown' ].some(v => value.includes(v)),
-            },
-            required: {
-                type: (Boolean as unknown) as PropType<boolean>,
-                default: () => false,
-            },
-            name: {
-                type: (String as unknown) as PropType<string>,
-                default: () => 'dmc-phone-input',
-            },
-            invalidMsg: {
-                type: (String as unknown) as PropType<string>,
-                default: () => 'Hell, no!',
-            },
-            disabled: {
-                type: (Boolean as unknown) as PropType<boolean>,
-                default: () => false,
-            },
-        },
-        setup(props: IProps, ctx: SetupContext) {
-            const { $root } = getCurrentInstance();
-            /**
-             * Tempalte refs
-             */
-            const refPhoneField: Ref<ComponentRenderProxy<HTMLElement>> = ref(null);
-            const refPhoneDropdown: Ref<ComponentRenderProxy<HTMLElement>> = ref(null);
-            const refPhoneDropdownInput: Ref<ComponentRenderProxy<HTMLElement>> = ref(null);
-            const refPhoneInput: Ref<ComponentRenderProxy<HTMLElement>> = ref(null);
+    @Component({
+        name: 'DmcPhoneInput',
+    })
+    export default class DmcPhoneInput extends Mixins(Input) {
+        @Ref() readonly refPhoneField;
+        @Ref() readonly refPhoneDropdown;
+        @Ref() readonly refPhoneDropdownInput;
+        @Ref() readonly refPhoneInput;
 
-            /**
-             * Dropdown setup
-             */
-            // useInput inherits countries, dropdown and input
-            const dmcTel = useInput(props, ctx);
+        get isValid() {
+            return this.phone !== '' && this.phoneObject.valid && this.allowedPhoneTypes.includes(this.phoneObject.type);
+        }
 
-            /**
-             * Computed
-             */
-            const isValid = computed(() => dmcTel.phone.value !== '' && dmcTel.phoneObject.value.valid && props.allowedPhoneTypes.includes(dmcTel.phoneObject.value.type));
-            const validationClasses = computed(() => {
-                if (dmcTel.phone.value === '') {
-                    return {
-                        class: '',
-                        message: '',
-                    };
+        get validationClasses() {
+            if (this.phone === '') {
+                return {
+                    class: '',
+                    message: '',
+                };
+            }
+
+            return this.isValid
+                ? { class: 'is-success', message: '' }
+                : { class: 'is-danger', message: `Invalid phone number for ${this.activeCountry.enname}` };
+        }
+
+        async mounted() {
+            // Fetch only if explicitly said it &
+            // if we have no value passign from the parent
+            const country = await this.initCountry();
+
+            this.selectCountry(country);
+
+            // TODO: Sanitize if number looks like Intl but we are no allowing intl
+        }
+
+        async initCountry() {
+            // 1. if already have PHONE passed from the parent - parse it
+            if (this.phone && this.phoneObject.isIntlInput) {
+                const activeCountry = new PhoneNumber(this.phone);
+
+                if (activeCountry.isValid()) {
+                    // Most possible scenario tha we gonna get intl phone fro mthe parent
+                    // so we'l replace it with national format instead
+                    this.phone = activeCountry.getNumber('national');
+
+                    // return this.selectCountry(activeCountry.getRegionCode());
+                    return activeCountry.getRegionCode();
                 }
+            }
+            // 2. if phone is empty, but have DEFAULT COUNTRY
+            if (this.defaultCountry) {
+                return this.defaultCountry;
+            }
+            // 3. if don't have DEFAULT COUNTRY but fetch country is allowed - FETCH
+            if (this.fetchCountry) {
+                const ISO2 = await this.fetchCountryCode();
 
-                return isValid.value
-                    ? { class: 'is-success', message: '' }
-                    : { class: 'is-danger', message: `Invalid phone number for ${dmcTel.activeCountry.enname}` };
+                return ISO2;
+            }
+            // 4. if don't have get fallback country from preffered or just a first option
+            return this.preferredCountries[0] || this.sortedCountries[0].iso2;
+        }
+
+        async onSelect(c: ICountry) {
+            // Move countries, that has been selected to the top of the list
+            // Like a recently chosen
+            if (!this.preferredISOs.includes(c.iso2)) {
+                this.preferredISOs.push(c.iso2);
+            }
+
+            const country = this.selectCountry(c);
+
+            await this.$nextTick(() => {
+                // emit country change event for the actual country select
+                this.$emit('country-changed', country);
+                this.$emit('input', this.phoneText, this.phoneObject);
+
+                this.focusInput();
             });
 
-            /**
-             * Lifecycle
-             */
-            onMounted(async () => {
-                // Fetch only if explicitly said it &
-                // if we have no value passign from the parent
-                const country = await initCountry();
+            return country;
+        }
 
-                dmcTel.selectCountry(country);
+        onKeyPress($event: KeyboardEvent) {
+            const { key } = $event;
+            const { value: prevValue } = $event.target as HTMLInputElement;
+            const newValue = `${prevValue}${key}`;
 
-                // TODO: Sanitize if number looks like Intl but we are no allowing intl
+            const isValidCharactersOnly = this.validCharactersOnly && !this.testCharacters(key);
+            const isCustomValidate = this.customRegExp && !this.testCustomValidate(key);
+            const intlCheck = !this.isAllowedInternationalInput && this.isInternationalInput(newValue);
+
+            if (isValidCharactersOnly || isCustomValidate || intlCheck) {
+                $event.preventDefault();
+            }
+        }
+
+        onInput(e) {
+            if (this.validCharactersOnly && !this.testCharacters()) {
+                return;
+            }
+            if (this.customRegExp && !this.testCustomValidate()) {
+                return;
+            }
+
+            // TODO: Set custm HTML5 validation error msg
+            // refPhoneInput.value.$refs.input.setCustomValidity(this.phoneObject.valid ? '' : this.invalidMsg);
+
+            // Returns response.number to assign it to v-model (if being used)
+            // Returns full response for cases @input is used
+            // and parent wants to return the whole response.
+            this.$nextTick(() => {
+                this.$emit('input', this.phoneText, this.phoneObject);
             });
 
-            /**
-             * Methods
-             */
-            async function initCountry() {
-                // 1. if already have PHONE passed from the parent - parse it
-                if (dmcTel.phone.value && dmcTel.phoneObject.value.isIntlInput) {
-                    const activeCountry = new PhoneNumber(dmcTel.phone.value);
+            // TODO: Bind native event
+            // Keep the current cursor position just in case the input reformatted
+            // and it gets moved to the last character.
+            // if ($event && $event.target) {
+            //     this.cursorPosition.value = $event.target.selectionStart;
+            // }
+        }
 
-                    if (activeCountry.isValid()) {
-                        // Most possible scenario tha we gonna get intl phone fro mthe parent
-                        // so we'l replace it with national format instead
-                        dmcTel.phone.value = activeCountry.getNumber('national');
+        onActiveChange(state, prevModel) {
+            if (state === true) {
+                // this.activeCountry.model = '';
+                this.dropdownSearch = '';
+                this.focusDropdownInput();
 
-                        // return dmcTel.selectCountry(activeCountry.getRegionCode());
-                        return activeCountry.getRegionCode();
-                    }
-                }
-                // 2. if phone is empty, but have DEFAULT COUNTRY
-                if (props.defaultCountry) {
-                    return props.defaultCountry;
-                }
-                // 3. if don't have DEFAULT COUNTRY but fetch country is allowed - FETCH
-                if (props.fetchCountry) {
-                    const ISO2 = await dmcTel.fetchCountryCode();
-
-                    return ISO2;
-                }
-                // 4. if don't have get fallback country from preffered or just a first option
-                return props.preferredCountries[0] || dmcTel.sortedCountries.value[0].iso2;
-            }
-
-            async function onSelect(c: ICountry) {
-                // Move countries, that has been selected to the top of the list
-                // Like a recently chosen
-                if (!dmcTel.preferredISOs.value.includes(c.iso2)) {
-                    dmcTel.preferredISOs.value.push(c.iso2);
-                }
-
-                const country = dmcTel.selectCountry(c);
-
-                await $root.$nextTick(() => {
-                    // emit country change event for the actual country select
-                    ctx.emit('country-changed', country);
-                    ctx.emit('input', dmcTel.phoneText.value, dmcTel.phoneObject.value);
-
-                    focusInput();
-                });
-
-                return country;
-            }
-            function onKeyPress($event: KeyboardEvent) {
-                const { key } = $event;
-                const { value: prevValue } = $event.target as HTMLInputElement;
-                const newValue = `${prevValue}${key}`;
-
-                const isValidCharactersOnly = props.validCharactersOnly && !dmcTel.testCharacters(key);
-                const isCustomValidate = props.customRegExp && !dmcTel.testCustomValidate(key);
-                const intlCheck = !dmcTel.isAllowedInternationalInput.value && dmcTel.isInternationalInput(newValue);
-
-                if (isValidCharactersOnly || isCustomValidate || intlCheck) {
-                    $event.preventDefault();
+                if (this.refPhoneDropdown.$el instanceof HTMLElement) {
+                    this.setDropdownPosition(this.refPhoneDropdown.$el);
                 }
             }
-            function onInput(e) {
-                if (props.validCharactersOnly && !dmcTel.testCharacters()) {
-                    return;
-                }
-                if (props.customRegExp && !dmcTel.testCustomValidate()) {
-                    return;
-                }
+        }
 
-                // TODO: Set custm HTML5 validation error msg
-                // refPhoneInput.value.$refs.input.setCustomValidity(dmcTel.phoneObject.value.valid ? '' : props.invalidMsg);
+        focusInput() {
+            this.$nextTick(() => {
+                this.refPhoneInput.focus();
+            });
+        }
 
-                // Returns response.number to assign it to v-model (if being used)
-                // Returns full response for cases @input is used
-                // and parent wants to return the whole response.
-                $root.$nextTick(() => {
-                    ctx.emit('input', dmcTel.phoneText.value, dmcTel.phoneObject.value);
-                });
+        focusDropdownInput() {
+            this.$nextTick(() => {
+                this.refPhoneDropdownInput.focus();
+            });
+        }
 
-                // TODO: Bind native event
-                // Keep the current cursor position just in case the input reformatted
-                // and it gets moved to the last character.
-                // if ($event && $event.target) {
-                //     dmcTel.cursorPosition.value = $event.target.selectionStart;
-                // }
-            }
-            function onActiveChange(state, prevModel) {
-                if (state === true) {
-                    // dmcTel.activeCountry.model = '';
-                    dmcTel.dropdownSearch.value = '';
-                    focusDropdownInput();
+        focusDropdown() {
+            this.$nextTick(() => {
+                this.refPhoneDropdown.focus();
+            });
+        }
 
-                    if (refPhoneDropdown.value.$el instanceof HTMLElement) {
-                        dmcTel.setDropdownPosition(refPhoneDropdown.value.$el);
-                    }
-                }
-            }
-
-            function focusInput() {
-                $root.$nextTick(() => {
-                    refPhoneInput.value.focus();
-                });
-            }
-            function focusDropdownInput() {
-                $root.$nextTick(() => {
-                    refPhoneDropdownInput.value.focus();
-                });
-            }
-            function focusDropdown() {
-                $root.$nextTick(() => {
-                    refPhoneDropdown.value.focus();
-                });
-            }
-            function selectInput() {
-                $root.$nextTick(() => {
-                    // Accesing Buefy's input ref
-                    refPhoneInput.value.$refs.input.select();
-                });
-            }
-
-            return {
-                // Setup mixins
-                dmcTel,
-
-                // Tempalte refs
-                refPhoneField,
-                refPhoneDropdown,
-                refPhoneDropdownInput,
-                refPhoneInput,
-
-                // Computed
-                isValid,
-                validationClasses,
-
-                // Methods
-                onActiveChange,
-                onSelect,
-                onKeyPress,
-                onInput,
-                focusDropdown,
-                focusDropdownInput,
-                focusInput,
-                selectInput,
-            };
-        },
-    });
+        selectInput() {
+            this.$nextTick(() => {
+                // Accesing Buefy's input ref
+                this.refPhoneInput.$refs.input.select();
+            });
+        }
+    }
 </script>
 
 <style lang="scss">

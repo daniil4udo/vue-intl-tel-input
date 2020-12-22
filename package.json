@@ -28,11 +28,12 @@
         "generate:inspect": "vue-cli-service inspect > output.js && eslint --print-config ./.eslintrc.js > .eslintrc.json"
     },
     "dependencies": {
-        "@vue/composition-api": "^0.6.4",
         "awesome-phonenumber": "^2.42.0",
         "buefy": "^0.9.4",
         "core-js": "^3.6.5",
-        "vue": "^2.6.11"
+        "vue": "^2.6.11",
+        "vue-class-component": "^7.2.6",
+        "vue-property-decorator": "^9.1.2"
     },
     "devDependencies": {
         "@types/jest": "^24.0.19",

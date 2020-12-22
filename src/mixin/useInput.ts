@@ -1,128 +1,132 @@
-import { ref, Ref, computed, ComputedRef, watch, SetupContext, getCurrentInstance } from '@vue/composition-api';
 import PhoneNumber from 'awesome-phonenumber';
+import { Component, Watch, Mixins } from 'vue-property-decorator';
 
-import { IProps, IPhoneObject, ParseMode } from '@/components/models';
-import useDropdow from '@/mixin/useDropdown';
+import { IPhoneObject, ParseMode } from '@/components/models';
+import Dropdown from '@/mixin/useDropdown';
 // import useCountries from '@/mixin/useCountries';
 
-export default function (props: IProps, ctx: SetupContext) {
-    const { $root } = getCurrentInstance();
+@Component
+export default class Input extends Mixins(Dropdown) {
+    // TODO: Potentially change to v-model
+    // @VModel({ type: Object, default: () => '' }) phone!: string
+    phone = this.value.trim() as string;
+    cursorPosition = 0 as number;
 
-    const dropdown = useDropdow(props, ctx);
-
-    // const proxyPhone: Ref<string> = ref(props.value);
-    const phone: Ref<string> = ref(props.value.trim());
-    const cursorPosition: Ref<number> = ref(0);
-
-    // const { findCountry } = useCountries(props);
     /**
      * Computed
      */
-    const isAllowedInternationalInput = computed(() => !props.disabledDropdown);
-    const parsedPlaceholder: ComputedRef<string> = computed(() => {
-        if (props.dynamicPlaceholder && dropdown.activeCountry.iso2) {
-            // As for me doesnt make sense to confuse user and show hint with country code
-            // const mode = props.mode || 'international';
+    get isAllowedInternationalInput() {
+        return !this.disabledDropdown;
+    }
 
-            return PhoneNumber.getExample(dropdown.activeCountry.iso2, 'mobile').getNumber('national');
+    get parsedPlaceholder(): string {
+        if (this.dynamicPlaceholder && this.activeCountry.iso2) {
+            // As for me doesnt make sense to confuse user and show hint with country code
+            // const mode = this.mode || 'international';
+
+            return PhoneNumber.getExample(this.activeCountry.iso2, 'mobile').getNumber('national');
         }
 
-        return props.inputPlaceholder;
-    });
-    const phoneObject: ComputedRef<IPhoneObject> = computed(() => ({
-        ...new PhoneNumber(phone.value, dropdown.activeCountry.iso2).toJSON(),
-        isIntlInput: isInternationalInput(phone.value),
-        country: dropdown.activeCountry,
-    }));
-    const parsedMode: ComputedRef<ParseMode> = computed(() => {
-        if (props.customRegExp) {
+        return this.inputPlaceholder;
+    }
+
+    get phoneObject(): IPhoneObject {
+        return {
+            ...new PhoneNumber(this.phone, this.activeCountry.iso2).toJSON(),
+            isIntlInput: this.isInternationalInput(this.phone),
+            country: this.activeCountry,
+        };
+    }
+
+    get parsedMode(): ParseMode {
+        if (this.customRegExp) {
             return 'input';
         }
-        if (props.mode) {
-            if (![ 'international', 'national' ].includes(props.mode)) {
+        if (this.mode) {
+            if (![ 'international', 'national' ].includes(this.mode)) {
                 console.error('Invalid value of prop "mode"');
             }
             else {
-                return props.mode;
+                return this.mode;
             }
         }
 
-        if (!phone.value || !phoneObject.value.isIntlInput) {
+        if (!this.phone || !this.phoneObject.isIntlInput) {
             return 'national';
         }
 
         return 'international';
-    });
-    const phoneText: ComputedRef<string> = computed(() => {
+    }
+
+    get phoneText(): string {
         let key: ParseMode = 'input';
 
-        if (phoneObject.value.valid) {
-            key = parsedMode.value;
+        if (this.phoneObject.valid) {
+            key = this.parsedMode;
         }
 
-        return phoneObject.value.number[key] || '';
-    });
+        return this.phoneObject.number[key] || '';
+    }
 
-    /**
-     * Watchers
-     */
-    function watchPhone(value = '', oldValue = '') {
-        // phone.value = value;
+    @Watch('phone', { immediate: false })
+    onPhoneChanged(value = '', oldValue = '') {
+        // this.phone = value;
         // ctx.emit('input', value);
 
-        // const isValidCharactersOnly = props.validCharactersOnly && !testCharacters();
-        // const isCustomValidate = props.customRegExp && !testCustomValidate();
+        // const isValidCharactersOnly = this.validCharactersOnly && !testCharacters();
+        // const isCustomValidate = this.customRegExp && !testCustomValidate();
 
         // if (isValidCharactersOnly || isCustomValidate) {
         //     $root.$nextTick(() => {
-        //         phone.value = oldValue;
+        //         this.phone = oldValue;
         //     });
         // }
-        if (value && isInternationalInput(value) && isAllowedInternationalInput.value) {
-            const code = PhoneNumber.call(null, phoneObject.value.number.international || '').getRegionCode();
+        if (value && this.isInternationalInput(value) && this.isAllowedInternationalInput) {
+            const code = PhoneNumber.call(null, this.phoneObject.number.international || '').getRegionCode();
 
-            dropdown.selectCountry(code);
+            this.selectCountry(code);
         }
 
         // Reset the cursor to current position if it's not the last character.
-        if (cursorPosition.value < oldValue.length) {
-            $root.$nextTick(() => {
+        if (this.cursorPosition < oldValue.length) {
+            this.$nextTick(() => {
                 // setCaretPosition(this.$refs.input, cursorPosition);
             });
         }
     }
-    watch(() => phone.value, watchPhone, { immediate: false });
 
-    function watchValue(value = '') {
-        phone.value = value;
+    @Watch('value', { immediate: false })
+    watchValue(value = '') {
+        this.phone = value;
     }
-    watch(() => props.value, watchValue);
 
-    function watchPhoneValidity(value = false) {
+    @Watch('phoneObject.valid', { immediate: false })
+    watchPhoneValidity(value = false) {
         if (value) {
-            phone.value = phoneText.value;
+            this.phone = this.phoneText;
         }
 
-        $root.$nextTick(() => {
-            ctx.emit('validate', phoneObject.value);
+        this.$nextTick(() => {
+            this.$emit('validate', this.phoneObject);
         });
     }
-    watch(() => phoneObject.value.valid, watchPhoneValidity);
 
     /**
      * Methods
      */
-    function testCharacters(value = phone.value) {
+    testCharacters(value = this.phone) {
         const re = /^[()\-+0-9\s]*$/;
 
         return re.test(value);
     }
-    function testCustomValidate(value = phone.value): boolean {
-        return props.customRegExp instanceof RegExp
-            ? props.customRegExp.test(value)
+
+    testCustomValidate(value = this.phone): boolean {
+        return this.customRegExp instanceof RegExp
+            ? this.customRegExp.test(value)
             : false;
     }
-    function isInternationalInput(phoneInput = phone.value) {
+
+    isInternationalInput(phoneInput = this.phone) {
         if (typeof phoneInput === 'string') {
             // return /^(?!00|\+)[()\-0-9\s]*$/gi.test()
             return phoneInput[0] === '+' || (phoneInput.length > 2 && phoneInput.startsWith('00'));
@@ -130,7 +134,8 @@ export default function (props: IProps, ctx: SetupContext) {
 
         throw new TypeError(`DmcTelInput: phoneInput in isInternationalInput has to be as string. Got ${typeof phoneInput}`);
     }
-    function setCaretPosition(ctrl, pos) {
+
+    setCaretPosition(ctrl, pos) {
         // Modern browsers
         if (ctrl.setSelectionRange) {
             ctrl.focus();
@@ -145,21 +150,4 @@ export default function (props: IProps, ctx: SetupContext) {
             range.select();
         }
     }
-
-    return {
-        ...dropdown,
-        phone,
-        cursorPosition,
-
-        parsedPlaceholder,
-        parsedMode,
-        phoneObject,
-        phoneText,
-        isAllowedInternationalInput,
-
-        isInternationalInput,
-        testCharacters,
-        testCustomValidate,
-        setCaretPosition,
-    };
 }
