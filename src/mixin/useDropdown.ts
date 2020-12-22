@@ -1,34 +1,28 @@
 import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import isPlainObject from 'lodash/isPlainObject';
-import { Component, Mixins } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 
 import { ICountry, DropdowPosition } from '@/components/models';
 import Countries from '@/mixin/useCountries';
 
 @Component
-export default class Dropdown extends Mixins(Countries) {
+export default class Dropdown extends Countries {
     dropdownSearch = ''
     dropdownOpenDirection = 'is-bottom-right' as DropdowPosition
     activeCountry = {
         iso2: this.defaultCountry, // selected country object
     } as ICountry;
 
-    get fileredCountriesModel() {
+    public get fileredCountriesModel() {
         return this.sortedCountries.filter(option => this.matchInputCountry(option.name) || this.matchInputCountry(option.dialCode));
     }
 
-    mounted() {
-        if (this.defaultCountry && this.fetchCountry) {
-            throw new Error(`[DmcTelInput]: Do not use 'fetch-country' and 'default-country' options in the same time`);
-        }
-    }
-
-    matchInputCountry(c = '') {
+    private matchInputCountry(c = '') {
         return String.prototype.includes.call(c.toLowerCase(), this.dropdownSearch.toLowerCase());
     }
 
-    selectCountry(country: ICountry | string) {
+    public selectCountry(country: ICountry | string) {
         if (isNil(country) || country === '') {
             return this.activeCountry;
         }
@@ -43,7 +37,7 @@ export default class Dropdown extends Mixins(Countries) {
         return this.activeCountry;
     }
 
-    setDropdownPosition(el: HTMLElement, minOffset = 200) {
+    public setDropdownPosition(el: HTMLElement, minOffset = 200) {
         const spaceBelow = window.innerHeight - el.getBoundingClientRect().bottom;
         const hasEnoughSpaceBelow = spaceBelow > minOffset;
 
@@ -57,7 +51,7 @@ export default class Dropdown extends Mixins(Countries) {
         return this.dropdownOpenDirection;
     }
 
-    getBoolean(prop, key) {
+    public getBoolean(prop, key) {
         return typeof prop === 'boolean'
             ? prop
             : get(prop, key, false);

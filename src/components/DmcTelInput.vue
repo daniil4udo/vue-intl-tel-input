@@ -168,12 +168,16 @@
 
             return this.isValid
                 ? { class: 'is-success', message: '' }
-                : { class: 'is-danger', message: `Invalid phone number for ${this.activeCountry.enname}` };
+                : { class: 'is-danger', message: `Invalid phone number for ${this.activeCountry.name}` };
         }
 
         async mounted() {
             // Fetch only if explicitly said it &
             // if we have no value passign from the parent
+            if (this.defaultCountry && this.fetchCountry) {
+                throw new Error(`[DmcTelInput]: Do not use 'fetch-country' and 'default-country' options in the same time`);
+            }
+
             const country = await this.initCountry();
 
             this.selectCountry(country);

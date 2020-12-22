@@ -34,15 +34,17 @@ export interface IInputProps {
     dynamicPlaceholder?: boolean;
 }
 
-export interface ICountry {
+export interface IEmojiCountry {
+    emoji: string;
+    unicode: string;
+}
+export interface ICountry extends IEmojiCountry {
     name: string;
-    enname: string;
+    names: [ string, string ];
     iso2: string;
     dialCode: string;
     priority: number;
     areaCodes: string[] | null;
-    emoji: string;
-    unicode: string;
     preferred?: boolean;
     lastPreffered?: boolean;
 }

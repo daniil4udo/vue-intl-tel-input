@@ -11,9 +11,6 @@ import { ICountry } from '../components/models';
 export default class Countries extends Mixins(Props) {
     isFetchingCode = false;
 
-    /**
-     * Computed
-     */
     private get _preferred(): ICountry[] {
         const lastI = (i: number) => (this.preferredCountries.length - 1) === i;
 
@@ -52,18 +49,18 @@ export default class Countries extends Mixins(Props) {
         // return Object.values(countries);
     }
 
-    get sortedCountries(): ICountry[] {
+    public get sortedCountries(): ICountry[] {
         return uniqBy([].concat(this._preferred, Object.values(this._filtered)), 'iso2');
     }
 
-    isCountryAvailable(iso2 = '') {
+    private isCountryAvailable(iso2 = '') {
         if (has(this._filtered, iso2)) {
             return true;
         }
         throw new Error(`DmcTelInput: The country ${iso2} is not available`);
     }
 
-    getCountryByISO(iso2 = ''): ICountry {
+    public getCountryByISO(iso2 = ''): ICountry {
         iso2 = iso2.toUpperCase();
 
         if (this.isCountryAvailable(iso2)) {
@@ -74,7 +71,7 @@ export default class Countries extends Mixins(Props) {
     /**
      * Get the list of countries from the list of iso2 code
      */
-    getCountries(iso2List: string[] = []) {
+    public getCountries(iso2List: string[] = []) {
         return iso2List
             .map(this.getCountryByISO)
             .filter(Boolean);
@@ -83,7 +80,7 @@ export default class Countries extends Mixins(Props) {
     /**
      * Fetch country code via https://ip2c.org/s - Network needed - (Do not use it with default-country-code options)
      */
-    async fetchCountryCode() {
+    public async fetchCountryCode() {
         try {
             this.isFetchingCode = true;
 

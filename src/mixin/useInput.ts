@@ -1,21 +1,21 @@
 import PhoneNumber from 'awesome-phonenumber';
-import { Component, Watch, VModel, Mixins } from 'vue-property-decorator';
+import { Component, Watch, VModel } from 'vue-property-decorator';
 
 import { IPhoneObject, ParseMode } from '@/components/models';
 import Dropdown from '@/mixin/useDropdown';
 // import useCountries from '@/mixin/useCountries';
 
 @Component
-export default class Input extends Mixins(Dropdown) {
+export default class Input extends Dropdown {
     cursorPosition = 0 as number;
 
     @VModel({ type: String, default: () => '' }) phone!: string
 
-    get isAllowedInternationalInput() {
+    public get isAllowedInternationalInput() {
         return !this.disabledDropdown;
     }
 
-    get parsedPlaceholder() {
+    public get parsedPlaceholder() {
         if (this.dynamicPlaceholder && this.activeCountry.iso2) {
             // As for me doesnt make sense to confuse user and show hint with country code
             // const mode = this.mode || 'international';
@@ -26,7 +26,7 @@ export default class Input extends Mixins(Dropdown) {
         return this.inputPlaceholder;
     }
 
-    get phoneObject(): IPhoneObject {
+    public get phoneObject(): IPhoneObject {
         return {
             ...new PhoneNumber(this.phone, this.activeCountry.iso2).toJSON(),
             isIntlInput: this.isInternationalInput(this.phone),
@@ -34,7 +34,7 @@ export default class Input extends Mixins(Dropdown) {
         };
     }
 
-    get parsedMode(): ParseMode {
+    public get parsedMode(): ParseMode {
         if (this.customRegExp) {
             return 'input';
         }
@@ -54,7 +54,7 @@ export default class Input extends Mixins(Dropdown) {
         return 'international';
     }
 
-    get phoneText() {
+    public get phoneText() {
         let key: ParseMode = 'input';
 
         if (this.phoneObject.valid) {
@@ -66,9 +66,6 @@ export default class Input extends Mixins(Dropdown) {
 
     @Watch('phone', { immediate: false })
     onPhoneChanged(value = '', oldValue = '') {
-        // this.phone = value;
-        // ctx.emit('input', value);
-
         // const isValidCharactersOnly = this.validCharactersOnly && !testCharacters();
         // const isCustomValidate = this.customRegExp && !testCustomValidate();
 
@@ -81,6 +78,8 @@ export default class Input extends Mixins(Dropdown) {
             const code = PhoneNumber.call(null, this.phoneObject.number.international || '').getRegionCode();
 
             this.selectCountry(code);
+
+            this.phone = this.phoneObject.number.national;
         }
 
         // Reset the cursor to current position if it's not the last character.
@@ -102,19 +101,19 @@ export default class Input extends Mixins(Dropdown) {
         });
     }
 
-    testCharacters(value = this.phone) {
+    public testCharacters(value = this.phone) {
         const re = /^[()\-+0-9\s]*$/;
 
         return re.test(value);
     }
 
-    testCustomValidate(value = this.phone): boolean {
+    public testCustomValidate(value = this.phone): boolean {
         return this.customRegExp instanceof RegExp
             ? this.customRegExp.test(value)
             : false;
     }
 
-    isInternationalInput(phoneInput = this.phone) {
+    public isInternationalInput(phoneInput = this.phone) {
         if (typeof phoneInput === 'string') {
             // return /^(?!00|\+)[()\-0-9\s]*$/gi.test()
             return phoneInput[0] === '+' || (phoneInput.length > 2 && phoneInput.startsWith('00'));
@@ -123,7 +122,7 @@ export default class Input extends Mixins(Dropdown) {
         throw new TypeError(`DmcTelInput: phoneInput in isInternationalInput has to be as string. Got ${typeof phoneInput}`);
     }
 
-    setCaretPosition(ctrl, pos) {
+    public setCaretPosition(ctrl, pos) {
         // Modern browsers
         if (ctrl.setSelectionRange) {
             ctrl.focus();

@@ -21,15 +21,15 @@ for (const c of _countries) {
      * We may want to encode to unicode
      * name[2] is a non latinic c name
      */
-    const name = String(c[0]).split(/([\\(||//)])/g).filter(el => el !== '');
-    // if (name.includes('(') && name.includes(')')) {
-    //     name[2] = escapeUnicode(name[2]);
+    const names = String(c[0]).split(/([\\(||//)])/g).filter(el => el !== '');
+    // if (names.includes('(') && names.includes(')')) {
+    //     names[2] = escapeUnicode(names[2]);
     // }
 
     const iso2 = String(c[1]).toUpperCase();
-    const countryDict = {
-        name: name.join(''), // c[0], // Country name,
-        enname: name[0], // c[0], // Country name,
+    const countryDict: ICountry = {
+        name: [ ...names ].join(''), // c[0], // Country name,
+        names: [ ...names ].filter(s => (s && s !== '(' && s !== ')')), // c[0], // Country name,
         iso2, // iso2 code,
         dialCode: String(c[2]), // International dial code,
         priority: Number(c[3]) || 0, // Order (if >1 country with same dial code),
