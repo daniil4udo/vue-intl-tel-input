@@ -17,22 +17,22 @@ class DropdownProps extends Vue {
     }) dropdownPlaceholder: string;
 
     @Prop({
-        type: [ Object ],
+        type: [ Boolean, Object ],
         default: () => false,
     }) hideCountryCode: boolean | IDropdowButton;
 
     @Prop({
-        type: [ Object ],
+        type: [ Boolean, Object ],
         default: () => false,
     }) hideCountryName: boolean | IDropdowButton;
 
     @Prop({
-        type: [ Object ],
+        type: [ Boolean, Object ],
         default: () => false,
     }) hideFlags: boolean | IDropdowButton;
 
     @Prop({
-        type: [ Object ],
+        type: [ Boolean, Object ],
         default: () => isMobile.any(),
     }) emojiFlags: boolean | IDropdowButton;
 
@@ -97,10 +97,10 @@ class InputProps extends Vue {
 
 @Component
 export default class Props extends Mixins(DropdownProps, InputProps) {
-    @Prop({
-        type: String,
-        default: () => '',
-    }) value: string;
+    // @Prop({
+    //     type: String,
+    //     default: () => '',
+    // }) value: string;
 
     @Prop({
         type: String,

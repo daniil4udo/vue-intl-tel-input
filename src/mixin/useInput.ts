@@ -9,7 +9,7 @@ import Dropdown from '@/mixin/useDropdown';
 export default class Input extends Mixins(Dropdown) {
     cursorPosition = 0 as number;
 
-    @VModel({ type: Object, default: () => '' }) phone!: string
+    @VModel({ type: String, default: () => '' }) phone!: string
 
     get isAllowedInternationalInput() {
         return !this.disabledDropdown;

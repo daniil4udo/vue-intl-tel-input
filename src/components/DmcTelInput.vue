@@ -1,6 +1,5 @@
 <template>
     <div>
-        isRegionlessNanp – {{ isRegionlessNanp }}
         <B-Field
             ref="refPhoneField"
             class="iti"
