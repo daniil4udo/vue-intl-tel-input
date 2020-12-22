@@ -139,6 +139,7 @@
 
 <script lang="ts">
     import PhoneNumber from 'awesome-phonenumber';
+    import get from 'lodash/get';
     import { Component, Mixins, Ref } from 'vue-property-decorator';
 
     import Input from '@/mixin/useInput';
@@ -172,15 +173,20 @@
         }
 
         async mounted() {
+            // TODO: async import of sprite if emoji is disabled
             // Fetch only if explicitly said it &
             // if we have no value passign from the parent
             if (this.defaultCountry && this.fetchCountry) {
                 throw new Error(`[DmcTelInput]: Do not use 'fetch-country' and 'default-country' options in the same time`);
             }
 
+            if (!this.hideFlags || !this.emojiFlags) {
+                await import(/* webpackChunkName: "sprites" */ '@/assets/scss/sprite.scss');
+            }
+
             const country = await this.initCountry();
 
-            this.selectCountry(country);
+            this.setActiveCountry(country);
 
             // TODO: Sanitize if number looks like Intl but we are no allowing intl
         }
@@ -195,7 +201,7 @@
                     // so we'l replace it with national format instead
                     this.phone = activeCountry.getNumber('national');
 
-                    // return this.selectCountry(activeCountry.getRegionCode());
+                    // return this.setActiveCountry(activeCountry.getRegionCode());
                     return activeCountry.getRegionCode();
                 }
             }
@@ -213,6 +219,12 @@
             return this.preferredCountries[0] || this.sortedCountries[0].iso2;
         }
 
+        private getBoolean(prop, key) {
+            return typeof prop === 'boolean'
+                ? prop
+                : get(prop, key, false);
+        }
+
         async onSelect(c: ICountry) {
             // Move countries, that has been selected to the top of the list
             // Like a recently chosen
@@ -220,7 +232,7 @@
                 this.preferredCountries.push(c.iso2);
             }
 
-            const country = this.selectCountry(c);
+            const country = this.setActiveCountry(c);
 
             await this.$nextTick(() => {
                 // emit country change event for the actual country select

@@ -520,6 +520,17 @@ $item-position-map: (
     zw: (10px, -5632px)
 );
 
+$flag-height: 15px !default;
+$flag-width: 20px !default;
+$flag-padding: 8px !default;
+// this border width is used for the popup and divider, but it is also
+// assumed to be the border width of the input, which we do not control
+
+// image related variables
+$flags-image-path: '~@/assets/img/' !default;
+$flags-image-name: 'flags' !default;
+$flags-image-extension: 'png' !default;
+
 @function retina-size($value) {
     @return floor($value / 2);
 }
@@ -530,6 +541,22 @@ $item-position-map: (
 
 .iti__flag {
     width: map-get($item-width-maps, $standard-country);
+    height: $flag-height;
+    // empty state
+    background-color: #dbdbdb;
+    background-image: url('#{$flags-image-path}#{$flags-image-name}.#{$flags-image-extension}');
+    background-repeat: no-repeat;
+    background-position: $flag-width 0;
+    box-shadow: 0 0 1px 0 #888888;
+
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        background-image: url('#{$flags-image-path}#{$flags-image-name}@2x.#{$flags-image-extension}');
+    }
+
+    // hack for Nepal which is the only flag that is not square/rectangle, so it has transparency, so you can see the default grey behind it
+    &.np {
+        background-color: transparent;
+    }
 
     @each $key, $width in $item-width-maps {
         @if $width != map-get($item-width-maps, $standard-country) {

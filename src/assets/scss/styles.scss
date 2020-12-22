@@ -1,20 +1,8 @@
 // Bulma
 $dropdown-content-padding-top: 0;
-// Flags
-
-$flag-height: 15px !default;
-$flag-width: 20px !default;
-$flag-padding: 8px !default;
-// this border width is used for the popup and divider, but it is also
-// assumed to be the border width of the input, which we do not control
-
-// image related variables
-$flags-image-path: '~@/assets/img/' !default;
-$flags-image-name: 'flags' !default;
-$flags-image-extension: 'png' !default;
 
 @import '~buefy/src/scss/buefy-build';
-@import 'sprite';
+// @import 'sprite';
 
 .iti {
     &__button {
@@ -45,26 +33,6 @@ $flags-image-extension: 'png' !default;
             transform: rotate(180deg);
         }
     }
-
-    &__flag {
-        height: $flag-height;
-        // empty state
-        background-color: #dbdbdb;
-        background-image: url('#{$flags-image-path}#{$flags-image-name}.#{$flags-image-extension}');
-        background-repeat: no-repeat;
-        background-position: $flag-width 0;
-        box-shadow: 0 0 1px 0 #888888;
-
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-            background-image: url('#{$flags-image-path}#{$flags-image-name}@2x.#{$flags-image-extension}');
-        }
-
-        // hack for Nepal which is the only flag that is not square/rectangle, so it has transparency, so you can see the default grey behind it
-        &.np {
-            background-color: transparent;
-        }
-    }
-
 
     &__eflag {
         margin-right: 5px;
