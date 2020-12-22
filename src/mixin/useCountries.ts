@@ -15,12 +15,12 @@ export default class Countries extends Mixins(Props) {
      * Computed
      */
     private get _preferred(): ICountry[] {
-        const lastI = this.preferredCountries.length - 1;
+        const lastI = (i: number) => (this.preferredCountries.length - 1) === i;
 
         return this.getCountries(this.preferredCountries).map((c, i) => ({
             ...c,
             preferred: true,
-            lastPreffered: lastI === i,
+            lastPreffered: lastI(i),
         }));
     }
 

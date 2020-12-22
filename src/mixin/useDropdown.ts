@@ -48,18 +48,11 @@ export default class Dropdown extends Mixins(Countries) {
             throw new TypeError(`Country argument has to be a string or an object. Got ${typeof country}`);
         }
 
-        const selected = typeof country === 'string'
+        this.activeCountry = typeof country === 'string'
             ? this.getCountryByISO(country)
             : country;
 
-        return Object.assign(
-                this.activeCountry,
-                selected,
-                {
-                    preferred: !!selected.preferred,
-                    lastPreffered: !!selected.lastPreffered,
-                },
-        );
+        return this.activeCountry;
     }
 
     setDropdownPosition(el: HTMLElement, minOffset = 200) {
