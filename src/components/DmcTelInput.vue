@@ -17,7 +17,7 @@
                 scrollable
                 :position="dropdownOpenDirection"
                 :max-height="400"
-                :disabled="disabled || disabledDropdown || isFetchCountryCode"
+                :disabled="disabled || disabledDropdown || isFetchingCode"
                 :tabindex="dropdownTabIndex"
                 @input="onSelect"
                 @active-change="onActiveChange"
@@ -25,7 +25,7 @@
                 <b-button
                     slot="trigger"
                     slot-scope="{ active }"
-                    :loading="isFetchCountryCode"
+                    :loading="isFetchingCode"
                     :class="[
                         'button is-outlined',
                         'iti__button',
@@ -33,7 +33,7 @@
                     ]"
                     type="button"
                 >
-                    <template v-if="!isFetchCountryCode">
+                    <template v-if="!isFetchingCode">
                         <template v-if="!getBoolean(hideFlags, 'button')">
                             <div
                                 v-if="getBoolean(emojiFlags, 'button')"
@@ -213,8 +213,8 @@
         async onSelect(c: ICountry) {
             // Move countries, that has been selected to the top of the list
             // Like a recently chosen
-            if (!this.preferredISOs.includes(c.iso2)) {
-                this.preferredISOs.push(c.iso2);
+            if (!this.preferredCountries.includes(c.iso2)) {
+                this.preferredCountries.push(c.iso2);
             }
 
             const country = this.selectCountry(c);

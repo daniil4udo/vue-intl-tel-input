@@ -1,5 +1,5 @@
 import PhoneNumber from 'awesome-phonenumber';
-import { Component, Watch, Mixins } from 'vue-property-decorator';
+import { Component, Watch, VModel, Mixins } from 'vue-property-decorator';
 
 import { IPhoneObject, ParseMode } from '@/components/models';
 import Dropdown from '@/mixin/useDropdown';
@@ -7,19 +7,15 @@ import Dropdown from '@/mixin/useDropdown';
 
 @Component
 export default class Input extends Mixins(Dropdown) {
-    // TODO: Potentially change to v-model
-    // @VModel({ type: Object, default: () => '' }) phone!: string
-    phone = this.value.trim() as string;
     cursorPosition = 0 as number;
 
-    /**
-     * Computed
-     */
+    @VModel({ type: Object, default: () => '' }) phone!: string
+
     get isAllowedInternationalInput() {
         return !this.disabledDropdown;
     }
 
-    get parsedPlaceholder(): string {
+    get parsedPlaceholder() {
         if (this.dynamicPlaceholder && this.activeCountry.iso2) {
             // As for me doesnt make sense to confuse user and show hint with country code
             // const mode = this.mode || 'international';
@@ -58,7 +54,7 @@ export default class Input extends Mixins(Dropdown) {
         return 'international';
     }
 
-    get phoneText(): string {
+    get phoneText() {
         let key: ParseMode = 'input';
 
         if (this.phoneObject.valid) {
@@ -93,11 +89,6 @@ export default class Input extends Mixins(Dropdown) {
                 // setCaretPosition(this.$refs.input, cursorPosition);
             });
         }
-    }
-
-    @Watch('value', { immediate: false })
-    watchValue(value = '') {
-        this.phone = value;
     }
 
     @Watch('phoneObject.valid', { immediate: false })

@@ -9,16 +9,15 @@ import { ICountry } from '../components/models';
 
 @Component
 export default class Countries extends Mixins(Props) {
-    isFetchCountryCode = false;
-    preferredISOs = this.preferredCountries;
+    isFetchingCode = false;
 
     /**
      * Computed
      */
     private get _preferred(): ICountry[] {
-        const lastI = this.preferredISOs.length - 1;
+        const lastI = this.preferredCountries.length - 1;
 
-        return this.getCountries(this.preferredISOs).map((c, i) => ({
+        return this.getCountries(this.preferredCountries).map((c, i) => ({
             ...c,
             preferred: true,
             lastPreffered: lastI === i,
@@ -86,7 +85,7 @@ export default class Countries extends Mixins(Props) {
      */
     async fetchCountryCode() {
         try {
-            this.isFetchCountryCode = true;
+            this.isFetchingCode = true;
 
             const response = await fetch('https://ip2c.org/s');
             const responseText = await response.text();
@@ -99,7 +98,7 @@ export default class Countries extends Mixins(Props) {
             throw new Error('DmcTelInput: Error while fetching country code');
         }
         finally {
-            this.isFetchCountryCode = false;
+            this.isFetchingCode = false;
         }
     }
 }

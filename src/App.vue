@@ -19,7 +19,7 @@
         },
     })
     export default class Input extends Vue {
-        phone = '' as string
+        phone = '3806' as string
     }
 </script>
 
