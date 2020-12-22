@@ -102,9 +102,6 @@ export default class Input extends Mixins(Dropdown) {
         });
     }
 
-    /**
-     * Methods
-     */
     testCharacters(value = this.phone) {
         const re = /^[()\-+0-9\s]*$/;
 

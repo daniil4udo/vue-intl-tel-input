@@ -8,21 +8,12 @@ import Countries from '@/mixin/useCountries';
 
 @Component
 export default class Dropdown extends Mixins(Countries) {
-    /**
-     * Data
-     */
-    // const countries = useCountries(props);
-
-    // const dropdown: Partial<ICountry> = reactive({});
     dropdownSearch = ''
     dropdownOpenDirection = 'is-bottom-right' as DropdowPosition
     activeCountry = {
         iso2: this.defaultCountry, // selected country object
     } as ICountry;
 
-    /**
-     * Computed
-     */
     get fileredCountriesModel() {
         return this.sortedCountries.filter(option => this.matchInputCountry(option.name) || this.matchInputCountry(option.dialCode));
     }
@@ -33,9 +24,6 @@ export default class Dropdown extends Mixins(Countries) {
         }
     }
 
-    /**
-     * Methods
-     */
     matchInputCountry(c = '') {
         return String.prototype.includes.call(c.toLowerCase(), this.dropdownSearch.toLowerCase());
     }
