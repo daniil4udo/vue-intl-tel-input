@@ -53,13 +53,6 @@ export default class Countries extends Mixins(Props) {
         return uniqBy([].concat(this._preferred, Object.values(this._filtered)), 'iso2');
     }
 
-    private isCountryAvailable(iso2 = '') {
-        if (has(this._filtered, iso2) && this.isCorrectISO(iso2)) {
-            return true;
-        }
-        throw new Error(`[DmcTelInput]: The country ${iso2} is not available`);
-    }
-
     private isCorrectISO(iso2 = '') {
         // country code regex
         const ISO_REGEX = /^[a-z]{2}$/i;
@@ -67,6 +60,10 @@ export default class Countries extends Mixins(Props) {
         if (!ISO_REGEX.test(iso2)) {
             const type = typeof iso2;
             throw new TypeError(`[DmcTelInput]: iso2 argument must be an ISO 3166-1 alpha-2 String. Got '${type === 'string' ? iso2 : type}'`);
+        }
+
+        if (!has(this._filtered, iso2)) {
+            throw new Error(`[DmcTelInput]: The country ${iso2} is not available`);
         }
 
         return true;
@@ -78,6 +75,7 @@ export default class Countries extends Mixins(Props) {
 
         if (this.isCorrectISO(iso2)) {
             const chars = [ ...iso2.toUpperCase() ].map(c => c.charCodeAt(0) + OFFSET);
+
             return String.fromCodePoint(...chars);
         }
 
@@ -85,10 +83,8 @@ export default class Countries extends Mixins(Props) {
     }
 
     public getCountry(iso2 = ''): ICountry {
-        iso2 = iso2.toUpperCase();
-
-        if (this.isCountryAvailable(iso2)) {
-            return this._filtered[iso2];
+        if (this.isCorrectISO(iso2)) {
+            return this._filtered[iso2.toUpperCase()];
         }
 
         return null;
