@@ -16,7 +16,7 @@
                 scrollable
                 :position="dropdownOpenDirection"
                 :max-height="400"
-                :disabled="disabled || disabledDropdown || isFetchingCode"
+                :disabled="disabled || disabledDropdown || (!isMounted || isFetchingCode)"
                 :tabindex="dropdownTabIndex"
                 @input="onSelect"
                 @active-change="onActiveChange"
@@ -24,7 +24,7 @@
                 <b-button
                     slot="trigger"
                     slot-scope="{ active }"
-                    :loading="isFetchingCode"
+                    :loading="!isMounted || isFetchingCode"
                     :class="[
                         'button is-outlined',
                         'iti__button',
@@ -32,7 +32,7 @@
                     ]"
                     type="button"
                 >
-                    <template v-if="!isFetchingCode">
+                    <template v-if="isMounted && !isFetchingCode">
                         <template v-if="!getBoolean(hideFlags, 'button')">
                             <div
                                 v-if="getBoolean(emojiFlags, 'button')"
@@ -138,7 +138,6 @@
 </template>
 
 <script lang="ts">
-    import PhoneNumber from 'awesome-phonenumber';
     import get from 'lodash/get';
     import { Component, Mixins, Ref } from 'vue-property-decorator';
 
@@ -150,6 +149,8 @@
         name: 'DmcPhoneInput',
     })
     export default class DmcPhoneInput extends Mixins(Input) {
+        isMounted = false;
+
         @Ref() readonly refPhoneField;
         @Ref() readonly refPhoneDropdown;
         @Ref() readonly refPhoneDropdownInput;
@@ -180,30 +181,36 @@
                 throw new Error(`[DmcTelInput]: Do not use 'fetch-country' and 'default-country' options in the same time`);
             }
 
+            // TODO: check support for the emoji as well
             if (!this.hideFlags || !this.emojiFlags) {
                 await import(/* webpackChunkName: "sprites" */ '@/assets/scss/sprite.scss');
             }
 
             const country = await this.initCountry();
-
             this.setActiveCountry(country);
 
             // TODO: Sanitize if number looks like Intl but we are no allowing intl
+
+            // Have this flag to avoid FOUC
+            this.isMounted = true;
         }
 
         async initCountry() {
             // 1. if already have PHONE passed from the parent - parse it
             if (this.phone && this.phoneObject.isIntlInput) {
-                const activeCountry = new PhoneNumber(this.phone);
-
-                if (activeCountry.isValid()) {
-                    // Most possible scenario tha we gonna get intl phone fro mthe parent
-                    // so we'l replace it with national format instead
-                    this.phone = activeCountry.getNumber('national');
-
-                    // return this.setActiveCountry(activeCountry.getRegionCode());
-                    return activeCountry.getRegionCode();
+                // all Phone-related logic has been executed and assign to the this.phoneObject
+                if (this.phoneObject.regionCode) {
+                    return this.phoneObject.regionCode;
                 }
+
+                // if (activeCountry.isValid()) {
+                //     // Most possible scenario tha we gonna get intl phone fro mthe parent
+                //     // so we'l replace it with national format instead
+                //     this.phone = activeCountry.getNumber('national');
+
+                //     // return this.setActiveCountry(activeCountry.getRegionCode());
+                //     return activeCountry.getRegionCode();
+                // }
             }
             // 2. if phone is empty, but have DEFAULT COUNTRY
             if (this.defaultCountry) {
@@ -211,7 +218,7 @@
             }
             // 3. if don't have DEFAULT COUNTRY but fetch country is allowed - FETCH
             if (this.fetchCountry) {
-                const ISO2 = await this.fetchCountryCode();
+                const ISO2 = await this.fetchISO();
 
                 return ISO2;
             }

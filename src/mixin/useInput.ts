@@ -1,12 +1,12 @@
 import PhoneNumber from 'awesome-phonenumber';
-import { Component, Watch, VModel } from 'vue-property-decorator';
+import { Component, Mixins, Watch, VModel } from 'vue-property-decorator';
 
 import { IPhoneObject, ParseMode } from '@/components/models';
 import Dropdown from '@/mixin/useDropdown';
 // import useCountries from '@/mixin/useCountries';
 
 @Component
-export default class Input extends Dropdown {
+export default class Input extends Mixins(Dropdown) {
     cursorPosition = 0 as number;
 
     @VModel({ type: String, default: () => '' }) phone!: string
@@ -77,9 +77,16 @@ export default class Input extends Dropdown {
         if (value && this.isInternationalInput(value) && this.isAllowedInternationalInput) {
             const code = PhoneNumber.call(null, this.phoneObject.number.international || '').getRegionCode();
 
-            this.selectCountry(code);
+            if (code) {
+                this.setActiveCountry(code);
+                this.phone = this.phoneObject.number.national;
+            }
+        }
 
-            this.phone = this.phoneObject.number.national;
+        // TODO: sanitize on mount
+        // if Intl input is not allowed just remove first char
+        if (value && this.isInternationalInput(value) && !this.isAllowedInternationalInput) {
+            this.phone = this.phone.substring(1);
         }
 
         // Reset the cursor to current position if it's not the last character.

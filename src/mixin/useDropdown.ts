@@ -1,13 +1,11 @@
-import get from 'lodash/get';
-import isNil from 'lodash/isNil';
 import isPlainObject from 'lodash/isPlainObject';
-import { Component } from 'vue-property-decorator';
+import { Component, Mixins } from 'vue-property-decorator';
 
 import { ICountry, DropdowPosition } from '@/components/models';
 import Countries from '@/mixin/useCountries';
 
 @Component
-export default class Dropdown extends Countries {
+export default class Dropdown extends Mixins(Countries) {
     dropdownSearch = ''
     dropdownOpenDirection = 'is-bottom-right' as DropdowPosition
     activeCountry = {
@@ -22,8 +20,8 @@ export default class Dropdown extends Countries {
         return String.prototype.includes.call(c.toLowerCase(), this.dropdownSearch.toLowerCase());
     }
 
-    public selectCountry(country: ICountry | string) {
-        if (isNil(country) || country === '') {
+    public setActiveCountry(country: ICountry | string) {
+        if (!country) {
             return this.activeCountry;
         }
         if (typeof country !== 'string' && !isPlainObject(country)) {
@@ -31,7 +29,7 @@ export default class Dropdown extends Countries {
         }
 
         this.activeCountry = typeof country === 'string'
-            ? this.getCountryByISO(country)
+            ? this.getCountry(country)
             : country;
 
         return this.activeCountry;
@@ -49,11 +47,5 @@ export default class Dropdown extends Countries {
         }
 
         return this.dropdownOpenDirection;
-    }
-
-    public getBoolean(prop, key) {
-        return typeof prop === 'boolean'
-            ? prop
-            : get(prop, key, false);
     }
 }
