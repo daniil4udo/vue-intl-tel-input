@@ -44,7 +44,7 @@ export interface ICountry extends IEmojiCountry {
     iso2: string;
     dialCode: string;
     priority: number;
-    areaCodes: string[] | null;
+    areaCodes: string | number | string[];
     preferred?: boolean;
     lastPreffered?: boolean;
 }

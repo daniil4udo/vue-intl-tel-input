@@ -33,7 +33,7 @@ class DropdownProps extends Vue {
 
     @Prop({
         type: [ Boolean, Object ],
-        default: () => isMobile.any(),
+        default: () => true || isMobile.any(),
     }) emojiFlags: boolean | IDropdowButton;
 
     @Prop({
