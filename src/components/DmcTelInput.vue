@@ -38,7 +38,7 @@
                                 v-if="getBoolean(emojiFlags, 'button')"
                                 class="iti__eflag"
                             >
-                                <span v-text="activeCountry.emoji" />
+                                <span v-text="activeCountry.emoji.flag" />
                             </div>
                             <div
                                 v-else
@@ -90,7 +90,7 @@
                                     v-if="getBoolean(emojiFlags, 'dropdown')"
                                     class="iti__eflag"
                                 >
-                                    <span v-text="c.emoji" />
+                                    <span v-text="c.emoji.flag" />
                                 </div>
                                 <div
                                     v-else
@@ -103,7 +103,7 @@
                                     class="iti__country-dial"
                                     v-text="`+${c.dialCode}`"
                                 />
-                                <small v-if="!getBoolean(hideCountryName, 'dropdown')" v-html="c.name" />
+                                <small v-if="!getBoolean(hideCountryName, 'dropdown')" v-html="c.name_en" />
                             </div>
                         </div>
                     </B-Dropdown-item>
@@ -121,7 +121,7 @@
                 :tabindex="inputTabIndex"
                 v-bind="$attrs"
                 type="tel"
-                :name="name"
+                :name="`${name}-${Date.now()}`"
                 :disabled="disabled"
                 :placeholder="parsedPlaceholder"
                 expanded
@@ -170,26 +170,31 @@
 
             return this.isValid
                 ? { class: 'is-success', message: '' }
-                : { class: 'is-danger', message: `Invalid phone number for ${this.activeCountry.name}` };
+                : { class: 'is-danger', message: `Invalid phone number for ${this.activeCountry.name_en}` };
         }
 
         async mounted() {
-            // TODO: async import of sprite if emoji is disabled
-            // Fetch only if explicitly said it &
-            // if we have no value passign from the parent
             if (this.defaultCountry && this.fetchCountry) {
                 throw new Error(`[DmcTelInput]: Do not use 'fetch-country' and 'default-country' options in the same time`);
             }
 
-            // TODO: check support for the emoji as well
-            if (!this.hideFlags || !this.emojiFlags) {
-                await import(/* webpackChunkName: "sprites" */ '@/assets/scss/sprite.scss');
+            if (this.hideFlags && this.emojiFlags) {
+                throw new Error(`[DmcTelInput]: Do not use 'hide-flags' and 'emoji-flags' options in the same time`);
             }
 
+            if (!this.hideFlags) {
+                if (this.emojiFlags && !this.isEmojiFlagSupported) {
+                    // TODO: make computed to avoid modifying props
+                    this.emojiFlags = false;
+                }
+                else if (!this.emojiFlags) {
+                    await import(/* webpackChunkName: "flags-sprite" */ '@/assets/scss/sprite.scss');
+                }
+            }
+
+            // Allow set country only on mout (if dropdown disabled)
             const country = await this.initCountry();
             this.setActiveCountry(country);
-
-            // TODO: Sanitize if number looks like Intl but we are no allowing intl
 
             // Have this flag to avoid FOUC
             this.isMounted = true;
@@ -202,15 +207,6 @@
                 if (this.phoneObject.regionCode) {
                     return this.phoneObject.regionCode;
                 }
-
-                // if (activeCountry.isValid()) {
-                //     // Most possible scenario tha we gonna get intl phone fro mthe parent
-                //     // so we'l replace it with national format instead
-                //     this.phone = activeCountry.getNumber('national');
-
-                //     // return this.setActiveCountry(activeCountry.getRegionCode());
-                //     return activeCountry.getRegionCode();
-                // }
             }
             // 2. if phone is empty, but have DEFAULT COUNTRY
             if (this.defaultCountry) {

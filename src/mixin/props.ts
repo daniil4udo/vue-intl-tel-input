@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
-import { isMobile } from 'buefy/src/utils/helpers';
 import { Component, Prop, Mixins, Vue } from 'vue-property-decorator';
 
+import { countries } from '@/assets/all-countries';
 import { IDropdowButton, AllowedPhoneNumberTypes, ParseMode } from '@/components/models';
 
 @Component
@@ -33,7 +33,7 @@ class DropdownProps extends Vue {
 
     @Prop({
         type: [ Boolean, Object ],
-        default: () => true || isMobile.any(),
+        default: () => Object.values(countries).every(c => c.emoji.supported),
     }) emojiFlags: boolean | IDropdowButton;
 
     @Prop({
@@ -97,10 +97,10 @@ class InputProps extends Vue {
 
 @Component
 export default class Props extends Mixins(DropdownProps, InputProps) {
-    // @Prop({
-    //     type: String,
-    //     default: () => '',
-    // }) value: string;
+    /**
+     * Avoid using adding here native attts
+     * already binding those via v-bind="$attrs"
+     */
 
     @Prop({
         type: String,

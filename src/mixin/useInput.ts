@@ -1,4 +1,5 @@
 import PhoneNumber from 'awesome-phonenumber';
+import isNil from 'lodash/isNil';
 import { Component, Mixins, Watch, VModel } from 'vue-property-decorator';
 
 import { IPhoneObject, ParseMode } from '@/components/models';
@@ -64,7 +65,7 @@ export default class Input extends Mixins(Dropdown) {
         return this.phoneObject.number[key] || '';
     }
 
-    @Watch('phone', { immediate: false })
+    @Watch('phone', { immediate: true })
     onPhoneChanged(value = '', oldValue = '') {
         // const isValidCharactersOnly = this.validCharactersOnly && !testCharacters();
         // const isCustomValidate = this.customRegExp && !testCustomValidate();
@@ -74,8 +75,9 @@ export default class Input extends Mixins(Dropdown) {
         //         this.phone = oldValue;
         //     });
         // }
-        if (value && this.isInternationalInput(value) && this.isAllowedInternationalInput) {
-            const code = PhoneNumber.call(null, this.phoneObject.number.international || '').getRegionCode();
+
+        if (!isNil(value) && this.isInternationalInput(value) && this.isAllowedInternationalInput) {
+            const code = PhoneNumber.call(null, `${this.phoneObject.number?.international}`).getRegionCode();
 
             if (code) {
                 this.setActiveCountry(code);
@@ -92,7 +94,8 @@ export default class Input extends Mixins(Dropdown) {
         // Reset the cursor to current position if it's not the last character.
         if (this.cursorPosition < oldValue.length) {
             this.$nextTick(() => {
-                // setCaretPosition(this.$refs.input, cursorPosition);
+                // TODO: check for correct refs
+                this.setCaretPosition(this.$refs.refPhoneInput, this.cursorPosition);
             });
         }
     }

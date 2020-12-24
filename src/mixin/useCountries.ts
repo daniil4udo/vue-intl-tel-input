@@ -3,7 +3,8 @@ import uniqBy from 'lodash/uniqBy';
 import { Component, Mixins } from 'vue-property-decorator';
 
 import { countries } from '@/assets/all-countries';
-import Props from '@/components/props';
+import Props from '@/mixin/props';
+import { isCorrectISO } from '@/utils/isCorrectISO';
 
 import { ICountry } from '../components/models';
 
@@ -12,12 +13,12 @@ export default class Countries extends Mixins(Props) {
     isFetchingCode = false;
 
     private get _preferred(): ICountry[] {
-        const lastI = (i: number) => (this.preferredCountries.length - 1) === i;
+        const isLastIndex = (i: number) => (this.preferredCountries.length - 1) === i;
 
         return this.getCountries(this.preferredCountries).map((c, i) => ({
             ...c,
             preferred: true,
-            lastPreffered: lastI(i),
+            lastPreffered: isLastIndex(i),
         }));
     }
 
@@ -53,37 +54,12 @@ export default class Countries extends Mixins(Props) {
         return uniqBy([].concat(this._preferred, Object.values(this._filtered)), 'iso2');
     }
 
-    private isCorrectISO(iso2 = '') {
-        // country code regex
-        const ISO_REGEX = /^[a-z]{2}$/i;
-
-        if (!ISO_REGEX.test(iso2)) {
-            const type = typeof iso2;
-            throw new TypeError(`[DmcTelInput]: iso2 argument must be an ISO 3166-1 alpha-2 String. Got '${type === 'string' ? iso2 : type}'`);
-        }
-
-        if (!has(this._filtered, iso2)) {
-            throw new Error(`[DmcTelInput]: The country ${iso2} is not available`);
-        }
-
-        return true;
-    }
-
-    public getEmoji(iso2 = '') {
-        // offset between uppercase ascii and regional indicator symbols
-        const OFFSET = 127397;
-
-        if (this.isCorrectISO(iso2)) {
-            const chars = [ ...iso2.toUpperCase() ].map(c => c.charCodeAt(0) + OFFSET);
-
-            return String.fromCodePoint(...chars);
-        }
-
-        return null;
+    public get isEmojiFlagSupported() {
+        return this.sortedCountries.every(c => c.emoji.supported);
     }
 
     public getCountry(iso2 = ''): ICountry {
-        if (this.isCorrectISO(iso2)) {
+        if (isCorrectISO(iso2) && has(this._filtered, iso2)) {
             return this._filtered[iso2.toUpperCase()];
         }
 

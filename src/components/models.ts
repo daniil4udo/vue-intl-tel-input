@@ -35,18 +35,20 @@ export interface IInputProps {
 }
 
 export interface IEmojiCountry {
-    emoji: string;
-    unicode: string;
+    flag?: string;
+    supported?: boolean;
 }
-export interface ICountry extends IEmojiCountry {
+export interface ICountry {
     name: string;
-    names: [ string, string ];
+    name_en: string;
+    name_local: string;
     iso2: string;
     dialCode: string;
     priority: number;
     areaCodes: string | number | string[];
     preferred?: boolean;
     lastPreffered?: boolean;
+    emoji: IEmojiCountry;
 }
 
 export interface IPhoneObject {

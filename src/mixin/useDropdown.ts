@@ -13,7 +13,7 @@ export default class Dropdown extends Mixins(Countries) {
     } as ICountry;
 
     public get fileredCountriesModel() {
-        return this.sortedCountries.filter(option => this.matchInputCountry(option.name) || this.matchInputCountry(option.dialCode));
+        return this.sortedCountries.filter(option => [ option.name, option.dialCode, option.iso2, option.emoji.flag ].some(this.matchInputCountry));
     }
 
     private matchInputCountry(c = '') {

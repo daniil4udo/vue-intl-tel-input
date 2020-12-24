@@ -7,9 +7,10 @@
 // - It is supported by libphonenumber (it must be listed on this page): https://github.com/googlei18n/libphonenumber/blob/master/resources/ShortNumberMetadata.xml
 
 import { ICountry } from '@/components/models';
+import { isoToEmoji } from '@/utils/emoji';
+import isEmojiUnicodeSupported from '@/utils/emoji/support/';
 
 import _countries from './countries.json';
-import _emojiCountries from './emojiCountries.json';
 
 // const countriesArr: ICountry[] = [];
 const countries: Record<string, ICountry> = {};
@@ -27,23 +28,26 @@ for (const c of _countries) {
     // }
 
     const iso2 = String(c[1]).toUpperCase();
+
     const countryDict: ICountry = {
         name: [ ...names ].join(''), // c[0], // Country name,
-        names: [ ...names ].filter(s => (s && s !== '(' && s !== ')')), // c[0], // Country name,
+        name_en: names[0],
+        name_local: names[2] || '',
         iso2, // iso2 code,
         dialCode: String(c[2]), // International dial code,
         priority: Number(c[3]) || 0, // Order (if >1 country with same dial code),
         areaCodes: c[4] || null, // Area codes
-        ..._emojiCountries[iso2],
+        emoji: {
+            flag: isoToEmoji(iso2),
+            supported: isEmojiUnicodeSupported(iso2),
+        },
     };
 
     countriesIso.add(iso2);
-    // countriesArr.push(countryDict);
     Object.assign(countries, { [iso2]: countryDict });
 }
 
 export {
     countriesIso,
-    // countriesArr,
     countries,
 };
