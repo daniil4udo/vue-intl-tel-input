@@ -20,6 +20,16 @@ export default class Dropdown extends Mixins(Countries) {
         return String.prototype.includes.call(c.toLowerCase(), this.dropdownSearch.toLowerCase());
     }
 
+    public updatePreferredCountries(iso2 = '') {
+        // Move countries, that has been selected to the top of the list
+        // Like a recently chosen
+        if (!this.preferredCountries.includes(iso2)) {
+            this.preferredCountries.push(iso2);
+        }
+
+        return this.preferredCountries;
+    }
+
     public setActiveCountry(country: ICountry | string) {
         if (!country) {
             return this.activeCountry;
@@ -31,6 +41,8 @@ export default class Dropdown extends Mixins(Countries) {
         this.activeCountry = typeof country === 'string'
             ? this.getCountry(country)
             : country;
+
+        this.updatePreferredCountries(this.activeCountry.iso2);
 
         return this.activeCountry;
     }

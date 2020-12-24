@@ -138,10 +138,10 @@
 </template>
 
 <script lang="ts">
-    import get from 'lodash/get';
     import { Component, Mixins, Ref } from 'vue-property-decorator';
 
     import Input from '@/mixin/useInput';
+    import { getBoolean } from '@/utils/getBoolean';
 
     import { ICountry } from './models';
 
@@ -222,30 +222,18 @@
             return this.preferredCountries[0] || this.sortedCountries[0].iso2;
         }
 
-        private getBoolean(prop, key) {
-            return typeof prop === 'boolean'
-                ? prop
-                : get(prop, key, false);
-        }
-
         async onSelect(c: ICountry) {
-            // Move countries, that has been selected to the top of the list
-            // Like a recently chosen
-            if (!this.preferredCountries.includes(c.iso2)) {
-                this.preferredCountries.push(c.iso2);
-            }
-
-            const country = this.setActiveCountry(c);
+            this.setActiveCountry(c);
 
             await this.$nextTick(() => {
                 // emit country change event for the actual country select
-                this.$emit('country-changed', country);
+                this.$emit('country-changed', c);
                 this.$emit('input', this.phoneText, this.phoneObject);
 
                 this.focusInput();
             });
 
-            return country;
+            return c;
         }
 
         onKeyPress($event: KeyboardEvent) {
@@ -323,6 +311,10 @@
                 // Accesing Buefy's input ref
                 this.refPhoneInput.$refs.input.select();
             });
+        }
+
+        getBoolean(prop, key: string): boolean {
+            return getBoolean(prop, key);
         }
     }
 </script>
