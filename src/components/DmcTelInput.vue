@@ -62,16 +62,16 @@
                 </b-button>
 
                 <B-Field class="dropdown-item">
-                    <B-Input
-                        ref="refPhoneDropdownInput"
-                        v-model="dropdownSearch"
-                        class="iti__dropdown-input"
-                        size="is-small"
-                        :placeholder="dropdownPlaceholder"
-                        icon-right="close-circle"
-                        icon-right-clickable
-                        @icon-right-click="dropdownSearch = ''"
-                    />
+                    <div class="control has-icons-right">
+                        <input
+                            ref="refPhoneDropdownInput"
+                            v-model="dropdownSearch"
+                            class="input is-small iti__dropdown-input"
+                            :placeholder="dropdownPlaceholder"
+                            type="text"
+                        >
+                        <!-- TODO: add some svg to clear input -->
+                    </div>
                 </B-Field>
 
                 <template v-for="(c, i) in fileredCountriesModel">
@@ -332,5 +332,15 @@
     /* Firefox */
     input[type='number'] {
         appearance: textfield;
+    }
+
+    .feather {
+        width: 24px;
+        height: 24px;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2;
     }
 </style>

@@ -100,6 +100,18 @@ module.exports = {
         // config.externals(['moment', 'xlsx', 'canvg', 'pdfmake']);
 
         // ===
+        // SVG Loader
+        // ===
+        config.module
+            .rule('vue')
+            .use('vue-svg-inline-loader')
+            .loader(require.resolve('vue-svg-inline-loader'))
+            .options({
+                addTitle: true,
+                svgo: true,
+            });
+
+        // ===
         // Set up all the aliases we use in our app.
         // ===
         config.resolve.alias

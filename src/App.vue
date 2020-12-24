@@ -11,6 +11,7 @@
     import { Component, Vue } from 'vue-property-decorator';
 
     import DmcTelInput from '@/components/DmcTelInput.vue';
+    // import isEmojiUnicodeSupportedByBrowser from '@/utils/emoji/support/';
 
     @Component({
         name: 'App',
@@ -19,7 +20,11 @@
         },
     })
     export default class Input extends Vue {
-        phone = '380' as string
+        phone = '+3800973008444' as string
+
+        mounted() {
+            // console.log(isEmojiUnicodeSupportedByBrowser('⚠️', 'flag'));
+        }
     }
 </script>
 
