@@ -5,7 +5,7 @@
             class="iti"
             :type="validationClasses.class"
             :message="validationClasses.message"
-            label="Phone Input"
+            :label="label"
             :disabled="disabled"
             expanded
         >
@@ -83,6 +83,8 @@
                             preffered: c.preferred,
                             'is-active': activeCountry.iso2 === c.iso2
                         }"
+                        :data-iso="c.iso2"
+                        :data-dial-code="c.dialCode"
                     >
                         <div class="media">
                             <template v-if="!getBoolean(hideFlags, 'dropdown')">
@@ -138,23 +140,29 @@
 </template>
 
 <script lang="ts">
+    import { BDropdown, BDropdownItem } from 'buefy/src/components/dropdown';
+    import { BField } from 'buefy/src/components/field';
+    import { BInput } from 'buefy/src/components/input';
     import { Component, Mixins, Ref } from 'vue-property-decorator';
 
-    import Input from '@/mixin/useInput';
+    import useInput from '@/mixin/useInput';
     import { getBoolean } from '@/utils/getBoolean';
 
     import { ICountry } from './models';
 
     @Component({
         name: 'DmcPhoneInput',
+        components: {
+            BInput, BField, BDropdown, BDropdownItem,
+        },
     })
-    export default class DmcPhoneInput extends Mixins(Input) {
+    export default class DmcPhoneInput extends Mixins(useInput) {
         isMounted = false;
 
-        @Ref() readonly refPhoneField;
-        @Ref() readonly refPhoneDropdown;
-        @Ref() readonly refPhoneDropdownInput;
-        @Ref() readonly refPhoneInput;
+        @Ref() readonly refPhoneField: BField;
+        @Ref() readonly refPhoneDropdown: BDropdown;
+        @Ref() readonly refPhoneDropdownInput: HTMLInputElement;
+        @Ref() readonly refPhoneInput: BField;
 
         get isValid() {
             return this.phone !== '' && this.phoneObject.valid && this.allowedPhoneTypes.includes(this.phoneObject.type);
@@ -282,9 +290,7 @@
                 this.dropdownSearch = '';
                 this.focusDropdownInput();
 
-                if (this.refPhoneDropdown.$el instanceof HTMLElement) {
-                    this.setDropdownPosition(this.refPhoneDropdown.$el);
-                }
+                this.setDropdownPosition(this.refPhoneDropdown.$el);
             }
         }
 
@@ -319,9 +325,7 @@
     }
 </script>
 
-<style lang="scss">
-    @import '~@/assets/scss/styles.scss';
-
+<style lang="scss" scoped>
     /* Chrome, Safari, Edge, Opera */
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
@@ -332,15 +336,5 @@
     /* Firefox */
     input[type='number'] {
         appearance: textfield;
-    }
-
-    .feather {
-        width: 24px;
-        height: 24px;
-        fill: none;
-        stroke: currentColor;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        stroke-width: 2;
     }
 </style>

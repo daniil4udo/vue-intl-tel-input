@@ -1,0 +1,58 @@
+.iti {
+    &__button {
+        margin-right: -1px;
+        border-radius: 4px 0 0 4px;
+
+        span {
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    &__country {
+        display: flex;
+        flex-direction: column;
+        margin-left: 5px;
+        
+        &-dial {
+            font-weight: bold;
+        }
+    }
+
+    &__arrow {
+        margin-left: 7px;
+        transition: all .25s cubic-bezier(.645, .045, .355, 1);
+
+        &.is-open {
+            transform: rotate(180deg);
+        }
+    }
+
+    &__eflag {
+        margin-right: 5px;
+        font-size: 1.7rem;
+    }
+}
+
+.dropdown {
+    .field {
+        position: sticky;
+        top: 0;
+        z-index: 99;
+        padding-bottom: 5px;
+        background: rgb(255 255 255 / 95%);
+    }
+
+    .dropdown-menu {
+        min-width: 400px;
+        max-width: 400px;
+    }
+
+    .dropdown-item {
+        // Custom styles
+        .media {
+            align-items: center;
+        }
+    }
+}
+

@@ -130,6 +130,11 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
     }) invalidMsg: string;
 
     @Prop({
+        type: String,
+        default: () => 'Phone Input!',
+    }) label: string;
+
+    @Prop({
         type: Boolean,
         default: () => false,
     }) disabled: boolean;

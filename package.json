@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "vue-cli-service serve --port=8080",
         "dev:e2e": "cross-env VUE_APP_TEST=e2e vue-cli-service test:e2e --mode=development",
-        "build": "bash -c 'eval \"VUE_APP_BASE_PATH=$1 vue-cli-service build\"' -- ",
+        "build": "vue-cli-service build --target=lib --name=dmc-tel-input",
         "build:ci": "yarn build --report",
         "lint": "run-s lint:all:*",
         "lint:all:eslint": "vue-cli-service lint",
@@ -82,8 +82,5 @@
         "typescript": "~3.9.3",
         "vue-svg-inline-loader": "^2.0.0",
         "vue-template-compiler": "^2.6.11"
-    },
-    "peerDependencies": {
-        "buefy": "^0.9.4"
     }
 }
