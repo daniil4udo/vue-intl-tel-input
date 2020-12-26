@@ -3,8 +3,8 @@
         <B-Field
             ref="refPhoneField"
             class="iti"
-            :type="validationClasses.class"
-            :message="validationClasses.message"
+            :type="valdationClass"
+            :message="validationMessage"
             :label="label"
             :disabled="disabled"
             expanded
@@ -21,14 +21,14 @@
                 @input="onSelect"
                 @active-change="onActiveChange"
             >
-                <b-button
+                <B-Button
                     slot="trigger"
                     slot-scope="{ active }"
                     :loading="!isMounted || isFetchingCode"
                     :class="[
                         'button is-outlined',
                         'iti__button',
-                        validationClasses.class
+                        valdationClass
                     ]"
                     type="button"
                 >
@@ -59,7 +59,7 @@
                         ]"
                         v-text="'↑'"
                     />
-                </b-button>
+                </B-Button>
 
                 <B-Field class="dropdown-item">
                     <div class="control has-icons-right">
@@ -140,6 +140,7 @@
 </template>
 
 <script lang="ts">
+    import { BButton } from 'buefy/src/components/button';
     import { BDropdown, BDropdownItem } from 'buefy/src/components/dropdown';
     import { BField } from 'buefy/src/components/field';
     import { BInput } from 'buefy/src/components/input';
@@ -153,7 +154,7 @@
     @Component({
         name: 'DmcPhoneInput',
         components: {
-            BInput, BField, BDropdown, BDropdownItem,
+            BField, BInput, BButton, BDropdown, BDropdownItem,
         },
     })
     export default class DmcPhoneInput extends Mixins(useInput) {
@@ -165,20 +166,27 @@
         @Ref() readonly refPhoneInput: BField;
 
         get isValid() {
-            return this.phone !== '' && this.phoneObject.valid && this.allowedPhoneTypes.includes(this.phoneObject.type);
+            return (this.phone !== '') && this.phoneObject.valid && this.allowedPhoneTypes.includes(this.phoneObject.type);
         }
 
-        get validationClasses() {
+        get valdationClass() {
+            // TODO: make some simple validation in utils
             if (this.phone === '') {
-                return {
-                    class: '',
-                    message: '',
-                };
+                return '';
             }
 
-            return this.isValid
-                ? { class: 'is-success', message: '' }
-                : { class: 'is-danger', message: `Invalid phone number for ${this.activeCountry.name_en}` };
+            return this.validationMessage
+                ? 'is-danger'
+                : 'is-success';
+        }
+
+        get validationMessage() {
+            // TODO: make some simple validation in utils
+            if (this.phone === '' || this.isValid) {
+                return '';
+            }
+
+            return this.customInvalidMsg(this.phoneObject);
         }
 
         async mounted() {

@@ -5,8 +5,8 @@ export interface IDropdowButton {
 
 export interface IProps extends IInputProps, IDropdownProps {
     value?: string;
-    mode?: '' | 'international' | 'national';
-    allowedPhoneTypes?: AllowedPhoneNumberTypes;
+    mode?: keyof INumber;
+    allowedPhoneTypes?: PhoneNumberTypes[];
     required?: boolean;
     name?: string;
     invalidMsg?: string;
@@ -51,34 +51,27 @@ export interface ICountry {
     emoji: IEmojiCountry;
 }
 
-export interface IPhoneObject {
-    number: {
+export interface INumber {
         input: string;
         international: string;
         national: string;
         e164: string;
         rfc3966: string;
         significant: string;
-    };
+    }
+export interface IPhoneObject {
+    number: INumber;
     regionCode: string;
     valid: boolean;
     isIntlInput: boolean;
     possible: boolean;
     canBeInternationallyDialled: boolean;
     type: PhoneNumberTypes;
-    possibility: string;
+    possibility: Possibility;
     country: ICountry;
 }
 
+export type Possibility = 'unknown' | 'is-possible' | 'invalid-country-code' | 'too-long' | 'too-short';
 export type ParseMode = 'input' | 'international' | 'national' | 'e164' | 'rfc3966' | 'significant'
 export type PhoneNumberTypes = 'fixed-line' | 'mobile' | 'fixed-line-or-mobile' | 'toll-free' | 'premium-rate' | 'shared-cost' | 'voip' | 'personal-number' | 'pager' | 'uan' | 'voicemail' | 'unknown'
-export type AllowedPhoneNumberTypes = Array<PhoneNumberTypes>;
 export type DropdowPosition = 'is-top-right' | 'is-top-left' | 'is-bottom-left' | 'is-bottom-right'
-
-export interface ITodo {
-  id: number;
-  content: string;
-}
-export interface IMeta {
-  totalCount: number;
-}
