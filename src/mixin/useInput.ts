@@ -40,6 +40,7 @@ export default class Input extends Mixins(Dropdown) {
             return 'input';
         }
         if (this.mode) {
+            // TODO: have mode validator. revisit later
             if (![ 'international', 'national' ].includes(this.mode)) {
                 console.error('Invalid value of prop "mode"');
             }

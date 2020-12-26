@@ -159,6 +159,7 @@
     })
     export default class DmcPhoneInput extends Mixins(useInput) {
         isMounted = false;
+        getBoolean = getBoolean.bind(this) // short hand to make method available in template
 
         @Ref() readonly refPhoneField: BField;
         @Ref() readonly refPhoneDropdown: BDropdown;
@@ -327,10 +328,6 @@
                 // Accesing Buefy's input ref
                 this.refPhoneInput.$refs.input.select();
             });
-        }
-
-        getBoolean(prop, key: string) {
-            return getBoolean(prop, key);
         }
     }
 </script>
