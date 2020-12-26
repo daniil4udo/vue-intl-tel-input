@@ -228,7 +228,7 @@
             }
 
             this.$nextTick(() => {
-                this.$emit('validate', this.phoneData);
+                this.$emit('validate', value, this.phoneData);
             });
         }
 
