@@ -71,7 +71,33 @@ export interface IPhoneObject {
     country: ICountry;
 }
 
-export type Possibility = 'unknown' | 'is-possible' | 'invalid-country-code' | 'too-long' | 'too-short';
-export type ParseMode = 'input' | 'international' | 'national' | 'e164' | 'rfc3966' | 'significant'
-export type PhoneNumberTypes = 'fixed-line' | 'mobile' | 'fixed-line-or-mobile' | 'toll-free' | 'premium-rate' | 'shared-cost' | 'voip' | 'personal-number' | 'pager' | 'uan' | 'voicemail' | 'unknown'
-export type DropdowPosition = 'is-top-right' | 'is-top-left' | 'is-bottom-left' | 'is-bottom-right'
+export type Possibility =
+    | 'unknown'
+    | 'is-possible'
+    | 'invalid-country-code'
+    | 'too-long'
+    | 'too-short';
+export type ParseMode =
+    | 'input'
+    | 'e164'
+    | 'international'
+    | 'national'
+    | 'rfc3966'
+    | 'significant'
+export type PhoneNumberTypes =
+    | 'fixed-line'
+    | 'fixed-line-or-mobile'
+    | 'mobile'
+    | 'pager'
+    | 'personal-number'
+    | 'premium-rate'
+    | 'shared-cost'
+    | 'toll-free'
+    | 'uan'
+    | 'voip'
+    | 'unknown'
+export type DropdowPosition =
+    | 'is-top-right'
+    | 'is-top-left'
+    | 'is-bottom-left'
+    | 'is-bottom-right'
