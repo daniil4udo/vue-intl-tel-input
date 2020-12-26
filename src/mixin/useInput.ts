@@ -4,6 +4,7 @@ import { Component, Mixins, Watch, VModel } from 'vue-property-decorator';
 
 import { IPhoneObject, ParseMode } from '@/components/models';
 import Dropdown from '@/mixin/useDropdown';
+import { setCaretPosition } from '@/utils/';
 // import useCountries from '@/mixin/useCountries';
 
 @Component
@@ -39,6 +40,7 @@ export default class Input extends Mixins(Dropdown) {
         if (this.customRegExp) {
             return 'input';
         }
+
         if (this.mode) {
             // TODO: have mode validator. revisit later
             if (![ 'international', 'national' ].includes(this.mode)) {
@@ -80,13 +82,12 @@ export default class Input extends Mixins(Dropdown) {
         if (!isNil(value) && this.isInternationalInput(value) && this.isAllowedInternationalInput) {
             const code = PhoneNumber.call(null, `${this.phoneObject.number?.international}`).getRegionCode();
 
-            if (code) {
+            if (!isNil(code)) {
                 this.setActiveCountry(code);
                 this.phone = this.phoneObject.number.national;
             }
         }
 
-        // TODO: sanitize on mount
         // if Intl input is not allowed just remove first char
         if (value && this.isInternationalInput(value) && !this.isAllowedInternationalInput) {
             this.phone = this.phone.substring(1);
@@ -96,7 +97,7 @@ export default class Input extends Mixins(Dropdown) {
         if (this.cursorPosition < oldValue.length) {
             this.$nextTick(() => {
                 // TODO: check for correct refs
-                this.setCaretPosition(this.$refs.refPhoneInput, this.cursorPosition);
+                setCaretPosition(this.$refs.refPhoneInput.$refs.input, this.cursorPosition);
             });
         }
     }
@@ -130,22 +131,6 @@ export default class Input extends Mixins(Dropdown) {
             return phoneInput[0] === '+' || (phoneInput.length > 2 && phoneInput.startsWith('00'));
         }
 
-        throw new TypeError(`DmcTelInput: phoneInput in isInternationalInput has to be as string. Got ${typeof phoneInput}`);
-    }
-
-    public setCaretPosition(ctrl, pos) {
-        // Modern browsers
-        if (ctrl.setSelectionRange) {
-            ctrl.focus();
-            ctrl.setSelectionRange(pos, pos);
-        }
-        // IE8 and below
-        else if (ctrl.createTextRange) {
-            const range = ctrl.createTextRange();
-            range.collapse(true);
-            range.moveEnd('character', pos);
-            range.moveStart('character', pos);
-            range.select();
-        }
+        throw new TypeError(`[isInternationalInput]: phoneInput in isInternationalInput has to be as string. Got ${typeof phoneInput}`);
     }
 }

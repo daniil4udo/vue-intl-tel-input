@@ -35,7 +35,7 @@ export default class Dropdown extends Mixins(Countries) {
             return this.activeCountry;
         }
         if (typeof country !== 'string' && !isPlainObject(country)) {
-            throw new TypeError(`Country argument has to be a string or an object. Got ${typeof country}`);
+            throw new TypeError(`[setActiveCountry]: Country argument has to be a string or an object. Got ${typeof country}`);
         }
 
         this.activeCountry = typeof country === 'string'

@@ -101,7 +101,7 @@ export async function fetchISO() {
         }
     }
     catch (err) {
-        throw new Error('DmcTelInput: Error while fetching country code');
+        throw new Error('[fetchISO]: Error while fetching country code');
     }
 }
 
@@ -116,4 +116,12 @@ export function getDropdownPosition(el: HTMLElement, minOffset = 200): DropdowPo
     return spaceBelow > minOffset
         ? 'is-bottom-right'
         : 'is-top-right';
+}
+
+export function setCaretPosition(ctrl: HTMLInputElement, pos: number) {
+    // Modern browsers
+    if (ctrl.setSelectionRange) {
+        ctrl.focus();
+        ctrl.setSelectionRange(pos, pos);
+    }
 }
