@@ -4,8 +4,7 @@ import { Component, Prop, Mixins, Vue } from 'vue-property-decorator';
 
 import { countries } from '@/assets/all-countries';
 import { PHONE_TYPE, NUMBER } from '@/assets/constants';
-import { isCorrectISO } from '@/utils/isCorrectISO';
-import { validationMessage } from '@/utils/validation';
+import { isCorrectISO, validationMessage } from '@/utils/';
 
 import { IPhoneObject, IDropdowButton, PhoneNumberTypes, ParseMode } from '../components/models';
 

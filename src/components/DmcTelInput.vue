@@ -147,7 +147,7 @@
     import { Component, Mixins, Ref } from 'vue-property-decorator';
 
     import useInput from '@/mixin/useInput';
-    import { getBoolean } from '@/utils/getBoolean';
+    import { getBoolean } from '@/utils/';
 
     import { ICountry } from './models';
 

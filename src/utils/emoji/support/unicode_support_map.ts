@@ -1,4 +1,4 @@
-import AccessorUtilities from '@/utils/accessor';
+import { isLocalStorageAccessSafe } from '@/utils/';
 
 import { IResultMap, IUnicodeSupportTestMap } from '../types';
 
@@ -145,7 +145,7 @@ function generateUnicodeSupportMap(testMap: IUnicodeSupportTestMap): IResultMap 
 }
 
 export default function getUnicodeSupportMap(): IResultMap {
-    const isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
+    const isLocalStorageAvailable = isLocalStorageAccessSafe();
 
     let glEmojiVersionFromCache;
     let userAgentFromCache;

@@ -1,5 +1,5 @@
+import { isCorrectISO } from '@/utils/';
 import { isFlagEmoji } from '@/utils/emoji/support/';
-import { isCorrectISO } from '@/utils/isCorrectISO';
 
 const OFFSET = 127397;
 

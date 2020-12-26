@@ -4,7 +4,7 @@ import { Component, Mixins } from 'vue-property-decorator';
 
 import { countries } from '@/assets/all-countries';
 import Props from '@/mixin/props';
-import { isCorrectISO } from '@/utils/isCorrectISO';
+import { isCorrectISO } from '@/utils/';
 
 import { ICountry } from '../components/models';
 
