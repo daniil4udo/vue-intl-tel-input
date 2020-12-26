@@ -82,3 +82,20 @@ export function isLocalStorageAccessSafe() {
 
     return safe;
 }
+
+/**
+ * Fetch country code via https://ip2c.org/s - Network needed - (Do not use it with default-country-code options)
+ */
+export async function fetchISO() {
+    try {
+        const response = await fetch('https://ip2c.org/s');
+        const responseText = await response.text();
+        const result = String(responseText || '').toUpperCase();
+        if (result && result[0] === '1') {
+            return result.substr(2, 2);
+        }
+    }
+    catch (err) {
+        throw new Error('DmcTelInput: Error while fetching country code');
+    }
+}

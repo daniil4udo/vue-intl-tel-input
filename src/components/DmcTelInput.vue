@@ -147,7 +147,7 @@
     import { Component, Mixins, Ref } from 'vue-property-decorator';
 
     import useInput from '@/mixin/useInput';
-    import { getBoolean } from '@/utils/';
+    import { getBoolean, fetchISO } from '@/utils/';
 
     import { ICountry } from './models';
 
@@ -230,7 +230,9 @@
             }
             // 3. if don't have DEFAULT COUNTRY but fetch country is allowed - FETCH
             if (this.fetchCountry) {
-                const ISO2 = await this.fetchISO();
+                this.isFetchingCode = true;
+                const ISO2 = await fetchISO();
+                this.isFetchingCode = false;
 
                 return ISO2;
             }
