@@ -21,13 +21,17 @@ export default class Dropdown extends Mixins(Countries) {
     }
 
     public updatePreferredCountries(iso2 = '') {
-        // Move countries, that has been selected to the top of the list
+        /**
+         * Move countries, that has been selected to the top of the list
+         */
+        //
         // Like a recently chosen
-        if (!this.preferredCountries.includes(iso2)) {
-            this.preferredCountries.push(iso2);
+        if (!this.preferredCountriesProxy.includes(iso2)) {
+            // this.preferredCountriesProxy.push(iso2);
+            this.$set(this.preferredCountriesProxy, this.preferredCountriesProxy.length, iso2);
         }
 
-        return this.preferredCountries;
+        return this.preferredCountriesProxy;
     }
 
     @Emit('country-changed')

@@ -11,11 +11,12 @@ import { ICountry } from '../components/models';
 @Component
 export default class Countries extends Mixins(Props) {
     public isFetchingCode = false;
+    public preferredCountriesProxy = [].concat(this.preferredCountries); // not to modify props
 
     private get _preferred(): ICountry[] {
-        const isLastIndex = (i: number) => (this.preferredCountries.length - 1) === i;
+        const isLastIndex = (i: number) => (this.preferredCountriesProxy.length - 1) === i;
 
-        return this.getCountries(this.preferredCountries).map((c, i) => ({
+        return this.getCountries(this.preferredCountriesProxy).map((c, i) => ({
             ...c,
             preferred: true,
             lastPreffered: isLastIndex(i),
