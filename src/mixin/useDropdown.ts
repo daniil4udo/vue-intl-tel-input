@@ -1,4 +1,4 @@
-import isPlainObject from 'lodash/isPlainObject';
+import isPlainObject from 'is-plain-object';
 import { Component, Mixins } from 'vue-property-decorator';
 
 import { ICountry, DropdowPosition } from '@/components/models';
@@ -6,9 +6,9 @@ import Countries from '@/mixin/useCountries';
 
 @Component
 export default class Dropdown extends Mixins(Countries) {
-    dropdownSearch = ''
-    dropdownOpenDirection = 'is-bottom-right' as DropdowPosition
-    activeCountry = {
+    public dropdownSearch = ''
+    public dropdownOpenDirection = 'is-bottom-right' as DropdowPosition
+    public activeCountry = {
         iso2: this.defaultCountry, // selected country object
     } as ICountry;
 
@@ -45,19 +45,5 @@ export default class Dropdown extends Mixins(Countries) {
         this.updatePreferredCountries(this.activeCountry.iso2);
 
         return this.activeCountry;
-    }
-
-    public setDropdownPosition(el: HTMLElement, minOffset = 200) {
-        const spaceBelow = window.innerHeight - el.getBoundingClientRect().bottom;
-        const hasEnoughSpaceBelow = spaceBelow > minOffset;
-
-        if (hasEnoughSpaceBelow) {
-            this.dropdownOpenDirection = 'is-bottom-right';
-        }
-        else {
-            this.dropdownOpenDirection = 'is-top-right';
-        }
-
-        return this.dropdownOpenDirection;
     }
 }

@@ -143,11 +143,6 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
     }) disabled: boolean;
 
     @Prop({
-        type: String,
-        default: () => 'Hell, no!',
-    }) invalidMsg: string;
-
-    @Prop({
         type: Function,
         default: (phoneObject: IPhoneObject) => validationMessage(phoneObject),
     }) customInvalidMsg: (phoneObject: IPhoneObject) => string;

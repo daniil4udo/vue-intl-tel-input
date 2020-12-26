@@ -147,7 +147,7 @@
     import { Component, Mixins, Ref } from 'vue-property-decorator';
 
     import useInput from '@/mixin/useInput';
-    import { getBoolean, fetchISO } from '@/utils/';
+    import { getBoolean, fetchISO, getDropdownPosition } from '@/utils/';
 
     import { ICountry } from './models';
 
@@ -300,7 +300,7 @@
                 this.dropdownSearch = '';
                 this.focusDropdownInput();
 
-                this.setDropdownPosition(this.refPhoneDropdown.$el);
+                this.dropdownOpenDirection = getDropdownPosition(this.refPhoneDropdown.$el);
             }
         }
 
@@ -329,7 +329,7 @@
             });
         }
 
-        getBoolean(prop, key: string): boolean {
+        getBoolean(prop, key: string) {
             return getBoolean(prop, key);
         }
     }

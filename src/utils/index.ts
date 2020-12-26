@@ -1,6 +1,6 @@
 import get from 'lodash/get';
 
-import { IPhoneObject } from '../components/models';
+import { IPhoneObject, DropdowPosition } from '../components/models';
 
 /**
  * So user can add custom validation message base on phone Object :)
@@ -23,6 +23,10 @@ export function validationMessage(phoneObject: IPhoneObject): string {
     return 'Phone number error: country is unknown';
 }
 
+/**
+ * Check if input is looks like ISO2 – 2 letters (case insensetive)
+ * @param iso2 {String}
+ */
 export function isCorrectISO(iso2 = '') {
     // country code regex
     const ISO_REGEX = /^[a-z]{2}$/i;
@@ -91,6 +95,7 @@ export async function fetchISO() {
         const response = await fetch('https://ip2c.org/s');
         const responseText = await response.text();
         const result = String(responseText || '').toUpperCase();
+
         if (result && result[0] === '1') {
             return result.substr(2, 2);
         }
@@ -98,4 +103,17 @@ export async function fetchISO() {
     catch (err) {
         throw new Error('DmcTelInput: Error while fetching country code');
     }
+}
+
+/**
+ * Buefy specific - dynamicly changes position of the dropdown depending on how close it to the bottom of the page
+ * @param el {HTMLElement}
+ * @param minOffset {Number}
+ */
+export function getDropdownPosition(el: HTMLElement, minOffset = 200): DropdowPosition {
+    const spaceBelow = window.innerHeight - el.getBoundingClientRect().bottom;
+
+    return spaceBelow > minOffset
+        ? 'is-bottom-right'
+        : 'is-top-right';
 }

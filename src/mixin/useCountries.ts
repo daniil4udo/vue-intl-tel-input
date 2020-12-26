@@ -26,7 +26,6 @@ export default class Countries extends Mixins(Props) {
         // List countries after filtered
         if (this.onlyCountries.length !== 0) {
             return this.onlyCountries.reduce((a, iso2) => Object.assign(a, { [iso2]: this.getCountry(iso2) }), {});
-            // return this.onlyCountries.map(iso2 => this.getCountry(iso2));
         }
 
         if (this.ignoredCountries.length !== 0) {
@@ -39,15 +38,9 @@ export default class Countries extends Mixins(Props) {
             }
 
             return filterIgnored;
-
-            // for (const iso2 of this.ignoredCountries) {
-            //     this.getCountry(iso2) = undefined;
-            // }
-            // return Object.values(countries).filter(Boolean);
         }
 
         return countries;
-        // return Object.values(countries);
     }
 
     public get sortedCountries(): ICountry[] {
