@@ -15,7 +15,7 @@ export const PHONE_TYPE: PhoneNumberTypes[] = [
 ];
 
 export const NUMBER: ParseMode[] = [
-    'input',
+    // 'input',
     'international',
     'national',
     'e164',

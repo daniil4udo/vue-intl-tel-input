@@ -17,7 +17,7 @@ class DropdownProps extends Vue {
 
     @Prop({
         type: (String),
-        default: () => 'Search by country name or code',
+        default: () => 'Search by country name, code or ISO',
     }) dropdownPlaceholder: string;
 
     @Prop({
@@ -40,6 +40,7 @@ class DropdownProps extends Vue {
         default: () => Object.values(countries).every(c => c.emoji.supported),
     }) emojiFlags: boolean | IDropdowButton;
 
+    // whether or not to allow the dropdown
     @Prop({
         type: (Boolean),
         default: () => false,
@@ -53,7 +54,7 @@ class DropdownProps extends Vue {
     @Prop({
         type: (String),
         default: () => '',
-        validator: (iso2: string) => (iso2 ? isCorrectISO(iso2) : true),
+        validator: (iso2: string) => (iso2 !== '' ? isCorrectISO(iso2) : true),
     }) defaultCountry: string;
 
     @Prop({
@@ -70,7 +71,7 @@ class DropdownProps extends Vue {
 
     @Prop({
         type: (Array),
-        default: () => [ 'AE' ],
+        default: () => [],
         validator: (iso2: string[]) => (!isEmpty(iso2) ? iso2.some(isCorrectISO) : true),
     }) preferredCountries: string[];
 }
@@ -98,6 +99,12 @@ class InputProps extends Vue {
     }) inputPlaceholder: string;
 
     @Prop({
+        type: String,
+        validator: (type: PhoneNumberTypes[]) => PHONE_TYPE.some(t => type.includes(t)),
+        default: () => 'mobile',
+    }) placeholderNumberType: PhoneNumberTypes;
+
+    @Prop({
         type: Boolean,
         default: () => true,
     }) dynamicPlaceholder: boolean;
@@ -109,6 +116,13 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
      * Avoid using adding here native attts
      * already binding those via v-bind="$attrs"
      */
+
+    // for v-model to work
+    @Prop({
+        type: String,
+        default: () => '',
+    }) value: string;
+    // v-model
 
     @Prop({
         type: String,
@@ -127,6 +141,7 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
         default: () => false,
     }) required: boolean;
 
+    // Date.now() will be appended to keep name unique for multiple instances
     @Prop({
         type: String,
         default: () => 'dmc-phone-input',
@@ -144,6 +159,6 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
 
     @Prop({
         type: Function,
-        default: (phoneObject: IPhoneObject) => validationMessage(phoneObject),
-    }) customInvalidMsg: (phoneObject: IPhoneObject) => string;
+        default: (phoneData: IPhoneObject) => validationMessage(phoneData),
+    }) customInvalidMsg: (phoneData: IPhoneObject) => string;
 }

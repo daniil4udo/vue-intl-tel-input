@@ -1,17 +1,34 @@
 import PhoneNumber from 'awesome-phonenumber';
-import isNil from 'lodash/isNil';
-import { Component, Mixins, Watch, VModel } from 'vue-property-decorator';
+import { Component, Mixins, Watch } from 'vue-property-decorator';
 
 import { IPhoneObject, ParseMode } from '@/components/models';
 import Dropdown from '@/mixin/useDropdown';
-import { setCaretPosition } from '@/utils/';
+import { isDefined } from '@/utils/';
 // import useCountries from '@/mixin/useCountries';
 
 @Component
 export default class Input extends Mixins(Dropdown) {
-    cursorPosition = 0 as number;
+    public cursorPosition = 0;
 
-    @VModel({ type: String, default: () => '' }) phone!: string
+    /**
+     * V-MODEL
+     * Do not modify. Important for v-model to work
+     */
+    public get phone() {
+        return this.value;
+    }
+
+    public set phone(value) {
+        /**
+         * Returns response.number to assign it to v-model (if being used)
+         * Returns full response for cases @input is used
+         * and parent wants to return the whole response.
+         */
+        this.$emit('input', value, this.phoneData);
+    }
+    /**
+     * V-MODEL
+     */
 
     public get isAllowedInternationalInput() {
         return !this.disabledDropdown;
@@ -19,16 +36,15 @@ export default class Input extends Mixins(Dropdown) {
 
     public get parsedPlaceholder() {
         if (this.dynamicPlaceholder && this.activeCountry.iso2) {
-            // As for me doesnt make sense to confuse user and show hint with country code
-            // const mode = this.mode || 'international';
+            const mode = this.mode || 'international';
 
-            return PhoneNumber.getExample(this.activeCountry.iso2, 'mobile').getNumber('national');
+            return PhoneNumber.getExample(this.activeCountry.iso2, this.placeholderNumberType).getNumber(mode);
         }
 
         return this.inputPlaceholder;
     }
 
-    public get phoneObject(): IPhoneObject {
+    public get phoneData(): IPhoneObject {
         return {
             ...new PhoneNumber(this.phone, this.activeCountry.iso2).toJSON(),
             isIntlInput: this.isInternationalInput(this.phone),
@@ -38,7 +54,7 @@ export default class Input extends Mixins(Dropdown) {
 
     public get parsedMode(): ParseMode {
         if (this.customRegExp) {
-            return 'input';
+            return 'e164';
         }
 
         if (this.mode) {
@@ -51,72 +67,66 @@ export default class Input extends Mixins(Dropdown) {
             }
         }
 
-        if (!this.phone || !this.phoneObject.isIntlInput) {
+        if (!this.phone || !this.phoneData.isIntlInput) {
             return 'national';
         }
 
         return 'international';
     }
 
-    public get phoneText() {
-        let key: ParseMode = 'input';
+    public get formattedPhone() {
+        // let key: ParseMode = 'e164';
 
-        if (this.phoneObject.valid) {
-            key = this.parsedMode;
-        }
-
-        return this.phoneObject.number[key] || '';
-    }
-
-    @Watch('phone', { immediate: true })
-    onPhoneChanged(value = '', oldValue = '') {
-        // const isValidCharactersOnly = this.validCharactersOnly && !testCharacters();
-        // const isCustomValidate = this.customRegExp && !testCustomValidate();
-
-        // if (isValidCharactersOnly || isCustomValidate) {
-        //     $root.$nextTick(() => {
-        //         this.phone = oldValue;
-        //     });
+        // if (this.phoneData.valid) {
+        //     key = this.parsedMode;
         // }
 
-        if (!isNil(value) && this.isInternationalInput(value) && this.isAllowedInternationalInput) {
-            const code = PhoneNumber.call(null, `${this.phoneObject.number?.international}`).getRegionCode();
+        return this.phoneData.number[this.parsedMode] || '';
+    }
 
-            if (!isNil(code)) {
-                this.setActiveCountry(code);
-                this.phone = this.phoneObject.number.national;
-            }
-        }
+    @Watch('phone', { immediate: false })
+    onPhoneChanged(value: string) {
+        if (isDefined(value)) {
+            // const isValidCharactersOnly = this.validCharactersOnly && !testCharacters();
+            // const isCustomValidate = this.customRegExp && !testCustomValidate();
 
-        // if Intl input is not allowed just remove first char
-        if (value && this.isInternationalInput(value) && !this.isAllowedInternationalInput) {
-            this.phone = this.phone.substring(1);
-        }
+            // if (isValidCharactersOnly || isCustomValidate) {
+            //     $root.$nextTick(() => {
+            //         this.phone = oldValue;
+            //     });
+            // }
 
-        // Reset the cursor to current position if it's not the last character.
-        if (this.cursorPosition < oldValue.length) {
-            this.$nextTick(() => {
-                // TODO: check for correct refs
-                setCaretPosition(this.$refs.refPhoneInput.$refs.input, this.cursorPosition);
-            });
+            // this.phone = this.phoneData.number[this.mode];
+
+            // if Intl input is not allowed just remove first char
+            // if (value && this.isInternationalInput(value) && !this.isAllowedInternationalInput) {
+            //     this.phone = this.phone.substring(1);
+            // }
+
+            // Reset the cursor to current position if it's not the last character.
+            // if (this.cursorPosition < oldValue.length) {
+            //     this.$nextTick(() => {
+            //         // TODO: check for correct refs
+            //         setCaretPosition(this.$refs.refPhoneInput.$refs.input, this.cursorPosition);
+            //     });
+            // }
         }
     }
 
-    @Watch('phoneObject.valid', { immediate: false })
-    watchPhoneValidity(value = false) {
-        if (value) {
-            this.phone = this.phoneText;
-        }
+    @Watch('phoneData.regionCode', { immediate: false })
+    watchPhoneRegionCode(code: string) {
+        if (isDefined(code) && this.isAllowedInternationalInput) {
+            this.setActiveCountry(code);
 
-        this.$nextTick(() => {
-            this.$emit('validate', this.phoneObject);
-        });
+            /**
+             * In case user start input with +, format it base on this.mode
+             */
+            this.phone = this.formattedPhone;
+        }
     }
 
     public testCharacters(value = this.phone) {
-        const re = /^[()\-+0-9\s]*$/;
-
-        return re.test(value);
+        return /^[()\-+0-9\s]*$/.test(value);
     }
 
     public testCustomValidate(value = this.phone): boolean {

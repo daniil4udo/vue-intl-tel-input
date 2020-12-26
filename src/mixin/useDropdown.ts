@@ -1,5 +1,5 @@
 import isPlainObject from 'is-plain-object';
-import { Component, Mixins } from 'vue-property-decorator';
+import { Component, Emit, Mixins } from 'vue-property-decorator';
 
 import { ICountry, DropdowPosition } from '@/components/models';
 import Countries from '@/mixin/useCountries';
@@ -30,17 +30,18 @@ export default class Dropdown extends Mixins(Countries) {
         return this.preferredCountries;
     }
 
-    public setActiveCountry(country: ICountry | string) {
-        if (!country) {
+    @Emit('country-changed')
+    public setActiveCountry(c: ICountry | string) {
+        if (!c) {
             return this.activeCountry;
         }
-        if (typeof country !== 'string' && !isPlainObject(country)) {
-            throw new TypeError(`[setActiveCountry]: Country argument has to be a string or an object. Got ${typeof country}`);
+        if (typeof c !== 'string' && !isPlainObject(c)) {
+            throw new TypeError(`[setActiveCountry]: Country argument has to be a string or an object. Got ${typeof c}`);
         }
 
-        this.activeCountry = typeof country === 'string'
-            ? this.getCountry(country)
-            : country;
+        this.activeCountry = typeof c === 'string'
+            ? this.getCountry(c)
+            : c;
 
         this.updatePreferredCountries(this.activeCountry.iso2);
 

@@ -78,7 +78,7 @@ export type Possibility =
     | 'too-long'
     | 'too-short';
 export type ParseMode =
-    | 'input'
+    // | 'input'
     | 'e164'
     | 'international'
     | 'national'

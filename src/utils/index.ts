@@ -1,22 +1,27 @@
+import PhoneNumber from 'awesome-phonenumber';
 import get from 'lodash/get';
+import isNil from 'lodash/isNil';
 
 import { IPhoneObject, DropdowPosition } from '../components/models';
 
+export function isDefined(v) {
+    return !isNil(v);
+}
 /**
  * So user can add custom validation message base on phone Object :)
  * @returns {String} - either generic string or object with keys are posibilities and values are String
  */
-export function validationMessage(phoneObject: IPhoneObject): string {
-    if (phoneObject && phoneObject.possibility && phoneObject.country.name_en) {
-        const template = `Phone number error: ${phoneObject.possibility.replaceAll('-', ' ')} for ${phoneObject.country.name_en}`;
+export function validationMessage(phoneData: IPhoneObject) {
+    if (phoneData && phoneData.possibility && phoneData.country.name_en) {
+        const template = `Phone number error: ${phoneData.possibility.replaceAll('-', ' ')} for ${phoneData.country.name_en}`;
 
-        switch (phoneObject.possibility) {
+        switch (phoneData.possibility) {
             case 'invalid-country-code': return template;
             case 'too-long': return template;
             case 'too-short': return template;
         }
 
-        return `Phone number error: invalid phone for ${phoneObject.country.name_en}`;
+        return `Phone number error: invalid phone for ${phoneData.country.name_en}`;
     }
 
     // Most probable scenario that at this pooint we dont have country setted yet
@@ -30,10 +35,14 @@ export function validationMessage(phoneObject: IPhoneObject): string {
 export function isCorrectISO(iso2 = '') {
     // country code regex
     const ISO_REGEX = /^[a-z]{2}$/i;
+    const type = typeof iso2;
 
     if (!ISO_REGEX.test(iso2)) {
-        const type = typeof iso2;
         throw new TypeError(`[isCorrectISO]: iso2 argument must be an ISO 3166-1 alpha-2 String. Got '${type === 'string' ? iso2 : type}'`);
+    }
+
+    if (!PhoneNumber.getSupportedRegionCodes().includes(iso2.toUpperCase())) {
+        throw new TypeError(`[isCorrectISO]: iso2 argument ${type === 'string' ? iso2 : type} is not supported by awesome-phonenumber`);
     }
 
     return true;
@@ -45,7 +54,7 @@ export function getBoolean(prop, key: string): boolean {
         : get(prop, key, false);
 }
 
-function isPropertyAccessSafe(base, property) {
+function isPropertyAccessSafe<T>(base: T, property: keyof T): boolean {
     let safe;
 
     try {
@@ -58,7 +67,7 @@ function isPropertyAccessSafe(base, property) {
     return safe;
 }
 
-function isFunctionCallSafe(base, functionName, ...args) {
+function isFunctionCallSafe<T>(base: T, functionName: string, ...args) {
     let safe = true;
 
     try {
@@ -71,7 +80,7 @@ function isFunctionCallSafe(base, functionName, ...args) {
     return safe;
 }
 
-export function isLocalStorageAccessSafe() {
+export function isLocalStorageAccessSafe(): boolean {
     let safe;
 
     const TEST_KEY = 'isLocalStorageAccessSafe';

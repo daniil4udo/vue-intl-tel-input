@@ -1,8 +1,12 @@
 <template>
     <div>
+        formattedPhone - {{ formattedPhone }}
         <B-Field
             ref="refPhoneField"
-            class="iti"
+            :class="[
+                'iti',
+                isAnyMobile && 'iti-mobile'
+            ]"
             :type="valdationClass"
             :message="validationMessage"
             :label="label"
@@ -35,7 +39,7 @@
                     <template v-if="isMounted && !isFetchingCode">
                         <template v-if="!getBoolean(hideFlags, 'button')">
                             <div
-                                v-if="getBoolean(emojiFlags, 'button')"
+                                v-if="getBoolean(emojiFlags, 'button') && activeCountry.emoji"
                                 class="iti__eflag"
                             >
                                 <span v-text="activeCountry.emoji.flag" />
@@ -89,7 +93,7 @@
                         <div class="media">
                             <template v-if="!getBoolean(hideFlags, 'dropdown')">
                                 <div
-                                    v-if="getBoolean(emojiFlags, 'dropdown')"
+                                    v-if="getBoolean(emojiFlags, 'dropdown') && c.emoji"
                                     class="iti__eflag--dropdown"
                                 >
                                     <span v-text="c.emoji.flag" />
@@ -101,7 +105,7 @@
                             </template>
                             <div class="iti__country">
                                 <span
-                                    v-if="!getBoolean(hideCountryCode, 'dropdown')"
+                                    v-if="!getBoolean(hideCountryCode, 'dropdown') && c.dialCode"
                                     class="iti__country-dial"
                                     v-text="`+${c.dialCode}`"
                                 />
@@ -128,26 +132,27 @@
                 :placeholder="parsedPlaceholder"
                 expanded
                 @input="onInput"
-                @keypress.native="onKeyPress"
             />
         </B-Field>
         <p>activeCountry</p>
         <pre>{{ activeCountry }}</pre>
         <strong>parsedPlaceholder - {{ parsedPlaceholder }}</strong>
-        <p>phoneObject</p>
-        <pre>{{ phoneObject }}</pre>
+        <p>phoneData</p>
+        <pre>{{ phoneData }}</pre>
     </div>
 </template>
 
 <script lang="ts">
+    import PhoneNumber from 'awesome-phonenumber';
     import { BButton } from 'buefy/src/components/button';
     import { BDropdown, BDropdownItem } from 'buefy/src/components/dropdown';
     import { BField } from 'buefy/src/components/field';
     import { BInput } from 'buefy/src/components/input';
-    import { Component, Mixins, Ref } from 'vue-property-decorator';
+    import { isMobile } from 'buefy/src/utils/helpers';
+    import { Component, Mixins, Ref, Watch } from 'vue-property-decorator';
 
     import useInput from '@/mixin/useInput';
-    import { getBoolean, fetchISO, getDropdownPosition } from '@/utils/';
+    import { isDefined, getBoolean, fetchISO, getDropdownPosition } from '@/utils/';
 
     import { ICountry } from './models';
 
@@ -159,6 +164,7 @@
     })
     export default class DmcPhoneInput extends Mixins(useInput) {
         isMounted = false;
+        isAnyMobile = isMobile.any();
         getBoolean = getBoolean.bind(this) // short hand to make method available in template
 
         @Ref() readonly refPhoneField: BField;
@@ -167,7 +173,10 @@
         @Ref() readonly refPhoneInput: BField;
 
         get isValid() {
-            return (this.phone !== '') && this.phoneObject.valid && this.allowedPhoneTypes.includes(this.phoneObject.type);
+            return (this.phone !== '')
+                && this.phoneData.valid
+                && this.activeCountry.iso2 === this.phoneData.regionCode
+                && this.allowedPhoneTypes.includes(this.phoneData.type);
         }
 
         get valdationClass() {
@@ -183,11 +192,44 @@
 
         get validationMessage() {
             // TODO: make some simple validation in utils
+
+            /**
+             * 1. Don't trigger validation if input is empty
+             */
             if (this.phone === '' || this.isValid) {
                 return '';
             }
 
-            return this.customInvalidMsg(this.phoneObject);
+            /**
+             * 2. If active country id not equal to parsed one
+             * while international inputs are restricted
+             */
+            if (!this.isAllowedInternationalInput && this.activeCountry.iso2 !== this.phoneData.regionCode) {
+                return `Phone number error: country change is not allowed`;
+            }
+
+            /**
+             * 3. If current phone type doesnt match to any of allowed ones
+             */
+            if (this.phoneData.type && this.phoneData.type !== 'unknown' && !this.allowedPhoneTypes.includes(this.phoneData.type)) {
+                return `Phone number error: ${this.phoneData.type.replaceAll('-', ' ')} is not allowed phone type.`;
+            }
+
+            /**
+             * 4. Generic
+             */
+            return this.customInvalidMsg(this.phoneData);
+        }
+
+        @Watch('isValid', { immediate: true })
+        watchPhoneValidity(value = false) {
+            if (value) {
+                this.phone = this.formattedPhone;
+            }
+
+            this.$nextTick(() => {
+                this.$emit('validate', this.phoneData);
+            });
         }
 
         async mounted() {
@@ -218,18 +260,30 @@
         }
 
         async initCountry() {
-            // 1. if already have PHONE passed from the parent - parse it
-            if (this.phone && this.phoneObject.isIntlInput) {
-                // all Phone-related logic has been executed and assign to the this.phoneObject
-                if (this.phoneObject.regionCode) {
-                    return this.phoneObject.regionCode;
+            /**
+             * 1. if already have PHONE passed from the parent - parse it
+             */
+            if (this.phone && this.isInternationalInput(this.phone)) {
+                /**
+                 * We could have used phone watcher
+                 * But we have to set country regardles disabled options
+                 * so better keep logic separated
+                 */
+                const code = PhoneNumber.call(null, this.phone).getRegionCode();
+
+                if (isDefined(code)) {
+                    return code;
                 }
             }
-            // 2. if phone is empty, but have DEFAULT COUNTRY
+            /**
+             * 2. if phone is empty, but have DEFAULT COUNTRY
+             */
             if (this.defaultCountry) {
                 return this.defaultCountry;
             }
-            // 3. if don't have DEFAULT COUNTRY but fetch country is allowed - FETCH
+            /**
+             * 3. if don't have DEFAULT COUNTRY but fetch country is allowed - FETCH
+             */
             if (this.fetchCountry) {
                 this.isFetchingCode = true;
                 const ISO2 = await fetchISO();
@@ -237,22 +291,18 @@
 
                 return ISO2;
             }
-            // 4. if don't have get fallback country from preffered or just a first option
+            /**
+             * 4. if don't have get fallback country from preffered or just a first option
+             */
             return this.preferredCountries[0] || this.sortedCountries[0].iso2;
         }
 
         async onSelect(c: ICountry) {
             this.setActiveCountry(c);
 
-            await this.$nextTick(() => {
-                // emit country change event for the actual country select
-                this.$emit('country-changed', c);
-                this.$emit('input', this.phoneText, this.phoneObject);
-
-                this.focusInput();
-            });
-
-            return c;
+            // emit country change event for the actual country select
+            this.$emit('input', this.phone, this.phoneData);
+            await this.focusInput();
         }
 
         onKeyPress($event: KeyboardEvent) {
@@ -269,33 +319,19 @@
             }
         }
 
-        onInput(e) {
-            if (this.validCharactersOnly && !this.testCharacters()) {
-                return;
-            }
-            if (this.customRegExp && !this.testCustomValidate()) {
-                return;
-            }
-
+        onInput(e: string) {
             // TODO: Set custm HTML5 validation error msg
-            // refPhoneInput.value.$refs.input.setCustomValidity(this.phoneObject.valid ? '' : this.invalidMsg);
-
-            // Returns response.number to assign it to v-model (if being used)
-            // Returns full response for cases @input is used
-            // and parent wants to return the whole response.
-            this.$nextTick(() => {
-                this.$emit('input', this.phoneText, this.phoneObject);
-            });
+            // refPhoneInput.value.$refs.input.setCustomValidity(this.phoneData.valid ? '' : this.invalidMsg);
 
             // TODO: Bind native event
             // Keep the current cursor position just in case the input reformatted
             // and it gets moved to the last character.
             // if ($event && $event.target) {
-            //     this.cursorPosition.value = $event.target.selectionStart;
+            //     this.cursorPositio = $event.target.selectionStart;
             // }
         }
 
-        onActiveChange(state, prevModel) {
+        onActiveChange(state: boolean) {
             if (state === true) {
                 // this.activeCountry.model = '';
                 this.dropdownSearch = '';
@@ -305,26 +341,26 @@
             }
         }
 
-        focusInput() {
-            this.$nextTick(() => {
+        async focusInput() {
+            await this.$nextTick(() => {
                 this.refPhoneInput.focus();
             });
         }
 
-        focusDropdownInput() {
-            this.$nextTick(() => {
+        async focusDropdownInput() {
+            await this.$nextTick(() => {
                 this.refPhoneDropdownInput.focus();
             });
         }
 
-        focusDropdown() {
-            this.$nextTick(() => {
+        async focusDropdown() {
+            await this.$nextTick(() => {
                 this.refPhoneDropdown.focus();
             });
         }
 
-        selectInput() {
-            this.$nextTick(() => {
+        async selectInput() {
+            await this.$nextTick(() => {
                 // Accesing Buefy's input ref
                 this.refPhoneInput.$refs.input.select();
             });
