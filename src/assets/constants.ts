@@ -11,7 +11,6 @@ export const PHONE_TYPE: PhoneNumberTypes[] = [
     'personal-number',
     'pager',
     'uan',
-    'voicemail',
     'unknown',
 ];
 
