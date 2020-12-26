@@ -30,7 +30,10 @@
 
     &__eflag {
         margin-right: 5px;
-        font-size: 1.7rem;
+
+        &--dropdown {
+            font-size: 1.7rem;
+        }
     }
 }
 

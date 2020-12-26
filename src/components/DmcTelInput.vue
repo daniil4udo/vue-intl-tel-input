@@ -90,7 +90,7 @@
                             <template v-if="!getBoolean(hideFlags, 'dropdown')">
                                 <div
                                     v-if="getBoolean(emojiFlags, 'dropdown')"
-                                    class="iti__eflag"
+                                    class="iti__eflag--dropdown"
                                 >
                                     <span v-text="c.emoji.flag" />
                                 </div>
