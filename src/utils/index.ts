@@ -54,8 +54,8 @@ export function getBoolean(prop, key: string): boolean {
         : get(prop, key, false);
 }
 
-function isPropertyAccessSafe<T>(base: T, property: keyof T): boolean {
-    let safe;
+function isPropertyAccessSafe<T>(base: T, property: keyof T) {
+    let safe: boolean;
 
     try {
         safe = !!base[property];
@@ -80,8 +80,8 @@ function isFunctionCallSafe<T>(base: T, functionName: string, ...args) {
     return safe;
 }
 
-export function isLocalStorageAccessSafe(): boolean {
-    let safe;
+export function isLocalStorageAccessSafe() {
+    let safe: boolean;
 
     const TEST_KEY = 'isLocalStorageAccessSafe';
     const TEST_VALUE = 'true';
