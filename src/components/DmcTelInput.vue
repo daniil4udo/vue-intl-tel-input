@@ -108,7 +108,7 @@
                                     class="iti__country-dial"
                                     v-text="`+${c.dialCode}`"
                                 />
-                                <small v-if="!getBoolean(hideCountryName, 'dropdown')" v-html="c.name_en" />
+                                <small v-if="!getBoolean(hideCountryName, 'dropdown')" v-html="c.name" />
                             </div>
                         </div>
                     </B-Dropdown-item>
