@@ -149,12 +149,14 @@ export default function getUnicodeSupportMap(): IResultMap {
 
     let glEmojiVersionFromCache;
     let userAgentFromCache;
+
     if (isLocalStorageAvailable) {
         glEmojiVersionFromCache = window.localStorage.getItem('gl-emoji-version');
         userAgentFromCache = window.localStorage.getItem('gl-emoji-user-agent');
     }
 
     let unicodeSupportMap;
+
     try {
         unicodeSupportMap = JSON.parse(window.localStorage.getItem('gl-emoji-unicode-support-map'));
     }

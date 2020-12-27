@@ -30,3 +30,8 @@ export const POSIBILITY: Possibility[] = [
     'too-long',
     'too-short',
 ];
+
+// Test string for first '+' or first two '0's
+export const INTL = new RegExp(/^(0{2}|\+)/);
+
+export const VALID_CHAR = new RegExp(/^[\+]?[()\-\d\s]*$/);

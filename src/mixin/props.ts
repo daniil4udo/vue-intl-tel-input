@@ -124,6 +124,7 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
     }) value: string;
     // v-model
 
+    // to show dial use 'international' mode
     @Prop({
         type: String,
         validator: (mode: ParseMode) => NUMBER.some(m => m === mode),

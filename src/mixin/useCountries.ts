@@ -10,7 +10,7 @@ import { ICountry } from '../components/models';
 
 @Component
 export default class Countries extends Mixins(Props) {
-    public isFetchingCode = false;
+    public isFetchingCode = true;
     public preferredCountriesProxy = [].concat(this.preferredCountries); // not to modify props
 
     private get _preferred(): ICountry[] {

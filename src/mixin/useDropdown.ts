@@ -45,7 +45,7 @@ export default class Dropdown extends Mixins(Countries) {
 
         this.activeCountry = typeof c === 'string'
             ? this.getCountry(c)
-            : c;
+            : { ...c };
 
         this.updatePreferredCountries(this.activeCountry.iso2);
 

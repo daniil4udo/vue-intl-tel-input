@@ -1,6 +1,5 @@
 <template>
     <div>
-        formattedPhone - {{ formattedPhone }}
         <B-Field
             ref="refPhoneField"
             :class="[
@@ -123,15 +122,16 @@
             <B-Input
                 ref="refPhoneInput"
                 v-model="phone"
+                v-bind="$attrs"
+                expanded
+                type="tel"
                 class="iti__input"
                 :tabindex="inputTabIndex"
-                v-bind="$attrs"
-                type="tel"
                 :name="`${name}-${Date.now()}`"
                 :disabled="disabled"
                 :placeholder="parsedPlaceholder"
-                expanded
                 @input="onInput"
+                @keypress.native="onKeyPress"
             />
         </B-Field>
         <p>activeCountry</p>
@@ -149,7 +149,7 @@
     import { BField } from 'buefy/src/components/field';
     import { BInput } from 'buefy/src/components/input';
     import { isMobile } from 'buefy/src/utils/helpers';
-    import { Component, Mixins, Ref, Watch } from 'vue-property-decorator';
+    import { Component, Emit, Mixins, Ref, Watch } from 'vue-property-decorator';
 
     import useInput from '@/mixin/useInput';
     import { isDefined, getBoolean, fetchISO, getDropdownPosition } from '@/utils/';
@@ -170,7 +170,7 @@
         @Ref() readonly refPhoneField: BField;
         @Ref() readonly refPhoneDropdown: BDropdown;
         @Ref() readonly refPhoneDropdownInput: HTMLInputElement;
-        @Ref() readonly refPhoneInput: BField;
+        @Ref() readonly refPhoneInput: BInput;
 
         get isValid() {
             return (this.phone !== '')
@@ -232,7 +232,7 @@
             });
         }
 
-        async mounted() {
+        mounted() {
             if (this.defaultCountry && this.fetchCountry) {
                 throw new Error(`[DmcTelInput]: Do not use 'fetch-country' and 'default-country' options in the same time`);
             }
@@ -247,23 +247,27 @@
                     this.emojiFlags = false;
                 }
                 else if (!this.emojiFlags) {
-                    await import(/* webpackChunkName: "flags-sprite" */ '@/assets/scss/sprite.scss');
+                    import(/* webpackChunkName: "flags-sprite" */ '@/assets/scss/sprite.scss');
                 }
             }
 
             // Allow set country only on mout (if dropdown disabled)
-            const country = await this.initCountry();
-            this.setActiveCountry(country);
-
-            // Have this flag to avoid FOUC
-            this.isMounted = true;
+            this.initCountry()
+                .then(country => {
+                    this.setActiveCountry(country);
+                })
+                .finally(() => {
+                    // Have this flag to avoid FOUC
+                    this.isFetchingCode = false;
+                    this.isMounted = true;
+                });
         }
 
         async initCountry() {
             /**
              * 1. if already have PHONE passed from the parent - parse it
              */
-            if (this.phone && this.isInternationalInput(this.phone)) {
+            if (this.phone && this.testInternational(this.phone)) {
                 /**
                  * We could have used phone watcher
                  * But we have to set country regardles disabled options
@@ -271,26 +275,31 @@
                  */
                 const code = PhoneNumber.call(null, this.phone).getRegionCode();
 
+                /**
+                 * KNOWN BUG of AWESOME-PHONE
+                 * if you type 009752
+                 * country not changing but phone parses correctly
+                 */
+
                 if (isDefined(code)) {
                     return code;
                 }
             }
+
             /**
              * 2. if phone is empty, but have DEFAULT COUNTRY
              */
             if (this.defaultCountry) {
                 return this.defaultCountry;
             }
+
             /**
              * 3. if don't have DEFAULT COUNTRY but fetch country is allowed - FETCH
              */
             if (this.fetchCountry) {
-                this.isFetchingCode = true;
-                const ISO2 = await fetchISO();
-                this.isFetchingCode = false;
-
-                return ISO2;
+                return fetchISO();
             }
+
             /**
              * 4. if don't have get fallback country from preffered or just a first option
              */
@@ -305,21 +314,18 @@
             await this.focusInput();
         }
 
-        onKeyPress($event: KeyboardEvent) {
-            const { key } = $event;
-            const { value: prevValue } = $event.target as HTMLInputElement;
-            const newValue = `${prevValue}${key}`;
+        onKeyPress(e: KeyboardEvent) {
+            const { key } = e;
 
             const isValidCharactersOnly = this.validCharactersOnly && !this.testCharacters(key);
             const isCustomValidate = this.customRegExp && !this.testCustomValidate(key);
-            const intlCheck = !this.isAllowedInternationalInput && this.isInternationalInput(newValue);
 
-            if (isValidCharactersOnly || isCustomValidate || intlCheck) {
-                $event.preventDefault();
+            if (isValidCharactersOnly || isCustomValidate) {
+                e.preventDefault();
             }
         }
 
-        onInput(e: string) {
+        onInput(s: string, e: InputEvent) {
             // TODO: Set custm HTML5 validation error msg
             // refPhoneInput.value.$refs.input.setCustomValidity(this.phoneData.valid ? '' : this.invalidMsg);
 
@@ -331,6 +337,7 @@
             // }
         }
 
+        @Emit('dropdown-open')
         onActiveChange(state: boolean) {
             if (state === true) {
                 // this.activeCountry.model = '';
@@ -341,21 +348,17 @@
             }
         }
 
+        @Emit('focus-input')
         async focusInput() {
             await this.$nextTick(() => {
                 this.refPhoneInput.focus();
             });
         }
 
+        @Emit('focus-dropdown-input')
         async focusDropdownInput() {
             await this.$nextTick(() => {
                 this.refPhoneDropdownInput.focus();
-            });
-        }
-
-        async focusDropdown() {
-            await this.$nextTick(() => {
-                this.refPhoneDropdown.focus();
             });
         }
 

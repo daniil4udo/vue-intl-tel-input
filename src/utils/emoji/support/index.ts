@@ -19,11 +19,11 @@ export function isRainbowFlagEmoji(emojiUnicode: string) {
     const baseFlagCodePoint = 127987; // parseInt('1F3F3', 16)
     const rainbowCodePoint = 127752; // parseInt('1F308', 16)
 
-    const characters = Array.from(emojiUnicode);
+    const [ baseFlagChar, rainbowChar ] = Array.from(emojiUnicode);
     // Length 4 because flags are made of 2 characters which are surrogate pairs
     return emojiUnicode.length === 4
-    && characters[0].codePointAt(0) === baseFlagCodePoint
-    && characters[1].codePointAt(0) === rainbowCodePoint;
+        && baseFlagChar.codePointAt(0) === baseFlagCodePoint
+        && rainbowChar.codePointAt(0) === rainbowCodePoint;
 }
 
 // Chrome <57 renders keycaps oddly
@@ -38,11 +38,10 @@ export function isKeycapEmoji(emojiUnicode: string) {
 export function checkFlagEmojiSupport(unicodeSupportMap: IResultMap, emojiUnicode: string) {
     const isFlagResult = isFlagEmoji(emojiUnicode);
     const isRainbowFlagResult = isRainbowFlagEmoji(emojiUnicode);
-    return (
-        (unicodeSupportMap.flag && isFlagResult)
+
+    return (unicodeSupportMap.flag && isFlagResult)
         || (unicodeSupportMap.rainbowFlag && isRainbowFlagResult)
-        || (!isFlagResult && !isRainbowFlagResult)
-    );
+        || (!isFlagResult && !isRainbowFlagResult);
 }
 
 // Takes in a support map and determines whether

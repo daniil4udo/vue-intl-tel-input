@@ -4,9 +4,8 @@
         <DmcTelInput
             v-model="phone"
             :disabled-dropdown="false"
-            :enabled-country-name="false"
-            :mode="'national'"
-            :emoji-flags="false"
+            mode="national"
+            :emoji-flags="true"
             :preferred-countries="['AE']"
         />
     </div>
@@ -25,11 +24,7 @@
         },
     })
     export default class Input extends Vue {
-        phone = '+380' as string
-
-        mounted() {
-            // console.log(isEmojiUnicodeSupportedByBrowser('⚠️', 'flag'));
-        }
+        phone = ''
     }
 </script>
 
