@@ -86,21 +86,20 @@ export default class Input extends Mixins(Dropdown) {
         return this.phoneData.number[key] || '';
     }
 
-    @Watch('phone', { immediate: false })
-    onPhoneChanged(value: string) {
-        if (isDefined(value)) {
-            // this.phone = this.normalizeIntlInput();
+    @Watch('phone', { immediate: true })
+    onPhoneChanged(value: string, valuePrev: string) {
+        if (value) {
+            /**
+             * Sanitizing input if validCharactersOnly id on
+             * NOTE: has to be { immediate: true } in order this to work with v-model
+             */
+            if (this.validCharactersOnly && !this.testCharacters()) {
+                value = value.replace(/[^()\-\+\d\s]+/gi, '');
 
-            // const isValidCharactersOnly = this.validCharactersOnly && !testCharacters();
-            // const isCustomValidate = this.customRegExp && !testCustomValidate();
-
-            // if (isValidCharactersOnly || isCustomValidate) {
-            //     $root.$nextTick(() => {
-            //         this.phone = oldValue;
-            //     });
-            // }
-
-            // this.phone = this.phoneData.number[this.mode];
+                this.$nextTick(() => {
+                    this.phone = value;
+                });
+            }
 
             // Reset the cursor to current position if it's not the last character.
             // if (this.cursorPosition < oldValue.length) {
