@@ -5,7 +5,7 @@ import { INTL, VALID_CHAR } from '@/assets/constants';
 import Dropdown from '@/mixin/useDropdown';
 import { isDefined } from '@/utils/';
 
-import { IPhoneObject, ParseMode } from '../components/models';
+import { IPhoneObject, INumber } from '../components/models';
 // import useCountries from '@/mixin/useCountries';
 
 @Component
@@ -54,9 +54,9 @@ export default class Input extends Mixins(Dropdown) {
         };
     }
 
-    public get parsedMode(): ParseMode {
+    public get parsedMode(): keyof INumber {
         if (this.customRegExp) {
-            return 'e164';
+            return 'input';
         }
 
         if (this.mode) {
@@ -77,7 +77,7 @@ export default class Input extends Mixins(Dropdown) {
     }
 
     public get formattedPhone(): string {
-        let key: ParseMode = 'e164';
+        let key: keyof INumber = 'input';
 
         if (this.phoneData.valid) {
             key = this.parsedMode;

@@ -52,13 +52,13 @@ export interface ICountry {
 }
 
 export interface INumber {
-        input: string;
-        international: string;
-        national: string;
-        e164: string;
-        rfc3966: string;
-        significant: string;
-    }
+    input: string;
+    international: string;
+    national: string;
+    e164: string;
+    rfc3966: string;
+    significant: string;
+}
 export interface IPhoneObject {
     number: INumber;
     regionCode: string;
@@ -71,19 +71,15 @@ export interface IPhoneObject {
     country: ICountry;
 }
 
+export type ParseMode = Exclude<keyof INumber, 'input'>
+
 export type Possibility =
     | 'unknown'
     | 'is-possible'
     | 'invalid-country-code'
     | 'too-long'
     | 'too-short';
-export type ParseMode =
-    // | 'input'
-    | 'e164'
-    | 'international'
-    | 'national'
-    | 'rfc3966'
-    | 'significant'
+
 export type PhoneNumberTypes =
     | 'fixed-line'
     | 'fixed-line-or-mobile'
