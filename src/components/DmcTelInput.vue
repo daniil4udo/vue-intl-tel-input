@@ -1,6 +1,7 @@
 <template>
     <div>
         <B-Field
+            :id="fieldId"
             ref="refPhoneField"
             :class="[
                 'iti',
@@ -13,6 +14,7 @@
             expanded
         >
             <B-Dropdown
+                :id="dropdownId"
                 ref="refPhoneDropdown"
                 aria-role="list"
                 class="iti__dropdown"
@@ -120,12 +122,14 @@
                 </template>
             </B-Dropdown>
             <B-Input
+                :id="inputId"
                 ref="refPhoneInput"
                 v-model="phone"
                 v-bind="$attrs"
                 expanded
                 type="tel"
                 class="iti__input"
+                :autocomplete="autocomplete"
                 :tabindex="inputTabIndex"
                 :name="`${name}-${Date.now()}`"
                 :disabled="disabled"
@@ -349,15 +353,15 @@
         }
 
         @Emit('focus-input')
-        async focusInput() {
-            await this.$nextTick(() => {
+        focusInput() {
+            this.$nextTick(() => {
                 this.refPhoneInput.focus();
             });
         }
 
         @Emit('focus-dropdown-input')
-        async focusDropdownInput() {
-            await this.$nextTick(() => {
+        focusDropdownInput() {
+            this.$nextTick(() => {
                 this.refPhoneDropdownInput.focus();
             });
         }

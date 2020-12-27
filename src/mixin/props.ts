@@ -11,6 +11,11 @@ import { IPhoneObject, IDropdowButton, PhoneNumberTypes, ParseMode } from '../co
 @Component
 class DropdownProps extends Vue {
     @Prop({
+        type: String,
+        default: () => null,
+    }) dropdownId: string;
+
+    @Prop({
         type: (Number),
         default: () => 0,
     }) dropdownTabIndex: number;
@@ -79,6 +84,17 @@ class DropdownProps extends Vue {
 @Component
 class InputProps extends Vue {
     @Prop({
+        type: String,
+        validator: (a: string) => [ 'on', 'off', 'tel' ].some(t => a.includes(t)),
+        default: () => 'tel',
+    }) autocomplete: string;
+
+    @Prop({
+        type: String,
+        default: () => null,
+    }) inputId: string;
+
+    @Prop({
         type: Number,
         default: () => 0,
     }) inputTabIndex: number;
@@ -123,6 +139,11 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
         default: () => '',
     }) value: string;
     // v-model
+
+    @Prop({
+        type: String,
+        default: () => null,
+    }) fieldId: string;
 
     // to show dial use 'international' mode
     @Prop({
