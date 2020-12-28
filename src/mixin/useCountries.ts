@@ -1,8 +1,6 @@
-import uniqBy from 'lodash/uniqBy';
-
 import { countries } from '@/assets/all-countries';
 import Props from '@/mixin/props';
-import { has, isSupportedCountry } from '@/utils/';
+import { has, uniqBy, isSupportedCountry } from '@/utils/';
 import { Component, Mixins } from '@/utils/decorators';
 
 import { ICountry } from '../components/models';

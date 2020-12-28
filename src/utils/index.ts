@@ -2,7 +2,9 @@ import PhoneNumber from 'awesome-phonenumber';
 import { PropertyPath } from 'lodash';
 import _get from 'lodash/get';
 import _has from 'lodash/has';
+import isEmpty from 'lodash/isEmpty';
 import _isNil from 'lodash/isNil';
+import uniqBy from 'lodash/uniqBy';
 
 import { IPhoneObject, DropdowPosition } from '../components/models';
 
@@ -162,3 +164,9 @@ export function strEncodeUTF16(str = '') {
 
     return arr;
 }
+
+export { isMobile } from 'buefy/src/utils/helpers';
+export {
+    isEmpty,
+    uniqBy,
+};

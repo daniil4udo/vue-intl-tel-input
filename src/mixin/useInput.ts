@@ -6,7 +6,6 @@ import { isDefined } from '@/utils/';
 import { Component, Mixins, Watch } from '@/utils/decorators';
 
 import { IPhoneObject, INumber, ParseMode } from '../components/models';
-// import useCountries from '@/mixin/useCountries';
 
 @Component
 export default class Input extends Mixins(Dropdown) {

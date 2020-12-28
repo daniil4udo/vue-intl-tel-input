@@ -153,14 +153,10 @@
 
 <script lang="ts">
     import PhoneNumber from 'awesome-phonenumber';
-    import { BButton } from 'buefy/src/components/button';
-    import { BDropdown, BDropdownItem } from 'buefy/src/components/dropdown';
-    import { BField } from 'buefy/src/components/field';
-    import { BInput } from 'buefy/src/components/input';
-    import { isMobile } from 'buefy/src/utils/helpers';
 
-    import useInput from '@/mixin/useInput';
-    import { isDefined, getBoolean, fetchISO, getDropdownPosition } from '@/utils/';
+    import { BButton, BDropdown, BDropdownItem, BField, BInput } from '@/components/buefy';
+    import Input from '@/mixin/useInput';
+    import { isDefined, getBoolean, fetchISO, getDropdownPosition, isMobile } from '@/utils/';
     import { Component, Emit, Mixins, Ref, Watch } from '@/utils/decorators';
 
     import { ICountry } from './models';
@@ -171,7 +167,7 @@
             BField, BInput, BButton, BDropdown, BDropdownItem,
         },
     })
-    export default class DmcPhoneInput extends Mixins(useInput) {
+    export default class DmcPhoneInput extends Mixins(Input) {
         isMounted = false;
         isAnyMobile = isMobile.any();
         getBoolean = getBoolean.bind(this) // short hand to make method available in template
