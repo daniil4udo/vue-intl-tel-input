@@ -25,7 +25,7 @@ for (const c of _countries) {
     const names = String(c[0]).split(/([\\(||//)])/g).reduce((a, el, i) => {
         if (el) {
             i === 2
-                ? a.push(String.fromCodePoint(...strEncodeUTF16(el)) || '')
+                ? a.push(String.fromCodePoint(...strEncodeUTF16(el)))
                 : a.push(el);
         }
 
