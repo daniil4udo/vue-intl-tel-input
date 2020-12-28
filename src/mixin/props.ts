@@ -142,6 +142,11 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
 
     @Prop({
         type: String,
+        default: () => 'en',
+    }) locale: string;
+
+    @Prop({
+        type: String,
         default: () => null,
     }) fieldId: string;
 
