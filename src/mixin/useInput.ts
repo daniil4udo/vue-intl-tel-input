@@ -1,9 +1,9 @@
 import PhoneNumber from 'awesome-phonenumber';
-import { Component, Mixins, Watch } from 'vue-property-decorator';
 
 import { INTL, VALID_CHAR } from '@/assets/constants';
 import Dropdown from '@/mixin/useDropdown';
 import { isDefined } from '@/utils/';
+import { Component, Mixins, Watch } from '@/utils/decorators';
 
 import { IPhoneObject, INumber, ParseMode } from '../components/models';
 // import useCountries from '@/mixin/useCountries';

@@ -1,9 +1,9 @@
 import uniqBy from 'lodash/uniqBy';
-import { Component, Mixins } from 'vue-property-decorator';
 
 import { countries } from '@/assets/all-countries';
 import Props from '@/mixin/props';
 import { has, isSupportedCountry } from '@/utils/';
+import { Component, Mixins } from '@/utils/decorators';
 
 import { ICountry } from '../components/models';
 

@@ -1,8 +1,7 @@
-import { Component, Emit, Mixins } from 'vue-property-decorator';
-
 import { ICountry, DropdowPosition } from '@/components/models';
 import Countries from '@/mixin/useCountries';
 import { toType } from '@/utils/';
+import { Component, Emit, Mixins } from '@/utils/decorators';
 
 @Component
 export default class Dropdown extends Mixins(Countries) {

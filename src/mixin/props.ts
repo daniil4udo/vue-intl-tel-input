@@ -1,10 +1,10 @@
 /* eslint-disable max-classes-per-file */
 import isEmpty from 'lodash/isEmpty';
-import { Component, Prop, Mixins, Vue } from 'vue-property-decorator';
 
 import { countries } from '@/assets/all-countries';
 import { PHONE_TYPE, NUMBER } from '@/assets/constants';
 import { isSupportedCountry, validationMessage } from '@/utils/';
+import { Component, Prop, Mixins, Vue } from '@/utils/decorators';
 
 import { IPhoneObject, IDropdowButton, PhoneNumberTypes, ParseMode } from '../components/models';
 

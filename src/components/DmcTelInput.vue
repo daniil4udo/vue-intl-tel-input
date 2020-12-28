@@ -75,6 +75,8 @@
                             class="input is-small iti__dropdown-input"
                             :placeholder="dropdownPlaceholder"
                             type="text"
+                            @focus="focusDropdownInput"
+                            @blur="blurDropdownInput"
                         >
                         <!-- TODO: add some svg to clear input -->
                     </div>
@@ -136,6 +138,8 @@
                 :disabled="disabled"
                 :placeholder="parsedPlaceholder"
                 @input="onInput"
+                @focus="focusInput"
+                @blur="blurInput"
                 @keypress.native="onKeyPress"
             />
         </B-Field>
@@ -154,10 +158,10 @@
     import { BField } from 'buefy/src/components/field';
     import { BInput } from 'buefy/src/components/input';
     import { isMobile } from 'buefy/src/utils/helpers';
-    import { Component, Emit, Mixins, Ref, Watch } from 'vue-property-decorator';
 
     import useInput from '@/mixin/useInput';
     import { isDefined, getBoolean, fetchISO, getDropdownPosition } from '@/utils/';
+    import { Component, Emit, Mixins, Ref, Watch } from '@/utils/decorators';
 
     import { ICountry } from './models';
 
@@ -342,7 +346,7 @@
             // }
         }
 
-        @Emit('dropdown-open')
+        @Emit('dropdown-active-change')
         onActiveChange(state: boolean) {
             if (state === true) {
                 // this.activeCountry.model = '';
@@ -353,18 +357,27 @@
             }
         }
 
-        @Emit('focus-input')
         focusInput() {
             this.$nextTick(() => {
                 this.refPhoneInput.focus();
+                this.$emit('focus-input');
             });
         }
 
-        @Emit('focus-dropdown-input')
+        blurInput() {
+            this.$emit('blur-input');
+        }
+
         focusDropdownInput() {
             this.$nextTick(() => {
                 this.refPhoneDropdownInput.focus();
+                this.$emit('focus-dropdown-input');
             });
+        }
+
+        // TODO: fires twice
+        blurDropdownInput() {
+            this.$emit('blur-dropdown-input');
         }
 
         async selectInput() {
