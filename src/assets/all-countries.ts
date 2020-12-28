@@ -7,8 +7,8 @@
 // - It is supported by libphonenumber (it must be listed on this page): https://github.com/googlei18n/libphonenumber/blob/master/resources/ShortNumberMetadata.xml
 
 import { ICountry } from '@/components/models';
-import { isoToEmoji } from '@/utils/emoji';
-import isEmojiUnicodeSupported from '@/utils/emoji/support/';
+import { strEncodeUTF16 } from '@/utils/';
+import { isEmojiUnicodeSupported, isoToEmoji } from '@/utils/emoji';
 
 import _countries from './countries.json';
 
@@ -32,7 +32,7 @@ for (const c of _countries) {
     const countryDict: ICountry = {
         name: [].concat(names).join(''), // c[0], // Country name,
         name_en: names[0],
-        name_local: names[2] || '',
+        name_local: strEncodeUTF16(names[2]),
         iso2, // iso2 code,
         dialCode: String(c[2]), // International dial code,
         priority: Number(c[3]) || 0, // Order (if >1 country with same dial code),

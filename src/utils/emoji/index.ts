@@ -1,5 +1,6 @@
 import { isSupportedCountry } from '@/utils/';
-import { isFlagEmoji } from '@/utils/emoji/support/';
+
+import isEmojiUnicodeSupported, { isFlagEmoji } from './support';
 
 const OFFSET = 127397;
 
@@ -20,3 +21,8 @@ export function emojiToISO(emoji = '') {
 
     return emoji.replace(/../g, isoGetter);
 }
+
+export {
+    isEmojiUnicodeSupported,
+};
+export * from './support';

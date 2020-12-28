@@ -153,3 +153,11 @@ export function setCaretPosition(ctrl: HTMLInputElement, pos: number) {
         ctrl.setSelectionRange(pos, pos);
     }
 }
+
+export function strEncodeUTF16(str = ''): string {
+    let arr = '';
+    for (let i = 0; i < str.length; i++) {
+        arr += `\\u${str.charCodeAt(i)}`;
+    }
+    return arr;
+}
