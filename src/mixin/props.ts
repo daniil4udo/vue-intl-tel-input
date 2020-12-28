@@ -158,6 +158,11 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
     }) mode: ParseMode;
 
     @Prop({
+        type: Boolean,
+        default: () => true,
+    }) automaticFormatting: boolean;
+
+    @Prop({
         type: Array,
         validator: (type: PhoneNumberTypes[]) => PHONE_TYPE.some(t => type.includes(t)),
         default: () => [ 'mobile', 'fixed-line', 'fixed-line-or-mobile' ],

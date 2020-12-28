@@ -86,7 +86,7 @@ export default class Input extends Mixins(Dropdown) {
     public get formattedPhone(): string {
         let key: keyof INumber = 'input';
 
-        if (this.phoneData.valid) {
+        if (this.automaticFormatting && this.phoneData.valid) {
             key = this.parsedMode;
         }
 
