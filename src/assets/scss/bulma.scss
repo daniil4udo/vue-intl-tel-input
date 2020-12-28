@@ -1,6 +1,4 @@
 // Bulma
-$dropdown-content-padding-top: 0;
-
 @import '~bulma/sass/utilities/_all';
 @import '~bulma/sass/base/minireset';
 @import '~bulma/sass/base/generic'; // <- can be removed
@@ -27,10 +25,11 @@ $dropdown-content-padding-top: 0;
 ///
 /// Helpers
 ///
-@import '~bulma/sass/helpers/color';
+@import '~bulma/sass/helpers/_all';
 ///
 /// BUEFY
 ///
 @import '~buefy/src/scss/utils/_all';
 @import '~buefy/src/scss/utils/variables-ext';
 @import '~buefy/src/scss/components/_dropdown';
+// @import '~buefy/src/scss/components/_icon';

@@ -52,8 +52,8 @@
     }
 
     .dropdown-menu {
-        min-width: 400px;
-        max-width: 400px;
+        min-width: $dropdown-content-width;
+        max-width: $dropdown-content-width;
     }
 
     .dropdown-item {
