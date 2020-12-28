@@ -63,11 +63,11 @@ export interface IPhoneObject {
     number: INumber;
     regionCode: string;
     valid: boolean;
-    isIntlInput: boolean;
     possible: boolean;
     canBeInternationallyDialled: boolean;
     type: PhoneNumberTypes;
     possibility: Possibility;
+    isIntlInput: boolean;
     country: ICountry;
 }
 

@@ -5,7 +5,7 @@ import { INTL, VALID_CHAR } from '@/assets/constants';
 import Dropdown from '@/mixin/useDropdown';
 import { isDefined } from '@/utils/';
 
-import { IPhoneObject, INumber } from '../components/models';
+import { IPhoneObject, INumber, ParseMode } from '../components/models';
 // import useCountries from '@/mixin/useCountries';
 
 @Component
@@ -33,9 +33,27 @@ export default class Input extends Mixins(Dropdown) {
      * V-MODEL
      */
 
+    /**
+     * NOTE: awesome-phonenumber has odd behaviour
+     * if you type number like 00380 (which is also an international input)
+     * number.international shows correct parse phone - +38097
+     * but regionCode satays as previous country
+     * hence we need to replace all possible variations to +
+     */
+    public get regionCode() {
+        const { international = '' } = this.phoneData.number;
+
+        /**
+         * Readon for fallback to the regionCode
+         * is that parsed 'number' object comes later
+         * then detection of the region code
+         */
+        return PhoneNumber.call(null, international).getRegionCode() || this.phoneData.regionCode;
+    }
+
     public get parsedPlaceholder(): string {
         if (this.dynamicPlaceholder && this.activeCountry.iso2) {
-            const mode = this.mode || 'international';
+            const mode: ParseMode = this.mode || 'national';
 
             return PhoneNumber.getExample(this.activeCountry.iso2, this.placeholderNumberType).getNumber(mode);
         }
@@ -72,7 +90,7 @@ export default class Input extends Mixins(Dropdown) {
             key = this.parsedMode;
         }
 
-        return this.phoneData.number[key] || '';
+        return this.phoneData.number[key] || this.phone;
     }
 
     public get phoneData(): IPhoneObject {
@@ -110,7 +128,7 @@ export default class Input extends Mixins(Dropdown) {
         }
     }
 
-    @Watch('phoneData.regionCode', { immediate: false })
+    @Watch('regionCode', { immediate: false })
     watchPhoneRegionCode(code: string) {
         if (isDefined(code) && !this.disabledDropdown) {
             this.setActiveCountry(code);
@@ -134,13 +152,6 @@ export default class Input extends Mixins(Dropdown) {
         return INTL.test(phone);
     }
 
-    /**
-     * NOTE: awesome-phonenumber has odd behaviour
-     * if you type number like 00380 (which is also an international input)
-     * number.international shows correct parse phone - +38097
-     * but regionCode satays as previous country
-     * hence we need to replace all possible variations to +
-     */
     public normalizeIntlInput(phone = this.phone): string {
         return this.testInternational(phone)
             ? phone.replace(INTL, '+')

@@ -1,5 +1,6 @@
 <template>
     <div>
+        regionCode - {{ regionCode }}
         <B-Field
             :id="fieldId"
             ref="refPhoneField"
@@ -67,7 +68,7 @@
                 </B-Button>
 
                 <B-Field class="dropdown-item">
-                    <div class="control has-icons-right">
+                    <div class="control has-icons-right is-clearfix is-expanded">
                         <input
                             ref="refPhoneDropdownInput"
                             v-model="dropdownSearch"
@@ -179,7 +180,7 @@
         get isValid() {
             return (this.phone !== '')
                 && this.phoneData.valid
-                && this.activeCountry.iso2 === this.phoneData.regionCode
+                && this.activeCountry.iso2 === this.regionCode
                 && this.allowedPhoneTypes.includes(this.phoneData.type);
         }
 
@@ -208,7 +209,7 @@
              * 2. If active country id not equal to parsed one
              * while international inputs are restricted
              */
-            if (!this.isAllowedInternationalInput && this.activeCountry.iso2 !== this.phoneData.regionCode) {
+            if (this.disabledDropdown && (isDefined(this.regionCode) && this.activeCountry.iso2 !== this.regionCode)) {
                 return `Phone number error: country change is not allowed`;
             }
 
@@ -310,12 +311,12 @@
             return this.preferredCountries[0] || this.sortedCountries[0].iso2;
         }
 
-        async onSelect(c: ICountry) {
+        onSelect(c: ICountry) {
             this.setActiveCountry(c);
+            this.focusInput();
 
             // emit country change event for the actual country select
             this.$emit('input', this.phone, this.phoneData);
-            await this.focusInput();
         }
 
         onKeyPress(e: KeyboardEvent) {
@@ -346,9 +347,9 @@
             if (state === true) {
                 // this.activeCountry.model = '';
                 this.dropdownSearch = '';
-                this.focusDropdownInput();
-
                 this.dropdownOpenDirection = getDropdownPosition(this.refPhoneDropdown.$el);
+
+                this.focusDropdownInput();
             }
         }
 

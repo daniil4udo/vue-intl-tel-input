@@ -1,8 +1,8 @@
-import isPlainObject from 'is-plain-object';
 import { Component, Emit, Mixins } from 'vue-property-decorator';
 
 import { ICountry, DropdowPosition } from '@/components/models';
 import Countries from '@/mixin/useCountries';
+import { toType } from '@/utils/';
 
 @Component
 export default class Dropdown extends Mixins(Countries) {
@@ -12,7 +12,6 @@ export default class Dropdown extends Mixins(Countries) {
 
     public get fileredCountriesModel(): ICountry[] {
         const matchInputCountry = (c = '') => String.prototype.includes.call(c.toLowerCase(), this.dropdownSearch.toLowerCase());
-
         return this.sortedCountries.filter(option => [ option.name, option.dialCode, option.iso2, option.emoji.flag ].some(matchInputCountry));
     }
 
@@ -41,7 +40,7 @@ export default class Dropdown extends Mixins(Countries) {
             return this.activeCountry;
         }
 
-        if (typeof c !== 'string' && !isPlainObject(c)) {
+        if (toType(c) !== 'string' && toType(c) !== 'object') {
             throw new TypeError(`[setActiveCountry]: Country argument has to be a string or an object. Got ${typeof c}`);
         }
 
