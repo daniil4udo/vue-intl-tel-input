@@ -1,11 +1,25 @@
 import PhoneNumber from 'awesome-phonenumber';
-import get from 'lodash/get';
-import isNil from 'lodash/isNil';
+import { PropertyPath } from 'lodash';
+import _get from 'lodash/get';
+import _has from 'lodash/has';
+import _isNil from 'lodash/isNil';
 
 import { IPhoneObject, DropdowPosition } from '../components/models';
 
-export function isDefined(v) {
-    return !isNil(v);
+export function isDefined<T>(v: T) {
+    return !_isNil(v);
+}
+
+export function has<T>(o: T, key: PropertyPath) {
+    return _has(o, key);
+}
+
+export type AllTypes = 'primitive' | 'boolean' | 'number' | 'bigint' | 'string' | 'symbol' | 'null' | 'undefined' | 'object' | 'array' | 'arguments' | 'buffer' | 'function' | 'generatorfunction' | 'map' | 'weakmap' | 'set' | 'weakset' | 'regexp' | 'date';
+export function toType<T>(val: T): AllTypes {
+    return {}.toString
+        .call(val)
+        .match(/\s([a-zA-Z]+)/)[1]
+        .toLowerCase();
 }
 /**
  * So user can add custom validation message base on phone Object :)
@@ -41,8 +55,13 @@ export function isCorrectISO(iso2 = '') {
         throw new TypeError(`[isCorrectISO]: iso2 argument must be an ISO 3166-1 alpha-2 String. Got '${type === 'string' ? iso2 : type}'`);
     }
 
-    if (!PhoneNumber.getSupportedRegionCodes().includes(iso2.toUpperCase())) {
-        throw new TypeError(`[isCorrectISO]: iso2 argument ${type === 'string' ? iso2 : type} is not supported by awesome-phonenumber`);
+    return true;
+}
+
+const supported = PhoneNumber.getSupportedRegionCodes().reduce((a, c) => ({ ...a, [c]: c }), {} as Record<string, string>);
+export function isSupportedCountry(iso2 = '') {
+    if (!isCorrectISO(iso2) || !has(supported, iso2.toUpperCase())) {
+        throw new TypeError(`[isCorrectISO]: iso2 country ${iso2} is not supported by awesome-phonenumber`);
     }
 
     return true;
@@ -51,7 +70,7 @@ export function isCorrectISO(iso2 = '') {
 export function getBoolean(prop, key: string): boolean {
     return typeof prop === 'boolean'
         ? prop
-        : get(prop, key, false);
+        : _get(prop, key, false);
 }
 
 function isPropertyAccessSafe<T>(base: T, property: keyof T) {

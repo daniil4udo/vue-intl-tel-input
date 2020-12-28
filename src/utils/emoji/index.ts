@@ -1,10 +1,10 @@
-import { isCorrectISO } from '@/utils/';
+import { isSupportedCountry } from '@/utils/';
 import { isFlagEmoji } from '@/utils/emoji/support/';
 
 const OFFSET = 127397;
 
 export function isoToEmoji(iso2 = '') {
-    if (!isCorrectISO(iso2)) {
+    if (!isSupportedCountry(iso2)) {
         return null;
     }
     // offset between uppercase ascii and regional indicator symbols

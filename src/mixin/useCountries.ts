@@ -1,10 +1,9 @@
-import has from 'lodash/has';
 import uniqBy from 'lodash/uniqBy';
 import { Component, Mixins } from 'vue-property-decorator';
 
 import { countries } from '@/assets/all-countries';
 import Props from '@/mixin/props';
-import { isCorrectISO } from '@/utils/';
+import { has, isSupportedCountry } from '@/utils/';
 
 import { ICountry } from '../components/models';
 
@@ -53,7 +52,7 @@ export default class Countries extends Mixins(Props) {
     }
 
     public getCountry(iso2 = ''): ICountry {
-        if (isCorrectISO(iso2) && has(this._filtered, iso2)) {
+        if (isSupportedCountry(iso2) && has(this._filtered, iso2)) {
             return this._filtered[iso2.toUpperCase()];
         }
 

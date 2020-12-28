@@ -4,7 +4,7 @@ import { Component, Prop, Mixins, Vue } from 'vue-property-decorator';
 
 import { countries } from '@/assets/all-countries';
 import { PHONE_TYPE, NUMBER } from '@/assets/constants';
-import { isCorrectISO, validationMessage } from '@/utils/';
+import { isSupportedCountry, validationMessage } from '@/utils/';
 
 import { IPhoneObject, IDropdowButton, PhoneNumberTypes, ParseMode } from '../components/models';
 
@@ -59,25 +59,25 @@ class DropdownProps extends Vue {
     @Prop({
         type: (String),
         default: () => '',
-        validator: (iso2: string) => (iso2 !== '' ? isCorrectISO(iso2) : true),
+        validator: (iso2: string) => (iso2 !== '' ? isSupportedCountry(iso2) : true),
     }) defaultCountry: string;
 
     @Prop({
         type: (Array),
         default: () => [],
-        validator: (iso2: string[]) => (!isEmpty(iso2) ? iso2.some(isCorrectISO) : true),
+        validator: (iso2: string[]) => (!isEmpty(iso2) ? iso2.some(isSupportedCountry) : true),
     }) onlyCountries: string[];
 
     @Prop({
         type: (Array),
         default: () => [],
-        validator: (iso2: string[]) => (!isEmpty(iso2) ? iso2.some(isCorrectISO) : true),
+        validator: (iso2: string[]) => (!isEmpty(iso2) ? iso2.some(isSupportedCountry) : true),
     }) ignoredCountries: string[];
 
     @Prop({
         type: (Array),
         default: () => [],
-        validator: (iso2: string[]) => (!isEmpty(iso2) ? iso2.some(isCorrectISO) : true),
+        validator: (iso2: string[]) => (!isEmpty(iso2) ? iso2.some(isSupportedCountry) : true),
     }) preferredCountries: string[];
 }
 
