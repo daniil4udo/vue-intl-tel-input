@@ -17,7 +17,8 @@ export default class Input extends Mixins(Dropdown) {
      * Do not modify. Important for v-model to work
      */
     public get phone(): string {
-        return this.normalizeIntlInput(this.value.trim());
+        return String(this.value).trim();
+        // return this.normalizeIntlInput(String(this.value).trim());
     }
 
     public set phone(value) {
@@ -32,10 +33,6 @@ export default class Input extends Mixins(Dropdown) {
      * V-MODEL
      */
 
-    public get isAllowedInternationalInput(): boolean {
-        return !this.disabledDropdown;
-    }
-
     public get parsedPlaceholder(): string {
         if (this.dynamicPlaceholder && this.activeCountry.iso2) {
             const mode = this.mode || 'international';
@@ -44,14 +41,6 @@ export default class Input extends Mixins(Dropdown) {
         }
 
         return this.inputPlaceholder;
-    }
-
-    public get phoneData(): IPhoneObject {
-        return {
-            ...new PhoneNumber(this.phone, this.activeCountry.iso2).toJSON(),
-            isIntlInput: this.testInternational(this.phone),
-            country: this.activeCountry,
-        };
     }
 
     public get parsedMode(): keyof INumber {
@@ -86,6 +75,16 @@ export default class Input extends Mixins(Dropdown) {
         return this.phoneData.number[key] || '';
     }
 
+    public get phoneData(): IPhoneObject {
+        const parserPhone = new PhoneNumber(this.phone, this.activeCountry.iso2).toJSON();
+
+        return {
+            ...parserPhone,
+            isIntlInput: this.testInternational(this.phone),
+            country: this.activeCountry,
+        };
+    }
+
     @Watch('phone', { immediate: true })
     onPhoneChanged(value: string, valuePrev: string) {
         if (value) {
@@ -94,7 +93,7 @@ export default class Input extends Mixins(Dropdown) {
              * NOTE: has to be { immediate: true } in order this to work with v-model
              */
             if (this.validCharactersOnly && !this.testCharacters()) {
-                value = value.replace(/[^()\-\+\d\s]+/gi, '');
+                value = this.normalizeInput(value);
 
                 this.$nextTick(() => {
                     this.phone = value;
@@ -113,7 +112,7 @@ export default class Input extends Mixins(Dropdown) {
 
     @Watch('phoneData.regionCode', { immediate: false })
     watchPhoneRegionCode(code: string) {
-        if (isDefined(code) && this.isAllowedInternationalInput) {
+        if (isDefined(code) && !this.disabledDropdown) {
             this.setActiveCountry(code);
 
             /**
@@ -123,14 +122,29 @@ export default class Input extends Mixins(Dropdown) {
         }
     }
 
+    public testCharacters(phone = this.phone): boolean {
+        return VALID_CHAR.test(phone);
+    }
+
+    public normalizeInput(phone = this.phone): string {
+        return phone.replace(/[^()\-\+\d\s]+/gi, '');
+    }
+
+    public testInternational(phone = this.phone): boolean {
+        return INTL.test(phone);
+    }
+
+    /**
+     * NOTE: awesome-phonenumber has odd behaviour
+     * if you type number like 00380 (which is also an international input)
+     * number.international shows correct parse phone - +38097
+     * but regionCode satays as previous country
+     * hence we need to replace all possible variations to +
+     */
     public normalizeIntlInput(phone = this.phone): string {
         return this.testInternational(phone)
             ? phone.replace(INTL, '+')
             : phone;
-    }
-
-    public testCharacters(phone = this.phone): boolean {
-        return VALID_CHAR.test(phone);
     }
 
     public testCustomValidate(phone = this.phone): boolean {
@@ -139,13 +153,5 @@ export default class Input extends Mixins(Dropdown) {
         }
 
         throw new TypeError(`[testCustomValidate]: phone in customRegExp has to be a RegExp. Got ${typeof this.customRegExp}`);
-    }
-
-    public testInternational(phone = this.phone): boolean {
-        if (typeof phone === 'string') {
-            return INTL.test(phone);
-        }
-
-        throw new TypeError(`[testInternational]: phone in testInternational has to be as string. Got ${typeof phone}`);
     }
 }

@@ -9,7 +9,15 @@ import { ICountry } from '../components/models';
 
 @Component
 export default class Countries extends Mixins(Props) {
+    /**
+     * Flag that shows loading if we are trying to fetch country ISO from https://ip2c.org/s
+     */
     public isFetchingCode = true;
+    /**
+     * Using to move selected countries to the top of the list
+     * As long as preferredCountries is a prop
+     * we use preferredCountriesProxy to modify it
+     */
     public preferredCountriesProxy = [].concat(this.preferredCountries); // not to modify props
 
     private get _preferred(): ICountry[] {

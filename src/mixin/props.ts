@@ -16,12 +16,12 @@ class DropdownProps extends Vue {
     }) dropdownId: string;
 
     @Prop({
-        type: (Number),
+        type: Number,
         default: () => 0,
     }) dropdownTabIndex: number;
 
     @Prop({
-        type: (String),
+        type: String,
         default: () => 'Search by country name, code or ISO',
     }) dropdownPlaceholder: string;
 
@@ -47,37 +47,37 @@ class DropdownProps extends Vue {
 
     // whether or not to allow the dropdown
     @Prop({
-        type: (Boolean),
+        type: Boolean,
         default: () => false,
     }) disabledDropdown: boolean;
 
     @Prop({
-        type: (Boolean),
+        type: Boolean,
         default: () => true,
     }) fetchCountry: boolean;
 
     @Prop({
-        type: (String),
-        default: () => '',
+        type: String,
         validator: (iso2: string) => (iso2 !== '' ? isSupportedCountry(iso2) : true),
+        default: () => '',
     }) defaultCountry: string;
 
     @Prop({
-        type: (Array),
-        default: () => [],
+        type: Array,
         validator: (iso2: string[]) => (!isEmpty(iso2) ? iso2.some(isSupportedCountry) : true),
+        default: () => [],
     }) onlyCountries: string[];
 
     @Prop({
-        type: (Array),
-        default: () => [],
+        type: Array,
         validator: (iso2: string[]) => (!isEmpty(iso2) ? iso2.some(isSupportedCountry) : true),
+        default: () => [],
     }) ignoredCountries: string[];
 
     @Prop({
-        type: (Array),
-        default: () => [],
+        type: Array,
         validator: (iso2: string[]) => (!isEmpty(iso2) ? iso2.some(isSupportedCountry) : true),
+        default: () => [],
     }) preferredCountries: string[];
 }
 
@@ -135,7 +135,7 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
 
     // for v-model to work
     @Prop({
-        type: String,
+        type: [ String, Number ],
         default: () => '',
     }) value: string;
     // v-model
@@ -154,8 +154,8 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
 
     @Prop({
         type: Array,
-        default: () => [ 'mobile', 'fixed-line', 'fixed-line-or-mobile' ],
         validator: (type: PhoneNumberTypes[]) => PHONE_TYPE.some(t => type.includes(t)),
+        default: () => [ 'mobile', 'fixed-line', 'fixed-line-or-mobile' ],
     }) allowedPhoneTypes: PhoneNumberTypes[];
 
     @Prop({

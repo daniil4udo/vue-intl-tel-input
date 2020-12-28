@@ -30,7 +30,7 @@ for (const c of _countries) {
     const iso2 = String(c[1]).toUpperCase();
 
     const countryDict: ICountry = {
-        name: [ ...names ].join(''), // c[0], // Country name,
+        name: [].concat(names).join(''), // c[0], // Country name,
         name_en: names[0],
         name_local: names[2] || '',
         iso2, // iso2 code,
