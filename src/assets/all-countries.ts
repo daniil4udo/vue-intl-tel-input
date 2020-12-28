@@ -22,7 +22,15 @@ for (const c of _countries) {
      * We may want to encode to unicode
      * name[2] is a non latinic c name
      */
-    const names = String(c[0]).split(/([\\(||//)])/g).filter(el => el !== '');
+    const names = String(c[0]).split(/([\\(||//)])/g).reduce((a, el, i) => {
+        if (el) {
+            i === 2
+                ? a.push(String.fromCodePoint(...strEncodeUTF16(el)) || '')
+                : a.push(el);
+        }
+
+        return a;
+    }, []);
     // if (names.includes('(') && names.includes(')')) {
     //     names[2] = escapeUnicode(names[2]);
     // }
@@ -32,7 +40,7 @@ for (const c of _countries) {
     const countryDict: ICountry = {
         name: [].concat(names).join(''), // c[0], // Country name,
         name_en: names[0],
-        name_local: strEncodeUTF16(names[2]),
+        name_local: names[2],
         iso2, // iso2 code,
         dialCode: String(c[2]), // International dial code,
         priority: Number(c[3]) || 0, // Order (if >1 country with same dial code),
