@@ -4,17 +4,18 @@
         <DmcTelInput
             v-model="phone"
             :disabled-dropdown="false"
+
             mode="national"
             :emoji-flags="true"
-            :preferred-countries="['AE']"
+            :autocomplete="'off'"
         />
     </div>
 </template>
 
 <script lang="ts">
-    import { Component, Vue } from 'vue-property-decorator';
-
     import DmcTelInput from '@/components/DmcTelInput.vue';
+    import { Component, Vue } from '@/utils/decorators';
+
     // import isEmojiUnicodeSupportedByBrowser from '@/utils/emoji/support/';
 
     @Component({
@@ -24,7 +25,7 @@
         },
     })
     export default class Input extends Vue {
-        phone = ''
+        phone = '+'
     }
 </script>
 
