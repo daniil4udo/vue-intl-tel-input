@@ -13,6 +13,7 @@ export default class Input extends Mixins(Dropdown) {
 
     /**
      * V-MODEL
+     * TODO: REFACCTOR TTO USE SYNC (VUE3)
      * Do not modify. Important for v-model to work
      */
     public get phone(): string {
