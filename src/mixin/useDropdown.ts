@@ -1,39 +1,85 @@
-import { ICountry, DropdowPosition } from '@/components/models';
-import Countries from '@/mixin/useCountries';
-import { toType } from '@/utils/';
-import { Component, Emit, Mixins } from '@/utils/decorators';
+import { countries } from '@/assets/all-countries';
+import Props from '@/mixin/props';
+import { toType, has, uniqBy, isSupportedCountry } from '@/utils/';
+import { Component, Mixins } from '@/utils/decorators';
+
+import { ICountry, DropdowPosition } from '../components/models';
 
 @Component
-export default class Dropdown extends Mixins(Countries) {
+export default class Dropdown extends Mixins(Props) {
+    private preferredCountriesProxy = [].concat(this.preferredCountries); // not to modify props
     public dropdownSearch = ''
     public dropdownOpenDirection = 'is-bottom-right' as DropdowPosition
+    /**
+     * Using to move selected countries to the top of the list
+     * As long as preferredCountries is a prop
+     * we use preferredCountriesProxy to modify it
+     */
     public activeCountry = { iso2: this.defaultCountry } as ICountry;
 
-    public get fileredCountriesModel(): ICountry[] {
-        const matchInputCountry = (c = '') => String.prototype.includes.call(c.toLowerCase(), this.dropdownSearch.toLowerCase());
-        return this.sortedCountries.filter(option => [ option.name, option.dialCode, option.iso2, option.emoji.flag ].some(matchInputCountry));
+    private get _preferred(): ICountry[] {
+        const isLastIndex = (i: number) => (this.preferredCountriesProxy.length - 1) === i;
+
+        return this.getCountries(this.preferredCountriesProxy).map((c, i) => ({
+            ...c,
+            preferred: true,
+            lastPreffered: isLastIndex(i),
+        }));
     }
 
-    public updatePreferredCountries(iso2 = ''): string[] {
-        /**
-         * Move countries, that has been selected to the top of the list
-         * Like a recently chosen
-         */
-        if (!this.preferredCountriesProxy.includes(iso2)) {
-            // this.preferredCountriesProxy.push(iso2);
-            this.$set(this.preferredCountriesProxy, this.preferredCountriesProxy.length, iso2);
-
-            /**
-             * Avoid using decorator
-             * to avoid firing every time country changes
-             */
-            this.$emit('preferred-changed', this.preferredCountriesProxy, iso2);
+    private get _filtered(): Record<string, ICountry> {
+        // List countries after filtered
+        if (this.onlyCountries.length !== 0) {
+            return this.onlyCountries.reduce((a, iso2) => Object.assign(a, { [iso2]: this.getCountry(iso2) }), {});
         }
 
-        return this.preferredCountriesProxy;
+        if (this.ignoredCountries.length !== 0) {
+            const filterIgnored = {};
+
+            for (const iso2 in countries) {
+                if (!this.ignoredCountries.includes(iso2)) {
+                    filterIgnored[iso2] = this.getCountry(iso2);
+                }
+            }
+
+            return filterIgnored;
+        }
+
+        return countries;
     }
 
-    @Emit('country-changed')
+    private get _sorted(): ICountry[] {
+        return uniqBy([].concat(this._preferred, Object.values(this._filtered)), 'iso2');
+    }
+
+    public get fileredCountries(): ICountry[] {
+        const matchInputCountry = (c = '') => String.prototype.includes.call(c.toLowerCase(), this.dropdownSearch.toLowerCase());
+
+        if (this.dropdownSearch === '') {
+            return this._sorted;
+        }
+
+        return this._sorted.filter(option => [ option.name, option.dialCode, option.iso2, option.emoji.flag ].some(matchInputCountry));
+    }
+
+    public get isEmojiFlagSupported(): boolean {
+        return this._sorted.every(c => c.emoji.supported);
+    }
+
+    public getCountry(iso2 = ''): ICountry {
+        if (isSupportedCountry(iso2) && has(this._filtered, iso2)) {
+            return this._filtered[iso2.toUpperCase()];
+        }
+
+        return null;
+    }
+
+    public getCountries(iso2List: string[] = []): ICountry[] {
+        return iso2List
+            .map(this.getCountry)
+            .filter(Boolean);
+    }
+
     public setActiveCountry(c: ICountry | string): ICountry {
         if (!c) {
             return this.activeCountry;
@@ -48,7 +94,23 @@ export default class Dropdown extends Mixins(Countries) {
             : { ...c };
 
         this.updatePreferredCountries(this.activeCountry.iso2);
+        this.$emit('country-changed', this.activeCountry.iso2, this.activeCountry);
 
         return this.activeCountry;
+    }
+
+    public updatePreferredCountries(iso2 = ''): string[] {
+        /**
+         * Move countries, that has been selected to the top of the list
+         * Like a recently chosen
+         */
+        if (!this.preferredCountriesProxy.includes(iso2)) {
+            // this.preferredCountriesProxy.push(iso2);
+            this.$set(this.preferredCountriesProxy, this.preferredCountriesProxy.length, iso2);
+
+            this.$emit('preferred-changed', iso2, this.preferredCountriesProxy);
+        }
+
+        return this.preferredCountriesProxy;
     }
 }

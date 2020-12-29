@@ -11,14 +11,9 @@ import { IPhoneObject, INumber, ParseMode } from '../components/models';
 export default class Input extends Mixins(Dropdown) {
     public cursorPosition = 0;
 
-    /**
-     * V-MODEL
-     * TODO: REFACCTOR TTO USE SYNC (VUE3)
-     * Do not modify. Important for v-model to work
-     */
+    // V-MODEL TODO: REFACCTOR TO USE SYNC (VUE3)
     public get phone(): string {
         return String(this.value).trim();
-        // return this.normalizeIntlInput(String(this.value).trim());
     }
 
     public set phone(value) {
@@ -29,9 +24,7 @@ export default class Input extends Mixins(Dropdown) {
          */
         this.$emit('input', value, this.phoneData);
     }
-    /**
-     * V-MODEL
-     */
+    // end V-MODEL
 
     /**
      * NOTE: awesome-phonenumber has odd behaviour
@@ -40,7 +33,7 @@ export default class Input extends Mixins(Dropdown) {
      * but regionCode satays as previous country
      * hence we need to replace all possible variations to +
      */
-    public get regionCode() {
+    public get regionCode(): string {
         const { international = '' } = this.phoneData.number;
 
         /**
@@ -51,7 +44,7 @@ export default class Input extends Mixins(Dropdown) {
         return PhoneNumber.call(null, international).getRegionCode() || this.phoneData.regionCode;
     }
 
-    public get parsedPlaceholder(): string {
+    public get newPlaceholder(): string {
         if (this.dynamicPlaceholder && this.activeCountry.iso2) {
             const mode: ParseMode = this.mode || 'national';
 
@@ -61,7 +54,7 @@ export default class Input extends Mixins(Dropdown) {
         return this.inputPlaceholder;
     }
 
-    public get parsedMode(): keyof INumber {
+    public get newMode(): keyof INumber {
         if (this.customRegExp) {
             return 'input';
         }
@@ -87,7 +80,7 @@ export default class Input extends Mixins(Dropdown) {
         let key: keyof INumber = 'input';
 
         if (this.automaticFormatting && this.phoneData.valid) {
-            key = this.parsedMode;
+            key = this.newMode;
         }
 
         return this.phoneData.number[key] || this.phone;
@@ -104,17 +97,17 @@ export default class Input extends Mixins(Dropdown) {
     }
 
     @Watch('phone', { immediate: true })
-    onPhoneChanged(value: string, valuePrev: string) {
-        if (value) {
+    onPhoneChanged(p: string, valuePrev: string) {
+        if (isDefined(p) && p !== '') {
             /**
              * Sanitizing input if validCharactersOnly id on
              * NOTE: has to be { immediate: true } in order this to work with v-model
              */
             if (this.validCharactersOnly && !this.testCharacters()) {
-                value = this.normalizeInput(value);
+                p = this.normalizeInput(p);
 
                 this.$nextTick(() => {
-                    this.phone = value;
+                    this.phone = p;
                 });
             }
 
@@ -129,9 +122,9 @@ export default class Input extends Mixins(Dropdown) {
     }
 
     @Watch('regionCode', { immediate: false })
-    watchPhoneRegionCode(code: string) {
-        if (isDefined(code) && !this.disabledDropdown) {
-            this.setActiveCountry(code);
+    onRegionCode(iso2: string) {
+        if (isDefined(iso2) && !this.disabledDropdown) {
+            this.setActiveCountry(iso2);
 
             /**
              * In case user start input with +, format it base on this.mode

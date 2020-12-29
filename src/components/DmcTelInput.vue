@@ -22,7 +22,7 @@
                 scrollable
                 :position="dropdownOpenDirection"
                 :max-height="400"
-                :disabled="disabled || disabledDropdown || (!isMounted || isFetchingCode)"
+                :disabled="disabled || disabledDropdown || (!isMounted || isFetching)"
                 :tabindex="dropdownTabIndex"
                 @input="onSelect"
                 @active-change="onActiveChange"
@@ -30,7 +30,7 @@
                 <B-Button
                     slot="trigger"
                     slot-scope="{ active }"
-                    :loading="!isMounted || isFetchingCode"
+                    :loading="!isMounted || isFetching"
                     :class="[
                         'button is-outlined',
                         'iti__button',
@@ -38,7 +38,7 @@
                     ]"
                     type="button"
                 >
-                    <template v-if="isMounted && !isFetchingCode">
+                    <template v-if="isMounted && !isFetching">
                         <template v-if="!getBoolean(hideFlags, 'button')">
                             <div
                                 v-if="getBoolean(emojiFlags, 'button') && activeCountry.emoji"
@@ -82,7 +82,7 @@
                     </div>
                 </B-Field>
 
-                <template v-for="(c, i) in fileredCountriesModel">
+                <template v-for="(c, i) in fileredCountries">
                     <B-Dropdown-item
                         :key="`${i}-item`"
                         :value="c"
@@ -136,7 +136,7 @@
                 :tabindex="inputTabIndex"
                 :name="`${name}-${Date.now()}`"
                 :disabled="disabled"
-                :placeholder="parsedPlaceholder"
+                :placeholder="newPlaceholder"
                 @input="onInput"
                 @focus="focusInput"
                 @blur="blurInput"
@@ -145,7 +145,7 @@
         </B-Field>
         <p>activeCountry</p>
         <pre>{{ activeCountry }}</pre>
-        <strong>parsedPlaceholder - {{ parsedPlaceholder }}</strong>
+        <strong>newPlaceholder - {{ newPlaceholder }}</strong>
         <p>phoneData</p>
         <pre>{{ phoneData }}</pre>
     </div>
@@ -155,9 +155,10 @@
     import PhoneNumber from 'awesome-phonenumber';
 
     import { BButton, BDropdown, BDropdownItem, BField, BInput } from '@/components/buefy';
+    import Dropdown from '@/mixin/useDropdown';
     import Input from '@/mixin/useInput';
     import { isDefined, getBoolean, fetchISO, getDropdownPosition, isMobile } from '@/utils/';
-    import { Component, Emit, Mixins, Ref, Watch } from '@/utils/decorators';
+    import { Component, Mixins, Ref, Watch } from '@/utils/decorators';
 
     import { ICountry } from './models';
 
@@ -167,9 +168,13 @@
             BField, BInput, BButton, BDropdown, BDropdownItem,
         },
     })
-    export default class DmcPhoneInput extends Mixins(Input) {
+    export default class DmcPhoneInput extends Mixins(Dropdown, Input) {
         isMounted = false;
+        // Flag that shows loading if we are trying to fetch country ISO from https://ip2c.org/s
+        isFetching = true;
+        // Check if current browser / platfor is mobile
         isAnyMobile = isMobile.any();
+        // Shorthand for binding imported method
         getBoolean = getBoolean.bind(this) // short hand to make method available in template
 
         @Ref() readonly refPhoneField: BField;
@@ -263,7 +268,7 @@
                 })
                 .finally(() => {
                     // Have this flag to avoid FOUC
-                    this.isFetchingCode = false;
+                    this.isFetching = false;
                     this.isMounted = true;
                 });
         }
@@ -308,7 +313,7 @@
             /**
              * 4. if don't have get fallback country from preffered or just a first option
              */
-            return this.preferredCountries[0] || this.sortedCountries[0].iso2;
+            return this.preferredCountries[0] || this.fileredCountries[0].iso2;
         }
 
         onSelect(c: ICountry) {
@@ -342,7 +347,6 @@
             // }
         }
 
-        @Emit('dropdown-active-change')
         onActiveChange(state: boolean) {
             if (state === true) {
                 // this.activeCountry.model = '';
@@ -350,6 +354,7 @@
                 this.dropdownOpenDirection = getDropdownPosition(this.refPhoneDropdown.$el);
 
                 this.focusDropdownInput();
+                this.$emit('dropdown-active-change', state);
             }
         }
 
@@ -361,7 +366,9 @@
         }
 
         blurInput() {
-            this.$emit('blur-input');
+            this.$nextTick(() => {
+                this.$emit('blur-input');
+            });
         }
 
         focusDropdownInput() {
@@ -373,7 +380,9 @@
 
         // TODO: fires twice
         blurDropdownInput() {
-            this.$emit('blur-dropdown-input');
+            this.$nextTick(() => {
+                this.$emit('blur-dropdown-input');
+            });
         }
 
         async selectInput() {
