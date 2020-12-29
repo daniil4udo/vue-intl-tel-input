@@ -129,13 +129,33 @@ export function setCaretPosition(ctrl: HTMLInputElement, pos: number) {
     }
 }
 
-export function strEncodeUTF16(str = '') {
-    const arr: number[] = [];
-    for (let i = 0; i < str.length; i++) {
-        arr[i] = str.charCodeAt(i);
+// String to Unicode
+export function strEncodeUTF16(x: string) {
+    const z = [];
+    const strLen = x.length;
+    const trimSpaces = false; // whitespaces
+    const s = '\\u';
+    let charCode;
+    for (let v = 0; v < strLen; v++) {
+        charCode = x.charCodeAt(v);
+        if (trimSpaces == false && d(charCode) == true) {
+            z.push(x.charAt(v));
+        }
+        else {
+            z.push(s);
+            z.push(padLeft(charCode.toString(16), 4));
+        }
     }
-
-    return arr;
+    return z.join('');
+}
+function padLeft(u, t: number) {
+    if (!t || u.length >= t) {
+        return u;
+    }
+    return (10 ** (t - u.length)).toString().slice(1) + u;
+}
+function d(s: number) {
+    return !!((s == 9 || s == 10 || s == 13 || s == 32));
 }
 
 export { isMobile } from 'buefy/src/utils/helpers';

@@ -7,7 +7,6 @@
 // - It is supported by libphonenumber (it must be listed on this page): https://github.com/googlei18n/libphonenumber/blob/master/resources/ShortNumberMetadata.xml
 
 import { ICountry } from '@/components/models';
-import { strEncodeUTF16 } from '@/utils/';
 import { isEmojiUnicodeSupported, isoToEmoji } from '@/utils/emoji';
 
 import _countries from './countries.json';
@@ -22,15 +21,8 @@ for (const c of _countries) {
      * We may want to encode to unicode
      * name[2] is a non latinic c name
      */
-    const names = String(c[0]).split(/([\\(||//)])/g).reduce((a, el, i) => {
-        if (el) {
-            i === 2
-                ? a.push(String.fromCodePoint(...strEncodeUTF16(el)))
-                : a.push(el);
-        }
+    const names = String(c[0]).split(/([\\(||//)])/g);
 
-        return a;
-    }, []);
     // if (names.includes('(') && names.includes(')')) {
     //     names[2] = escapeUnicode(names[2]);
     // }

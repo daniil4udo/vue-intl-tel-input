@@ -1,40 +1,213 @@
 [
-    ["Afghanistan (‫افغانستان‬‎)", "af", "93"],
-    ["Albania (Shqipëri)", "al", "355"],
-    ["Algeria (‫الجزائر‬‎)", "dz", "213"],
-    ["American Samoa", "as", "1", 5, ["684"]],
-    ["Andorra", "ad", "376"],
-    ["Angola", "ao", "244"],
-    ["Anguilla", "ai", "1", 6, ["264"]],
-    ["Antigua and Barbuda", "ag", "1", 7, ["268"]],
-    ["Argentina", "ar", "54"],
-    ["Armenia (Հայաստան)", "am", "374"],
-    ["Aruba", "aw", "297"],
-    ["Australia", "au", "61", 0],
-    ["Austria (Österreich)", "at", "43"],
-    ["Azerbaijan (Azərbaycan)", "az", "994"],
-    ["Bahamas", "bs", "1", 8, ["242"]],
-    ["Bahrain (‫البحرين‬‎)", "bh", "973"],
-    ["Bangladesh (বাংলাদেশ)", "bd", "880"],
-    ["Barbados", "bb", "1", 9, ["246"]],
-    ["Belarus (Беларусь)", "by", "375"],
-    ["Belgium (België)", "be", "32"],
-    ["Belize", "bz", "501"],
-    ["Benin (Bénin)", "bj", "229"],
-    ["Bermuda", "bm", "1", 10, ["441"]],
-    ["Bhutan (འབྲུག)", "bt", "975"],
-    ["Bolivia", "bo", "591"],
-    ["Bosnia and Herzegovina (Босна и Херцеговина)", "ba", "387"],
-    ["Botswana", "bw", "267"],
-    ["Brazil (Brasil)", "br", "55"],
-    ["British Indian Ocean Territory", "io", "246"],
-    ["British Virgin Islands", "vg", "1", 11, ["284"]],
-    ["Brunei", "bn", "673"],
-    ["Bulgaria (България)", "bg", "359"],
-    ["Burkina Faso", "bf", "226"],
-    ["Burundi (Uburundi)", "bi", "257"],
-    ["Cambodia (កម្ពុជា)", "kh", "855"],
-    ["Cameroon (Cameroun)", "cm", "237"],
+    [
+        "Afghanistan (\u202b\u0627\u0641\u063a\u0627\u0646\u0633\u062a\u0627\u0646\u202c\u200e)",
+        "af",
+        "93"
+    ],
+    [
+        "Albania (\u0053\u0068\u0071\u0069\u0070\u00eb\u0072\u0069)",
+        "al",
+        "355"
+    ],
+    [
+        "Algeria (\u202b\u0627\u0644\u062c\u0632\u0627\u0626\u0631\u202c\u200e)",
+        "dz",
+        "213"
+    ],
+    [
+        "American Samoa",
+        "as",
+        "1",
+        5,
+        [
+            "684"
+        ]
+    ],
+    [
+        "Andorra",
+        "ad",
+        "376"
+    ],
+    [
+        "Angola",
+        "ao",
+        "244"
+    ],
+    [
+        "Anguilla",
+        "ai",
+        "1",
+        6,
+        [
+            "264"
+        ]
+    ],
+    [
+        "Antigua and Barbuda",
+        "ag",
+        "1",
+        7,
+        [
+            "268"
+        ]
+    ],
+    [
+        "Argentina",
+        "ar",
+        "54"
+    ],
+    [
+        "Armenia (\u0540\u0561\u0575\u0561\u057d\u057f\u0561\u0576)",
+        "am",
+        "374"
+    ],
+    [
+        "Aruba",
+        "aw",
+        "297"
+    ],
+    [
+        "Australia",
+        "au",
+        "61",
+        0
+    ],
+    [
+        "Austria (\u00d6\u0073\u0074\u0065\u0072\u0072\u0065\u0069\u0063\u0068)",
+        "at",
+        "43"
+    ],
+    [
+        "Azerbaijan (\u0041\u007a\u0259\u0072\u0062\u0061\u0079\u0063\u0061\u006e)",
+        "az",
+        "994"
+    ],
+    [
+        "Bahamas",
+        "bs",
+        "1",
+        8,
+        [
+            "242"
+        ]
+    ],
+    [
+        "Bahrain (\u202b\u0627\u0644\u0628\u062d\u0631\u064a\u0646\u202c\u200e)",
+        "bh",
+        "973"
+    ],
+    [
+        "Bangladesh (\u09ac\u09be\u0982\u09b2\u09be\u09a6\u09c7\u09b6)",
+        "bd",
+        "880"
+    ],
+    [
+        "Barbados",
+        "bb",
+        "1",
+        9,
+        [
+            "246"
+        ]
+    ],
+    [
+        "Belarus (\u0411\u0435\u043b\u0430\u0440\u0443\u0441\u044c)",
+        "by",
+        "375"
+    ],
+    [
+        "Belgium (\u0042\u0065\u006c\u0067\u0069\u00eb)",
+        "be",
+        "32"
+    ],
+    [
+        "Belize",
+        "bz",
+        "501"
+    ],
+    [
+        "Benin (\u0042\u00e9\u006e\u0069\u006e)",
+        "bj",
+        "229"
+    ],
+    [
+        "Bermuda",
+        "bm",
+        "1",
+        10,
+        [
+            "441"
+        ]
+    ],
+    [
+        "Bhutan (\u0f60\u0f56\u0fb2\u0f74\u0f42)",
+        "bt",
+        "975"
+    ],
+    [
+        "Bolivia",
+        "bo",
+        "591"
+    ],
+    [
+        "Bosnia and Herzegovina (\u0411\u043e\u0441\u043d\u0430 \u0438 \u0425\u0435\u0440\u0446\u0435\u0433\u043e\u0432\u0438\u043d\u0430)",
+        "ba",
+        "387"
+    ],
+    [
+        "Botswana",
+        "bw",
+        "267"
+    ],
+    [
+        "Brazil (\u0042\u0072\u0061\u0073\u0069\u006c)",
+        "br",
+        "55"
+    ],
+    [
+        "British Indian Ocean Territory",
+        "io",
+        "246"
+    ],
+    [
+        "British Virgin Islands",
+        "vg",
+        "1",
+        11,
+        [
+            "284"
+        ]
+    ],
+    [
+        "Brunei",
+        "bn",
+        "673"
+    ],
+    [
+        "Bulgaria (\u0411\u044a\u043b\u0433\u0430\u0440\u0438\u044f)",
+        "bg",
+        "359"
+    ],
+    [
+        "Burkina Faso",
+        "bf",
+        "226"
+    ],
+    [
+        "Burundi (\u0055\u0062\u0075\u0072\u0075\u006e\u0064\u0069)",
+        "bi",
+        "257"
+    ],
+    [
+        "Cambodia (\u1780\u1798\u17d2\u1796\u17bb\u1787\u17b6)",
+        "kh",
+        "855"
+    ],
+    [
+        "Cameroon (\u0043\u0061\u006d\u0065\u0072\u006f\u0075\u006e)",
+        "cm",
+        "237"
+    ],
     [
         "Canada",
         "ca",
@@ -85,217 +258,1184 @@
             "905"
         ]
     ],
-    ["Cape Verde (Kabu Verdi)", "cv", "238"],
-    ["Caribbean Netherlands", "bq", "599", 1, ["3", "4", "7"]],
-    ["Cayman Islands", "ky", "1", 12, ["345"]],
-    ["Central African Republic (République centrafricaine)", "cf", "236"],
-    ["Chad (Tchad)", "td", "235"],
-    ["Chile", "cl", "56"],
-    ["China (中国)", "cn", "86"],
-    ["Christmas Island", "cx", "61", 2, ["89164"]],
-    ["Cocos (Keeling) Islands", "cc", "61", 1, ["89162"]],
-    ["Colombia", "co", "57"],
-    ["Comoros (‫جزر القمر‬‎)", "km", "269"],
-    ["Congo (DRC) (Jamhuri ya Kidemokrasia ya Kongo)", "cd", "243"],
-    ["Congo (Republic) (Congo-Brazzaville)", "cg", "242"],
-    ["Cook Islands", "ck", "682"],
-    ["Costa Rica", "cr", "506"],
-    ["Côte d’Ivoire", "ci", "225"],
-    ["Croatia (Hrvatska)", "hr", "385"],
-    ["Cuba", "cu", "53"],
-    ["Curaçao", "cw", "599", 0],
-    ["Cyprus (Κύπρος)", "cy", "357"],
-    ["Czech Republic (Česká republika)", "cz", "420"],
-    ["Denmark (Danmark)", "dk", "45"],
-    ["Djibouti", "dj", "253"],
-    ["Dominica", "dm", "1", 13, ["767"]],
     [
-        "Dominican Republic (República Dominicana)",
+        "Cape Verde (\u004b\u0061\u0062\u0075 \u0056\u0065\u0072\u0064\u0069)",
+        "cv",
+        "238"
+    ],
+    [
+        "Bonaire, Caribbean Netherlands",
+        "bq",
+        "599",
+        1,
+        [
+            "3",
+            "4",
+            "7"
+        ]
+    ],
+    [
+        "Cayman Islands",
+        "ky",
+        "1",
+        12,
+        [
+            "345"
+        ]
+    ],
+    [
+        "Central African Republic (\u0052\u00e9\u0070\u0075\u0062\u006c\u0069\u0071\u0075\u0065 \u0063\u0065\u006e\u0074\u0072\u0061\u0066\u0072\u0069\u0063\u0061\u0069\u006e\u0065)",
+        "cf",
+        "236"
+    ],
+    [
+        "Chad (\u0054\u0063\u0068\u0061\u0064)",
+        "td",
+        "235"
+    ],
+    [
+        "Chile",
+        "cl",
+        "56"
+    ],
+    [
+        "China (\u4e2d\u56fd)",
+        "cn",
+        "86"
+    ],
+    [
+        "Christmas Island",
+        "cx",
+        "61",
+        2,
+        [
+            "89164"
+        ]
+    ],
+    [
+        "Cocos (\u004b\u0065\u0065\u006c\u0069\u006e\u0067) Islands",
+        "cc",
+        "61",
+        1,
+        [
+            "89162"
+        ]
+    ],
+    [
+        "Colombia",
+        "co",
+        "57"
+    ],
+    [
+        "Comoros (\u202b\u062c\u0632\u0631 \u0627\u0644\u0642\u0645\u0631\u202c\u200e)",
+        "km",
+        "269"
+    ],
+    [
+        "Congo (\u0044\u0052\u0043) (Jamhuri ya Kidemokrasia ya Kongo)",
+        "cd",
+        "243"
+    ],
+    [
+        "Congo (\u0052\u0065\u0070\u0075\u0062\u006c\u0069\u0063) (Congo-Brazzaville)",
+        "cg",
+        "242"
+    ],
+    [
+        "Cook Islands",
+        "ck",
+        "682"
+    ],
+    [
+        "Costa Rica",
+        "cr",
+        "506"
+    ],
+    [
+        "Côte d’Ivoire",
+        "ci",
+        "225"
+    ],
+    [
+        "Croatia (\u0048\u0072\u0076\u0061\u0074\u0073\u006b\u0061)",
+        "hr",
+        "385"
+    ],
+    [
+        "Cuba",
+        "cu",
+        "53"
+    ],
+    [
+        "Curaçao",
+        "cw",
+        "599",
+        0
+    ],
+    [
+        "Cyprus (\u039a\u03cd\u03c0\u03c1\u03bf\u03c2)",
+        "cy",
+        "357"
+    ],
+    [
+        "Czech Republic (\u010c\u0065\u0073\u006b\u00e1 \u0072\u0065\u0070\u0075\u0062\u006c\u0069\u006b\u0061)",
+        "cz",
+        "420"
+    ],
+    [
+        "Denmark (\u0044\u0061\u006e\u006d\u0061\u0072\u006b)",
+        "dk",
+        "45"
+    ],
+    [
+        "Djibouti",
+        "dj",
+        "253"
+    ],
+    [
+        "Dominica",
+        "dm",
+        "1",
+        13,
+        [
+            "767"
+        ]
+    ],
+    [
+        "Dominican Republic (\u0052\u0065\u0070\u00fa\u0062\u006c\u0069\u0063\u0061 \u0044\u006f\u006d\u0069\u006e\u0069\u0063\u0061\u006e\u0061)",
         "do",
         "1",
         2,
-        ["809", "829", "849"]
+        [
+            "809",
+            "829",
+            "849"
+        ]
     ],
-    ["Ecuador", "ec", "593"],
-    ["Egypt (‫مصر‬‎)", "eg", "20"],
-    ["El Salvador", "sv", "503"],
-    ["Equatorial Guinea (Guinea Ecuatorial)", "gq", "240"],
-    ["Eritrea", "er", "291"],
-    ["Estonia (Eesti)", "ee", "372"],
-    ["Eswatini", "sz", "268"],
-    ["Ethiopia", "et", "251"],
-    ["Falkland Islands (Islas Malvinas)", "fk", "500"],
-    ["Faroe Islands (Føroyar)", "fo", "298"],
-    ["Fiji", "fj", "679"],
-    ["Finland (Suomi)", "fi", "358", 0],
-    ["France", "fr", "33"],
-    ["French Guiana (Guyane française)", "gf", "594"],
-    ["French Polynesia (Polynésie française)", "pf", "689"],
-    ["Gabon", "ga", "241"],
-    ["Gambia", "gm", "220"],
-    ["Georgia (საქართველო)", "ge", "995"],
-    ["Germany (Deutschland)", "de", "49"],
-    ["Ghana (Gaana)", "gh", "233"],
-    ["Gibraltar", "gi", "350"],
-    ["Greece (Ελλάδα)", "gr", "30"],
-    ["Greenland (Kalaallit Nunaat)", "gl", "299"],
-    ["Grenada", "gd", "1", 14, ["473"]],
-    ["Guadeloupe", "gp", "590", 0],
-    ["Guam", "gu", "1", 15, ["671"]],
-    ["Guatemala", "gt", "502"],
-    ["Guernsey", "gg", "44", 1, ["1481", "7781", "7839", "7911"]],
-    ["Guinea (Guinée)", "gn", "224"],
-    ["Guinea-Bissau (Guiné Bissau)", "gw", "245"],
-    ["Guyana", "gy", "592"],
-    ["Haiti", "ht", "509"],
-    ["Honduras", "hn", "504"],
-    ["Hong Kong (香港)", "hk", "852"],
-    ["Hungary (Magyarország)", "hu", "36"],
-    ["Iceland (Ísland)", "is", "354"],
-    ["India (भारत)", "in", "91"],
-    ["Indonesia", "id", "62"],
-    ["Iran (‫ایران‬‎)", "ir", "98"],
-    ["Iraq (‫العراق‬‎)", "iq", "964"],
-    ["Ireland", "ie", "353"],
-    ["Isle of Man", "im", "44", 2, ["1624", "74576", "7524", "7924", "7624"]],
-    ["Israel (‫ישראל‬‎)", "il", "972"],
-    ["Italy (Italia)", "it", "39", 0],
-    ["Jamaica", "jm", "1", 4, ["876", "658"]],
-    ["Japan (日本)", "jp", "81"],
-    ["Jersey", "je", "44", 3, ["1534", "7509", "7700", "7797", "7829", "7937"]],
-    ["Jordan (‫الأردن‬‎)", "jo", "962"],
-    ["Kazakhstan (Казахстан)", "kz", "7", 1, ["33", "7"]],
-    ["Kenya", "ke", "254"],
-    ["Kiribati", "ki", "686"],
-    ["Kosovo", "xk", "383"],
-    ["Kuwait (‫الكويت‬‎)", "kw", "965"],
-    ["Kyrgyzstan (Кыргызстан)", "kg", "996"],
-    ["Laos (ລາວ)", "la", "856"],
-    ["Latvia (Latvija)", "lv", "371"],
-    ["Lebanon (‫لبنان‬‎)", "lb", "961"],
-    ["Lesotho", "ls", "266"],
-    ["Liberia", "lr", "231"],
-    ["Libya (‫ليبيا‬‎)", "ly", "218"],
-    ["Liechtenstein", "li", "423"],
-    ["Lithuania (Lietuva)", "lt", "370"],
-    ["Luxembourg", "lu", "352"],
-    ["Macau (澳門)", "mo", "853"],
-    ["Macedonia (FYROM) (Македонија)", "mk", "389"],
-    ["Madagascar (Madagasikara)", "mg", "261"],
-    ["Malawi", "mw", "265"],
-    ["Malaysia", "my", "60"],
-    ["Maldives", "mv", "960"],
-    ["Mali", "ml", "223"],
-    ["Malta", "mt", "356"],
-    ["Marshall Islands", "mh", "692"],
-    ["Martinique", "mq", "596"],
-    ["Mauritania (‫موريتانيا‬‎)", "mr", "222"],
-    ["Mauritius (Moris)", "mu", "230"],
-    ["Mayotte", "yt", "262", 1, ["269", "639"]],
-    ["Mexico (México)", "mx", "52"],
-    ["Micronesia", "fm", "691"],
-    ["Moldova (Republica Moldova)", "md", "373"],
-    ["Monaco", "mc", "377"],
-    ["Mongolia (Монгол)", "mn", "976"],
-    ["Montenegro (Crna Gora)", "me", "382"],
-    ["Montserrat", "ms", "1", 16, ["664"]],
-    ["Morocco (‫المغرب‬‎)", "ma", "212", 0],
-    ["Mozambique (Moçambique)", "mz", "258"],
-    ["Myanmar (Burma) (မြန်မာ)", "mm", "95"],
-    ["Namibia (Namibië)", "na", "264"],
-    ["Nauru", "nr", "674"],
-    ["Nepal (नेपाल)", "np", "977"],
-    ["Netherlands (Nederland)", "nl", "31"],
-    ["New Caledonia (Nouvelle-Calédonie)", "nc", "687"],
-    ["New Zealand", "nz", "64"],
-    ["Nicaragua", "ni", "505"],
-    ["Niger (Nijar)", "ne", "227"],
-    ["Nigeria", "ng", "234"],
-    ["Niue", "nu", "683"],
-    ["Norfolk Island", "nf", "672"],
-    ["North Korea (조선 민주주의 인민 공화국)", "kp", "850"],
-    ["Northern Mariana Islands", "mp", "1", 17, ["670"]],
-    ["Norway (Norge)", "no", "47", 0],
-    ["Oman (‫عُمان‬‎)", "om", "968"],
-    ["Pakistan (‫پاکستان‬‎)", "pk", "92"],
-    ["Palau", "pw", "680"],
-    ["Palestine (‫فلسطين‬‎)", "ps", "970"],
-    ["Panama (Panamá)", "pa", "507"],
-    ["Papua New Guinea", "pg", "675"],
-    ["Paraguay", "py", "595"],
-    ["Peru (Perú)", "pe", "51"],
-    ["Philippines", "ph", "63"],
-    ["Poland (Polska)", "pl", "48"],
-    ["Portugal", "pt", "351"],
-    ["Puerto Rico", "pr", "1", 3, ["787", "939"]],
-    ["Pitcairn", "pm", "872"],
-    ["Qatar (‫قطر‬‎)", "qa", "974"],
-    ["Réunion (La Réunion)", "re", "262", 0],
-    ["Romania (România)", "ro", "40"],
-    ["Russia (Россия)", "ru", "7", 0],
-    ["Rwanda", "rw", "250"],
-    ["Saint Barthélemy", "bl", "590", 1],
-    ["Saint Helena", "sh", "290"],
-    ["Saint Kitts and Nevis", "kn", "1", 18, ["869"]],
-    ["Saint Lucia", "lc", "1", 19, ["758"]],
-    ["Saint Martin (Saint-Martin (partie française))", "mf", "590", 2],
-    ["Saint Pierre and Miquelon (Saint-Pierre-et-Miquelon)", "pm", "508"],
-    ["Saint Vincent and the Grenadines", "vc", "1", 20, ["784"]],
-    ["Samoa", "ws", "685"],
-    ["San Marino", "sm", "378"],
-    ["São Tomé and Príncipe (São Tomé e Príncipe)", "st", "239"],
-    ["Saudi Arabia (‫المملكة العربية السعودية‬‎)", "sa", "966"],
-    ["Senegal (Sénégal)", "sn", "221"],
-    ["Serbia (Србија)", "rs", "381"],
-    ["Seychelles", "sc", "248"],
-    ["Sierra Leone", "sl", "232"],
-    ["Singapore", "sg", "65"],
-    ["Sint Maarten", "sx", "1", 21, ["721"]],
-    ["Slovakia (Slovensko)", "sk", "421"],
-    ["Slovenia (Slovenija)", "si", "386"],
-    ["Solomon Islands", "sb", "677"],
-    ["Somalia (Soomaaliya)", "so", "252"],
-    ["South Africa", "za", "27"],
-    ["South Korea (대한민국)", "kr", "82"],
-    ["South Sudan (‫جنوب السودان‬‎)", "ss", "211"],
-    ["Spain (España)", "es", "34"],
-    ["Sri Lanka (ශ්‍රී ලංකාව)", "lk", "94"],
-    ["Sudan (‫السودان‬‎)", "sd", "249"],
-    ["Suriname", "sr", "597"],
-    ["Svalbard and Jan Mayen", "sj", "47", 1, ["79"]],
-    ["Sweden (Sverige)", "se", "46"],
-    ["Switzerland (Schweiz)", "ch", "41"],
-    ["Syria (‫سوريا‬‎)", "sy", "963"],
-    ["Taiwan (台灣)", "tw", "886"],
-    ["Tajikistan", "tj", "992"],
-    ["Tanzania", "tz", "255"],
-    ["Thailand (ไทย)", "th", "66"],
-    ["Timor-Leste", "tl", "670"],
-    ["Togo", "tg", "228"],
-    ["Tokelau", "tk", "690"],
-    ["Tonga", "to", "676"],
-    ["Trinidad and Tobago", "tt", "1", 22, ["868"]],
-    ["Tunisia (‫تونس‬‎)", "tn", "216"],
-    ["Turkey (Türkiye)", "tr", "90"],
-    ["Turkmenistan", "tm", "993"],
-    ["Turks and Caicos Islands", "tc", "1", 23, ["649"]],
-    ["Tuvalu", "tv", "688"],
-    ["U.S. Virgin Islands", "vi", "1", 24, ["340"]],
-    ["Uganda", "ug", "256"],
-    ["Ukraine (Україна)", "ua", "380"],
-    ["United Arab Emirates (‫الإمارات العربية المتحدة‬‎)", "ae", "971"],
-    ["United Kingdom", "gb", "44", 0],
-    ["United States", "us", "1", 0],
-    ["Uruguay", "uy", "598"],
-    ["Uzbekistan (Oʻzbekiston)", "uz", "998"],
-    ["Vanuatu", "vu", "678"],
-    ["Vatican City (Città del Vaticano)", "va", "39", 1, ["06698"]],
-    ["Venezuela", "ve", "58"],
-    ["Vietnam (Việt Nam)", "vn", "84"],
-    ["Wallis and Futuna (Wallis-et-Futuna)", "wf", "681"],
-    ["Western Sahara (‫الصحراء الغربية‬‎)", "eh", "212", 1, ["5288", "5289"]],
-    ["Yemen (‫اليمن‬‎)", "ye", "967"],
-    ["Zambia", "zm", "260"],
-    ["Zimbabwe", "zw", "263"],
-    ["Åland Islands", "ax", "358", 1, ["18"]]
+    [
+        "Ecuador",
+        "ec",
+        "593"
+    ],
+    [
+        "Egypt (\u202b\u0645\u0635\u0631\u202c\u200e)",
+        "eg",
+        "20"
+    ],
+    [
+        "El Salvador",
+        "sv",
+        "503"
+    ],
+    [
+        "Equatorial Guinea (\u0047\u0075\u0069\u006e\u0065\u0061 \u0045\u0063\u0075\u0061\u0074\u006f\u0072\u0069\u0061\u006c)",
+        "gq",
+        "240"
+    ],
+    [
+        "Eritrea",
+        "er",
+        "291"
+    ],
+    [
+        "Estonia (\u0045\u0065\u0073\u0074\u0069)",
+        "ee",
+        "372"
+    ],
+    [
+        "Eswatini",
+        "sz",
+        "268"
+    ],
+    [
+        "Ethiopia",
+        "et",
+        "251"
+    ],
+    [
+        "Falkland Islands (\u0049\u0073\u006c\u0061\u0073 \u004d\u0061\u006c\u0076\u0069\u006e\u0061\u0073)",
+        "fk",
+        "500"
+    ],
+    [
+        "Faroe Islands (\u0046\u00f8\u0072\u006f\u0079\u0061\u0072)",
+        "fo",
+        "298"
+    ],
+    [
+        "Fiji",
+        "fj",
+        "679"
+    ],
+    [
+        "Finland (\u0053\u0075\u006f\u006d\u0069)",
+        "fi",
+        "358",
+        0
+    ],
+    [
+        "France",
+        "fr",
+        "33"
+    ],
+    [
+        "French Guiana (\u0047\u0075\u0079\u0061\u006e\u0065 \u0066\u0072\u0061\u006e\u00e7\u0061\u0069\u0073\u0065)",
+        "gf",
+        "594"
+    ],
+    [
+        "French Polynesia (\u0050\u006f\u006c\u0079\u006e\u00e9\u0073\u0069\u0065 \u0066\u0072\u0061\u006e\u00e7\u0061\u0069\u0073\u0065)",
+        "pf",
+        "689"
+    ],
+    [
+        "Gabon",
+        "ga",
+        "241"
+    ],
+    [
+        "Gambia",
+        "gm",
+        "220"
+    ],
+    [
+        "Georgia (\u10e1\u10d0\u10e5\u10d0\u10e0\u10d7\u10d5\u10d4\u10da\u10dd)",
+        "ge",
+        "995"
+    ],
+    [
+        "Germany (\u0044\u0065\u0075\u0074\u0073\u0063\u0068\u006c\u0061\u006e\u0064)",
+        "de",
+        "49"
+    ],
+    [
+        "Ghana (\u0047\u0061\u0061\u006e\u0061)",
+        "gh",
+        "233"
+    ],
+    [
+        "Gibraltar",
+        "gi",
+        "350"
+    ],
+    [
+        "Greece (\u0395\u03bb\u03bb\u03ac\u03b4\u03b1)",
+        "gr",
+        "30"
+    ],
+    [
+        "Greenland (\u004b\u0061\u006c\u0061\u0061\u006c\u006c\u0069\u0074 \u004e\u0075\u006e\u0061\u0061\u0074)",
+        "gl",
+        "299"
+    ],
+    [
+        "Grenada",
+        "gd",
+        "1",
+        14,
+        [
+            "473"
+        ]
+    ],
+    [
+        "Guadeloupe",
+        "gp",
+        "590",
+        0
+    ],
+    [
+        "Guam",
+        "gu",
+        "1",
+        15,
+        [
+            "671"
+        ]
+    ],
+    [
+        "Guatemala",
+        "gt",
+        "502"
+    ],
+    [
+        "Guernsey",
+        "gg",
+        "44",
+        1,
+        [
+            "1481",
+            "7781",
+            "7839",
+            "7911"
+        ]
+    ],
+    [
+        "Guinea (\u0047\u0075\u0069\u006e\u00e9\u0065)",
+        "gn",
+        "224"
+    ],
+    [
+        "Guinea-Bissau (\u0047\u0075\u0069\u006e\u00e9 \u0042\u0069\u0073\u0073\u0061\u0075)",
+        "gw",
+        "245"
+    ],
+    [
+        "Guyana",
+        "gy",
+        "592"
+    ],
+    [
+        "Haiti",
+        "ht",
+        "509"
+    ],
+    [
+        "Honduras",
+        "hn",
+        "504"
+    ],
+    [
+        "Hong Kong (\u9999\u6e2f)",
+        "hk",
+        "852"
+    ],
+    [
+        "Hungary (\u004d\u0061\u0067\u0079\u0061\u0072\u006f\u0072\u0073\u007a\u00e1\u0067)",
+        "hu",
+        "36"
+    ],
+    [
+        "Iceland (\u00cd\u0073\u006c\u0061\u006e\u0064)",
+        "is",
+        "354"
+    ],
+    [
+        "India (\u092d\u093e\u0930\u0924)",
+        "in",
+        "91"
+    ],
+    [
+        "Indonesia",
+        "id",
+        "62"
+    ],
+    [
+        "Iran (\u202b\u0627\u06cc\u0631\u0627\u0646\u202c\u200e)",
+        "ir",
+        "98"
+    ],
+    [
+        "Iraq (\u202b\u0627\u0644\u0639\u0631\u0627\u0642\u202c\u200e)",
+        "iq",
+        "964"
+    ],
+    [
+        "Ireland",
+        "ie",
+        "353"
+    ],
+    [
+        "Isle of Man",
+        "im",
+        "44",
+        2,
+        [
+            "1624",
+            "74576",
+            "7524",
+            "7924",
+            "7624"
+        ]
+    ],
+    [
+        "Israel (\u202b\u05d9\u05e9\u05e8\u05d0\u05dc\u202c\u200e)",
+        "il",
+        "972"
+    ],
+    [
+        "Italy (\u0049\u0074\u0061\u006c\u0069\u0061)",
+        "it",
+        "39",
+        0
+    ],
+    [
+        "Jamaica",
+        "jm",
+        "1",
+        4,
+        [
+            "876",
+            "658"
+        ]
+    ],
+    [
+        "Japan (\u65e5\u672c)",
+        "jp",
+        "81"
+    ],
+    [
+        "Jersey",
+        "je",
+        "44",
+        3,
+        [
+            "1534",
+            "7509",
+            "7700",
+            "7797",
+            "7829",
+            "7937"
+        ]
+    ],
+    [
+        "Jordan (\u202b\u0627\u0644\u0623\u0631\u062f\u0646\u202c\u200e)",
+        "jo",
+        "962"
+    ],
+    [
+        "Kazakhstan (\u041a\u0430\u0437\u0430\u0445\u0441\u0442\u0430\u043d)",
+        "kz",
+        "7",
+        1,
+        [
+            "33",
+            "7"
+        ]
+    ],
+    [
+        "Kenya",
+        "ke",
+        "254"
+    ],
+    [
+        "Kiribati",
+        "ki",
+        "686"
+    ],
+    [
+        "Kosovo",
+        "xk",
+        "383"
+    ],
+    [
+        "Kuwait (\u202b\u0627\u0644\u0643\u0648\u064a\u062a\u202c\u200e)",
+        "kw",
+        "965"
+    ],
+    [
+        "Kyrgyzstan (\u041a\u044b\u0440\u0433\u044b\u0437\u0441\u0442\u0430\u043d)",
+        "kg",
+        "996"
+    ],
+    [
+        "Laos (\u0ea5\u0eb2\u0ea7)",
+        "la",
+        "856"
+    ],
+    [
+        "Latvia (\u004c\u0061\u0074\u0076\u0069\u006a\u0061)",
+        "lv",
+        "371"
+    ],
+    [
+        "Lebanon (\u202b\u0644\u0628\u0646\u0627\u0646\u202c\u200e)",
+        "lb",
+        "961"
+    ],
+    [
+        "Lesotho",
+        "ls",
+        "266"
+    ],
+    [
+        "Liberia",
+        "lr",
+        "231"
+    ],
+    [
+        "Libya (\u202b\u0644\u064a\u0628\u064a\u0627\u202c\u200e)",
+        "ly",
+        "218"
+    ],
+    [
+        "Liechtenstein",
+        "li",
+        "423"
+    ],
+    [
+        "Lithuania (\u004c\u0069\u0065\u0074\u0075\u0076\u0061)",
+        "lt",
+        "370"
+    ],
+    [
+        "Luxembourg",
+        "lu",
+        "352"
+    ],
+    [
+        "Macau (\u6fb3\u9580)",
+        "mo",
+        "853"
+    ],
+    [
+        "Macedonia (\u0046\u0059\u0052\u004f\u004d) (Македонија)",
+        "mk",
+        "389"
+    ],
+    [
+        "Madagascar (\u004d\u0061\u0064\u0061\u0067\u0061\u0073\u0069\u006b\u0061\u0072\u0061)",
+        "mg",
+        "261"
+    ],
+    [
+        "Malawi",
+        "mw",
+        "265"
+    ],
+    [
+        "Malaysia",
+        "my",
+        "60"
+    ],
+    [
+        "Maldives",
+        "mv",
+        "960"
+    ],
+    [
+        "Mali",
+        "ml",
+        "223"
+    ],
+    [
+        "Malta",
+        "mt",
+        "356"
+    ],
+    [
+        "Marshall Islands",
+        "mh",
+        "692"
+    ],
+    [
+        "Martinique",
+        "mq",
+        "596"
+    ],
+    [
+        "Mauritania (\u202b\u0645\u0648\u0631\u064a\u062a\u0627\u0646\u064a\u0627\u202c\u200e)",
+        "mr",
+        "222"
+    ],
+    [
+        "Mauritius (\u004d\u006f\u0072\u0069\u0073)",
+        "mu",
+        "230"
+    ],
+    [
+        "Mayotte",
+        "yt",
+        "262",
+        1,
+        [
+            "269",
+            "639"
+        ]
+    ],
+    [
+        "Mexico (\u004d\u00e9\u0078\u0069\u0063\u006f)",
+        "mx",
+        "52"
+    ],
+    [
+        "Micronesia",
+        "fm",
+        "691"
+    ],
+    [
+        "Moldova (\u0052\u0065\u0070\u0075\u0062\u006c\u0069\u0063\u0061 \u004d\u006f\u006c\u0064\u006f\u0076\u0061)",
+        "md",
+        "373"
+    ],
+    [
+        "Monaco",
+        "mc",
+        "377"
+    ],
+    [
+        "Mongolia (\u041c\u043e\u043d\u0433\u043e\u043b)",
+        "mn",
+        "976"
+    ],
+    [
+        "Montenegro (\u0043\u0072\u006e\u0061 \u0047\u006f\u0072\u0061)",
+        "me",
+        "382"
+    ],
+    [
+        "Montserrat",
+        "ms",
+        "1",
+        16,
+        [
+            "664"
+        ]
+    ],
+    [
+        "Morocco (\u202b\u0627\u0644\u0645\u063a\u0631\u0628\u202c\u200e)",
+        "ma",
+        "212",
+        0
+    ],
+    [
+        "Mozambique (\u004d\u006f\u00e7\u0061\u006d\u0062\u0069\u0071\u0075\u0065)",
+        "mz",
+        "258"
+    ],
+    [
+        "Myanmar (\u0042\u0075\u0072\u006d\u0061) (မြန်မာ)",
+        "mm",
+        "95"
+    ],
+    [
+        "Namibia (\u004e\u0061\u006d\u0069\u0062\u0069\u00eb)",
+        "na",
+        "264"
+    ],
+    [
+        "Nauru",
+        "nr",
+        "674"
+    ],
+    [
+        "Nepal (\u0928\u0947\u092a\u093e\u0932)",
+        "np",
+        "977"
+    ],
+    [
+        "Netherlands (\u004e\u0065\u0064\u0065\u0072\u006c\u0061\u006e\u0064)",
+        "nl",
+        "31"
+    ],
+    [
+        "New Caledonia (\u004e\u006f\u0075\u0076\u0065\u006c\u006c\u0065\u002d\u0043\u0061\u006c\u00e9\u0064\u006f\u006e\u0069\u0065)",
+        "nc",
+        "687"
+    ],
+    [
+        "New Zealand",
+        "nz",
+        "64"
+    ],
+    [
+        "Nicaragua",
+        "ni",
+        "505"
+    ],
+    [
+        "Niger (\u004e\u0069\u006a\u0061\u0072)",
+        "ne",
+        "227"
+    ],
+    [
+        "Nigeria",
+        "ng",
+        "234"
+    ],
+    [
+        "Niue",
+        "nu",
+        "683"
+    ],
+    [
+        "Norfolk Island",
+        "nf",
+        "672"
+    ],
+    [
+        "North Korea (\uc870\uc120 \ubbfc\uc8fc\uc8fc\uc758 \uc778\ubbfc \uacf5\ud654\uad6d)",
+        "kp",
+        "850"
+    ],
+    [
+        "Northern Mariana Islands",
+        "mp",
+        "1",
+        17,
+        [
+            "670"
+        ]
+    ],
+    [
+        "Norway (\u004e\u006f\u0072\u0067\u0065)",
+        "no",
+        "47",
+        0
+    ],
+    [
+        "Oman (\u202b\u0639\u064f\u0645\u0627\u0646\u202c\u200e)",
+        "om",
+        "968"
+    ],
+    [
+        "Pakistan (\u202b\u067e\u0627\u06a9\u0633\u062a\u0627\u0646\u202c\u200e)",
+        "pk",
+        "92"
+    ],
+    [
+        "Palau",
+        "pw",
+        "680"
+    ],
+    [
+        "Palestine (\u202b\u0641\u0644\u0633\u0637\u064a\u0646\u202c\u200e)",
+        "ps",
+        "970"
+    ],
+    [
+        "Panama (\u0050\u0061\u006e\u0061\u006d\u00e1)",
+        "pa",
+        "507"
+    ],
+    [
+        "Papua New Guinea",
+        "pg",
+        "675"
+    ],
+    [
+        "Paraguay",
+        "py",
+        "595"
+    ],
+    [
+        "Peru (\u0050\u0065\u0072\u00fa)",
+        "pe",
+        "51"
+    ],
+    [
+        "Philippines",
+        "ph",
+        "63"
+    ],
+    [
+        "Poland (\u0050\u006f\u006c\u0073\u006b\u0061)",
+        "pl",
+        "48"
+    ],
+    [
+        "Portugal",
+        "pt",
+        "351"
+    ],
+    [
+        "Puerto Rico",
+        "pr",
+        "1",
+        3,
+        [
+            "787",
+            "939"
+        ]
+    ],
+    [
+        "Pitcairn",
+        "pm",
+        "872"
+    ],
+    [
+        "Qatar (\u202b\u0642\u0637\u0631\u202c\u200e)",
+        "qa",
+        "974"
+    ],
+    [
+        "Réunion (\u004c\u0061 \u0052\u00e9\u0075\u006e\u0069\u006f\u006e)",
+        "re",
+        "262",
+        0
+    ],
+    [
+        "Romania (\u0052\u006f\u006d\u00e2\u006e\u0069\u0061)",
+        "ro",
+        "40"
+    ],
+    [
+        "Russia (\u0420\u043e\u0441\u0441\u0438\u044f)",
+        "ru",
+        "7",
+        0
+    ],
+    [
+        "Rwanda",
+        "rw",
+        "250"
+    ],
+    [
+        "Saint Barthélemy",
+        "bl",
+        "590",
+        1
+    ],
+    [
+        "Saint Helena",
+        "sh",
+        "290"
+    ],
+    [
+        "Saint Kitts and Nevis",
+        "kn",
+        "1",
+        18,
+        [
+            "869"
+        ]
+    ],
+    [
+        "Saint Lucia",
+        "lc",
+        "1",
+        19,
+        [
+            "758"
+        ]
+    ],
+    [
+        "Saint Martin (\u0053\u0061\u0069\u006e\u0074\u002d\u004d\u0061\u0072\u0074\u0069\u006e (partie française))",
+        "mf",
+        "590",
+        2
+    ],
+    [
+        "Saint Pierre and Miquelon (\u0053\u0061\u0069\u006e\u0074\u002d\u0050\u0069\u0065\u0072\u0072\u0065\u002d\u0065\u0074\u002d\u004d\u0069\u0071\u0075\u0065\u006c\u006f\u006e)",
+        "pm",
+        "508"
+    ],
+    [
+        "Saint Vincent and the Grenadines",
+        "vc",
+        "1",
+        20,
+        [
+            "784"
+        ]
+    ],
+    [
+        "Samoa",
+        "ws",
+        "685"
+    ],
+    [
+        "San Marino",
+        "sm",
+        "378"
+    ],
+    [
+        "São Tomé and Príncipe (\u0053\u00e3\u006f \u0054\u006f\u006d\u00e9 \u0065 \u0050\u0072\u00ed\u006e\u0063\u0069\u0070\u0065)",
+        "st",
+        "239"
+    ],
+    [
+        "Saudi Arabia (\u202b\u0627\u0644\u0645\u0645\u0644\u0643\u0629 \u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u0627\u0644\u0633\u0639\u0648\u062f\u064a\u0629\u202c\u200e)",
+        "sa",
+        "966"
+    ],
+    [
+        "Senegal (\u0053\u00e9\u006e\u00e9\u0067\u0061\u006c)",
+        "sn",
+        "221"
+    ],
+    [
+        "Serbia (\u0421\u0440\u0431\u0438\u0458\u0430)",
+        "rs",
+        "381"
+    ],
+    [
+        "Seychelles",
+        "sc",
+        "248"
+    ],
+    [
+        "Sierra Leone",
+        "sl",
+        "232"
+    ],
+    [
+        "Singapore",
+        "sg",
+        "65"
+    ],
+    [
+        "Sint Maarten",
+        "sx",
+        "1",
+        21,
+        [
+            "721"
+        ]
+    ],
+    [
+        "Slovakia (\u0053\u006c\u006f\u0076\u0065\u006e\u0073\u006b\u006f)",
+        "sk",
+        "421"
+    ],
+    [
+        "Slovenia (\u0053\u006c\u006f\u0076\u0065\u006e\u0069\u006a\u0061)",
+        "si",
+        "386"
+    ],
+    [
+        "Solomon Islands",
+        "sb",
+        "677"
+    ],
+    [
+        "Somalia (\u0053\u006f\u006f\u006d\u0061\u0061\u006c\u0069\u0079\u0061)",
+        "so",
+        "252"
+    ],
+    [
+        "South Africa",
+        "za",
+        "27"
+    ],
+    [
+        "South Korea (\ub300\ud55c\ubbfc\uad6d)",
+        "kr",
+        "82"
+    ],
+    [
+        "South Sudan (\u202b\u062c\u0646\u0648\u0628 \u0627\u0644\u0633\u0648\u062f\u0627\u0646\u202c\u200e)",
+        "ss",
+        "211"
+    ],
+    [
+        "Spain (\u0045\u0073\u0070\u0061\u00f1\u0061)",
+        "es",
+        "34"
+    ],
+    [
+        "Sri Lanka (\u0dc1\u0dca\u200d\u0dbb\u0dd3 \u0dbd\u0d82\u0d9a\u0dcf\u0dc0)",
+        "lk",
+        "94"
+    ],
+    [
+        "Sudan (\u202b\u0627\u0644\u0633\u0648\u062f\u0627\u0646\u202c\u200e)",
+        "sd",
+        "249"
+    ],
+    [
+        "Suriname",
+        "sr",
+        "597"
+    ],
+    [
+        "Svalbard and Jan Mayen",
+        "sj",
+        "47",
+        1,
+        [
+            "79"
+        ]
+    ],
+    [
+        "Sweden (\u0053\u0076\u0065\u0072\u0069\u0067\u0065)",
+        "se",
+        "46"
+    ],
+    [
+        "Switzerland (\u0053\u0063\u0068\u0077\u0065\u0069\u007a)",
+        "ch",
+        "41"
+    ],
+    [
+        "Syria (\u202b\u0633\u0648\u0631\u064a\u0627\u202c\u200e)",
+        "sy",
+        "963"
+    ],
+    [
+        "Taiwan (\u53f0\u7063)",
+        "tw",
+        "886"
+    ],
+    [
+        "Tajikistan",
+        "tj",
+        "992"
+    ],
+    [
+        "Tanzania",
+        "tz",
+        "255"
+    ],
+    [
+        "Thailand (\u0e44\u0e17\u0e22)",
+        "th",
+        "66"
+    ],
+    [
+        "Timor-Leste",
+        "tl",
+        "670"
+    ],
+    [
+        "Togo",
+        "tg",
+        "228"
+    ],
+    [
+        "Tokelau",
+        "tk",
+        "690"
+    ],
+    [
+        "Tonga",
+        "to",
+        "676"
+    ],
+    [
+        "Trinidad and Tobago",
+        "tt",
+        "1",
+        22,
+        [
+            "868"
+        ]
+    ],
+    [
+        "Tunisia (\u202b\u062a\u0648\u0646\u0633\u202c\u200e)",
+        "tn",
+        "216"
+    ],
+    [
+        "Turkey (\u0054\u00fc\u0072\u006b\u0069\u0079\u0065)",
+        "tr",
+        "90"
+    ],
+    [
+        "Turkmenistan",
+        "tm",
+        "993"
+    ],
+    [
+        "Turks and Caicos Islands",
+        "tc",
+        "1",
+        23,
+        [
+            "649"
+        ]
+    ],
+    [
+        "Tuvalu",
+        "tv",
+        "688"
+    ],
+    [
+        "U.S. Virgin Islands",
+        "vi",
+        "1",
+        24,
+        [
+            "340"
+        ]
+    ],
+    [
+        "Uganda",
+        "ug",
+        "256"
+    ],
+    [
+        "Ukraine (\u0423\u043a\u0440\u0430\u0457\u043d\u0430)",
+        "ua",
+        "380"
+    ],
+    [
+        "United Arab Emirates (\u202b\u0627\u0644\u0625\u0645\u0627\u0631\u0627\u062a \u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u0627\u0644\u0645\u062a\u062d\u062f\u0629\u202c\u200e)",
+        "ae",
+        "971"
+    ],
+    [
+        "United Kingdom",
+        "gb",
+        "44",
+        0
+    ],
+    [
+        "United States",
+        "us",
+        "1",
+        0
+    ],
+    [
+        "Uruguay",
+        "uy",
+        "598"
+    ],
+    [
+        "Uzbekistan (\u004f\u02bb\u007a\u0062\u0065\u006b\u0069\u0073\u0074\u006f\u006e)",
+        "uz",
+        "998"
+    ],
+    [
+        "Vanuatu",
+        "vu",
+        "678"
+    ],
+    [
+        "Vatican City (\u0043\u0069\u0074\u0074\u00e0 \u0064\u0065\u006c \u0056\u0061\u0074\u0069\u0063\u0061\u006e\u006f)",
+        "va",
+        "39",
+        1,
+        [
+            "06698"
+        ]
+    ],
+    [
+        "Venezuela",
+        "ve",
+        "58"
+    ],
+    [
+        "Vietnam (\u0056\u0069\u1ec7\u0074 \u004e\u0061\u006d)",
+        "vn",
+        "84"
+    ],
+    [
+        "Wallis and Futuna (\u0057\u0061\u006c\u006c\u0069\u0073\u002d\u0065\u0074\u002d\u0046\u0075\u0074\u0075\u006e\u0061)",
+        "wf",
+        "681"
+    ],
+    [
+        "Western Sahara (\u202b\u0627\u0644\u0635\u062d\u0631\u0627\u0621 \u0627\u0644\u063a\u0631\u0628\u064a\u0629\u202c\u200e)",
+        "eh",
+        "212",
+        1,
+        [
+            "5288",
+            "5289"
+        ]
+    ],
+    [
+        "Yemen (\u202b\u0627\u0644\u064a\u0645\u0646\u202c\u200e)",
+        "ye",
+        "967"
+    ],
+    [
+        "Zambia",
+        "zm",
+        "260"
+    ],
+    [
+        "Zimbabwe",
+        "zw",
+        "263"
+    ],
+    [
+        "Åland Islands",
+        "ax",
+        "358",
+        1,
+        [
+            "18"
+        ]
+    ]
 ]
