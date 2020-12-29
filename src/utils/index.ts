@@ -69,10 +69,10 @@ export function isSupportedCountry(iso2 = '') {
     return true;
 }
 
-export function getBoolean(prop, key: string): boolean {
+export function getBoolean<T>(prop: T, path: string): boolean {
     return typeof prop === 'boolean'
         ? prop
-        : _get(prop, key, false);
+        : _get(prop, path, false);
 }
 
 export function isLocalStorageAccessSafe() {
