@@ -1,3 +1,7 @@
+export type Many<T> = T | ReadonlyArray<T>;
+export type PropertyPath = Many<PropertyName>;
+export type PropertyName = string | number | symbol;
+
 export interface IDropdowButton {
     button: boolean;
     dropdown: boolean;

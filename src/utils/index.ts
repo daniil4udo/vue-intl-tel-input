@@ -1,15 +1,13 @@
 import PhoneNumber from 'awesome-phonenumber';
-import { PropertyPath } from 'lodash';
-import _get from 'lodash/get';
-import _has from 'lodash/has';
-import _isEmpty from 'lodash/isEmpty';
-import _isNil from 'lodash/isNil';
+import _get from 'get-value';
+import _has from 'has-value';
+import _hasValue from 'has-values';
 import _uniqBy from 'lodash/uniqBy';
 
-import { IPhoneObject, DropdowPosition } from '../components/models';
+import { PropertyPath, IPhoneObject, DropdowPosition } from '../components/models';
 
 export function isDefined<T>(v: T) {
-    return !_isNil(v);
+    return v != null;
 }
 
 export function has<T>(o: T, key: PropertyPath) {
@@ -158,8 +156,11 @@ function d(s: number) {
     return !!((s == 9 || s == 10 || s == 13 || s == 32));
 }
 
-export { isMobile } from 'buefy/src/utils/helpers';
+export function isEmpty<T>(o: T) {
+    return !_hasValue(o);
+}
+
+export { isMobile } from 'buefy/src/utils/helpers.js';
 export {
-    _isEmpty as isEmpty,
     _uniqBy as uniqBy,
 };

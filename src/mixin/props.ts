@@ -175,7 +175,7 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
     // Date.now() will be appended to keep name unique for multiple instances
     @Prop({
         type: String,
-        default: () => 'dmc-phone-input',
+        default: () => 'vue-intl-tel-input',
     }) name: string;
 
     @Prop({

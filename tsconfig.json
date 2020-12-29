@@ -3,6 +3,7 @@
         "target": "esnext",
         "module": "esnext",
         "strict": false,
+        "declaration": true,
         "jsx": "preserve",
         "importHelpers": true,
         "resolveJsonModule": true,
@@ -13,7 +14,7 @@
         "allowSyntheticDefaultImports": true,
         "sourceMap": true,
         "baseUrl": ".",
-        "types": ["webpack-env", "jest"],
+        "types": ["webpack-env", "jest", "node", "vue"],
         "paths": {
             "@root/*": ["./*"],
             "@root": [
@@ -52,5 +53,8 @@
         "tests/**/*.ts",
         "tests/**/*.tsx"
     ],
-    "exclude": ["node_modules"]
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
 }

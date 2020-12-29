@@ -163,12 +163,12 @@
     import { ICountry } from './models';
 
     @Component({
-        name: 'DmcPhoneInput',
+        name: 'VueIntlTelInput',
         components: {
             BField, BInput, BButton, BDropdown, BDropdownItem,
         },
     })
-    export default class DmcPhoneInput extends Mixins(Dropdown, Input) {
+    export default class VueIntlTelInput extends Mixins(Dropdown, Input) {
         isMounted = false;
         // Flag that shows loading if we are trying to fetch country ISO from https://ip2c.org/s
         isFetching = true;
@@ -244,11 +244,11 @@
 
         mounted() {
             if (this.defaultCountry && this.fetchCountry) {
-                throw new Error(`[DmcTelInput]: Do not use 'fetch-country' and 'default-country' options in the same time`);
+                throw new Error(`[VueIntlTelInput]: Do not use 'fetch-country' and 'default-country' options in the same time`);
             }
 
             if (this.hideFlags && this.emojiFlags) {
-                throw new Error(`[DmcTelInput]: Do not use 'hide-flags' and 'emoji-flags' options in the same time`);
+                throw new Error(`[VueIntlTelInput]: Do not use 'hide-flags' and 'emoji-flags' options in the same time`);
             }
 
             if (!this.hideFlags) {

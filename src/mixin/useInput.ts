@@ -16,13 +16,13 @@ export default class Input extends Mixins(Dropdown) {
         return String(this.value).trim();
     }
 
-    public set phone(value) {
+    public set phone(v) {
         /**
          * Returns response.number to assign it to v-model (if being used)
          * Returns full response for cases @input is used
          * and parent wants to return the whole response.
          */
-        this.$emit('input', value, this.phoneData);
+        this.$emit('input', v, this.phoneData);
     }
     // end V-MODEL
 
