@@ -1,6 +1,6 @@
 import { countries } from '@/assets/all-countries';
 import Props from '@/mixin/props';
-import { toType, has, uniqBy, isSupportedCountry } from '@/utils/';
+import { toType, has, uniqBy, isSupportedCountry, isDefined } from '@/utils/';
 import { Component, Mixins } from '@/utils/decorators';
 
 import { ICountry, DropdowPosition } from '../components/models';
@@ -20,11 +20,19 @@ export default class Dropdown extends Mixins(Props) {
     private get _preferred(): ICountry[] {
         const isLastIndex = (i: number) => (this.preferredCountriesProxy.length - 1) === i;
 
-        return this.getCountries(this.preferredCountriesProxy).map((c, i) => ({
-            ...c,
-            preferred: true,
-            lastPreffered: isLastIndex(i),
-        }));
+        return this.preferredCountriesProxy.reduce((a, iso2, i) => {
+            const c = this.getCountry(iso2);
+
+            if (isDefined(c)) {
+                a.push({
+                    ...c,
+                    preferred: true,
+                    lastPreffered: isLastIndex(i),
+                });
+            }
+
+            return a;
+        }, []);
     }
 
     private get _filtered(): Record<string, ICountry> {
@@ -72,12 +80,6 @@ export default class Dropdown extends Mixins(Props) {
         }
 
         return null;
-    }
-
-    public getCountries(iso2List: string[] = []): ICountry[] {
-        return iso2List
-            .map(this.getCountry)
-            .filter(Boolean);
     }
 
     public setActiveCountry(c: ICountry | string): ICountry {
