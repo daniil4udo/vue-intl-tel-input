@@ -2,9 +2,9 @@ import PhoneNumber from 'awesome-phonenumber';
 import { PropertyPath } from 'lodash';
 import _get from 'lodash/get';
 import _has from 'lodash/has';
-import isEmpty from 'lodash/isEmpty';
+import _isEmpty from 'lodash/isEmpty';
 import _isNil from 'lodash/isNil';
-import uniqBy from 'lodash/uniqBy';
+import _uniqBy from 'lodash/uniqBy';
 
 import { IPhoneObject, DropdowPosition } from '../components/models';
 
@@ -75,46 +75,19 @@ export function getBoolean(prop, key: string): boolean {
         : _get(prop, key, false);
 }
 
-function isPropertyAccessSafe<T>(base: T, property: keyof T) {
-    let safe: boolean;
-
-    try {
-        safe = !!base[property];
-    }
-    catch (error) {
-        safe = false;
-    }
-
-    return safe;
-}
-
-function isFunctionCallSafe<T>(base: T, functionName: string, ...args) {
-    let safe = true;
-
-    try {
-        base[functionName](...args);
-    }
-    catch (error) {
-        safe = false;
-    }
-
-    return safe;
-}
-
 export function isLocalStorageAccessSafe() {
-    let safe: boolean;
-
     const TEST_KEY = 'isLocalStorageAccessSafe';
     const TEST_VALUE = 'true';
 
-    safe = isPropertyAccessSafe(window, 'localStorage');
-    if (!safe) return safe;
+    try {
+        localStorage.setItem(TEST_KEY, TEST_VALUE);
+        localStorage.removeItem(TEST_KEY);
 
-    safe = isFunctionCallSafe(window.localStorage, 'setItem', TEST_KEY, TEST_VALUE);
-
-    if (safe) window.localStorage.removeItem(TEST_KEY);
-
-    return safe;
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
 }
 
 /**
@@ -167,6 +140,6 @@ export function strEncodeUTF16(str = '') {
 
 export { isMobile } from 'buefy/src/utils/helpers';
 export {
-    isEmpty,
-    uniqBy,
+    _isEmpty as isEmpty,
+    _uniqBy as uniqBy,
 };
