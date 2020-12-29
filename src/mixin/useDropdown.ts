@@ -35,7 +35,7 @@ export default class Dropdown extends Mixins(Props) {
         }, []);
     }
 
-    private get _filtered(): Record<string, ICountry> {
+    private get _processed(): Record<string, ICountry> {
         // List countries after filtered
         if (this.onlyCountries.length !== 0) {
             return this.onlyCountries.reduce((a, iso2) => Object.assign(a, { [iso2]: this.getCountry(iso2) }), {});
@@ -45,7 +45,7 @@ export default class Dropdown extends Mixins(Props) {
             const filterIgnored = {};
 
             for (const iso2 in countries) {
-                if (!this.ignoredCountries.includes(iso2)) {
+                if (has(countries, iso2) && !this.ignoredCountries.includes(iso2)) {
                     filterIgnored[iso2] = this.getCountry(iso2);
                 }
             }
@@ -57,7 +57,7 @@ export default class Dropdown extends Mixins(Props) {
     }
 
     private get _sorted(): ICountry[] {
-        return uniqBy([].concat(this._preferred, Object.values(this._filtered)), 'iso2');
+        return uniqBy([].concat(this._preferred, Object.values(this._processed)), 'iso2');
     }
 
     public get fileredCountries(): ICountry[] {
@@ -75,8 +75,8 @@ export default class Dropdown extends Mixins(Props) {
     }
 
     public getCountry(iso2 = ''): ICountry {
-        if (isSupportedCountry(iso2) && has(this._filtered, iso2)) {
-            return this._filtered[iso2.toUpperCase()];
+        if (isSupportedCountry(iso2) && has(this._processed, iso2)) {
+            return this._processed[iso2.toUpperCase()];
         }
 
         return null;
