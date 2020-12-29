@@ -1,8 +1,8 @@
 module.exports = {
     // '*.{js,jsx,vue,ts,tsx}': [ 'vue-cli-service lint', 'git add' ]
-    '{!(package)*.json,*.code-snippets,.!(browserslist)*rc}': [
-        'yarn lint:prettier --parser=json',
-    ],
+    // '{!(package)*.json,*.code-snippets,.!(browserslist)*rc}': [
+    //     'yarn lint:prettier --parser=json',
+    // ],
     'package.json': [ 'yarn lint:prettier' ],
     '*.js': [
         'yarn lint:eslint',
