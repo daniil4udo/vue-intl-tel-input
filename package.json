@@ -1,6 +1,16 @@
 {
     "name": "vue-intl-tel-input",
-    "author": "Daniil Chumachenko",
+    "author": {
+        "name": "Daniil Chumachenko",
+        "email": "daniil4udo@gmail.com",
+        "url": "https://github.com/dino4udo/"
+    },
+    "contributors": [
+        {
+            "name": "Democrance",
+            "url": "https://democrance.com"
+        }
+    ],
     "version": "0.1.0",
     "license": "MIT",
     "description": "International telephone input on top of Buefy",
@@ -18,9 +28,9 @@
         "build:lib": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
         "build:lib:watch": "yarn build:lib --watch",
         "build:scss": "run-s build:scss:viti build:scss:core build:scss:vendor",
-        "build:scss:viti": "sass src/assets/scss/styles.scss | node ./build/banner.js > dist/vue-intl-tel-input.css && cleancss -o dist/vue-intl-tel-input.min.css dist/vue-intl-tel-input.css",
-        "build:scss:core": "sass src/assets/scss/viti.scss | node ./build/banner.js > dist/vue-intl-tel-input.core.css && cleancss -o dist/vue-intl-tel-input.core.min.css dist/vue-intl-tel-input.core.css",
-        "build:scss:vendor": "sass src/assets/scss/vendor.scss > dist/vue-intl-tel-input.vendor.css && cleancss -o dist/vue-intl-tel-input.vendor.min.css dist/vue-intl-tel-input.vendor.css",
+        "build:scss:viti": "sass src/assets/scss/styles.scss | node ./build/banner.js > dist/vue-intl-tel-input.css && cleancss -O2 -o dist/vue-intl-tel-input.min.css dist/vue-intl-tel-input.css",
+        "build:scss:core": "sass src/assets/scss/viti.scss | node ./build/banner.js > dist/vue-intl-tel-input.core.css && cleancss -O2 -o dist/vue-intl-tel-input.core.min.css dist/vue-intl-tel-input.core.css",
+        "build:scss:vendor": "sass src/assets/scss/vendor.scss > dist/vue-intl-tel-input.vendor.css && cleancss -O2 -o dist/vue-intl-tel-input.vendor.min.css dist/vue-intl-tel-input.vendor.css",
         "build:scss:watch": "sass src/assets/scss/styles.scss --watch",
         "build:ci": "yarn build --report",
         "lint": "run-s lint:all:*",
