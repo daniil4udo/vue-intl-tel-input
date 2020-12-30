@@ -38,6 +38,7 @@ module.exports = {
         // ===
         'no-descending-specificity': null,
         'string-no-newline': null,
+        'function-name-case': null,
 
         // Allow newlines inside class attribute values
         'color-hex-case': 'lower',

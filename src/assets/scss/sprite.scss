@@ -539,44 +539,55 @@ $flags-image-extension: 'png' !default;
     background-size: floor($spriteWidth / 2) floor($spriteHeight / 2);
 }
 
-.iti__flag {
-    width: map-get($item-width-maps, $standard-country);
-    height: $flag-height;
-    // empty state
-    background-color: #dbdbdb;
-    background-image: url('#{$flags-image-path}#{$flags-image-name}.#{$flags-image-extension}');
-    background-repeat: no-repeat;
-    background-position: $flag-width 0;
-    box-shadow: 0 0 1px 0 #888888;
+.viti {
+    &__flag {
+        width: map-get($item-width-maps, $standard-country);
+        height: $flag-height;
+        // empty state
+        background-color: #dbdbdb;
+        background-image: url('#{$flags-image-path}#{$flags-image-name}.#{$flags-image-extension}');
+        background-repeat: no-repeat;
+        background-position: $flag-width 0;
+        box-shadow: 0 0 1px 0 #888888;
 
-    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-        background-image: url('#{$flags-image-path}#{$flags-image-name}@2x.#{$flags-image-extension}');
-    }
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            background-image: url('#{$flags-image-path}#{$flags-image-name}@2x.#{$flags-image-extension}');
+        }
 
-    // hack for Nepal which is the only flag that is not square/rectangle, so it has transparency, so you can see the default grey behind it
-    &.np {
-        background-color: transparent;
-    }
+        // hack for Nepal which is the only flag that is not square/rectangle, so it has transparency, so you can see the default grey behind it
+        &.np {
+            background-color: transparent;
+        }
 
-    @each $key, $width in $item-width-maps {
-        @if $width != map-get($item-width-maps, $standard-country) {
+        @each $key, $width in $item-width-maps {
+            @if $width != map-get($item-width-maps, $standard-country) {
+                &.flag-#{$key} {
+                    width: $width;
+                }
+            }
+        }
+
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            background-size: 5652px 15px;
+        }
+
+        @each $key, $country in $item-position-map {
+            $flag-height: nth($country, 1);
+            $flag-position: nth($country, 2);
+
             &.flag-#{$key} {
-                width: $width;
+                height: $flag-height;
+                background-position: #{$flag-position} 0;
             }
         }
     }
 
-    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-        background-size: 5652px 15px;
-    }
+    // Emoji
+    &__eflag {
+        margin-right: 5px;
 
-    @each $key, $country in $item-position-map {
-        $flag-height: nth($country, 1);
-        $flag-position: nth($country, 2);
-
-        &.flag-#{$key} {
-            height: $flag-height;
-            background-position: #{$flag-position} 0;
+        &--dropdown {
+            font-size: 1.7rem;
         }
     }
 }

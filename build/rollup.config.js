@@ -85,6 +85,7 @@ const baseConfig = {
         require('autoprefixer'),
         require('cssnano'),
       ],
+      // modules: ['src', 'node_modules'],
       sourceMap: true,
       extensions: [ '.scss', '.sass', '.css' ]
     }

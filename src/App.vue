@@ -1,35 +1,36 @@
 <template>
     <div id="app" class="container">
-        App - {{ phone }}
-        <DmcTelInput
+        <VueIntlTelInput
             v-model="phone"
             :disabled-dropdown="false"
-
             mode="national"
-            :emoji-flags="true"
+            :is-expanded="true"
+            :emoji-flags="false"
+            :maxlength="22"
             :autocomplete="'off'"
+            :preferred-countries="['AE']"
         />
     </div>
 </template>
 
 <script lang="ts">
-    import DmcTelInput from '@/components/DmcTelInput.vue';
-    import { Component, Vue } from '@/utils/decorators';
+    import { Component, Vue } from 'vue-property-decorator';
 
-    // import isEmojiUnicodeSupportedByBrowser from '@/utils/emoji/support/';
+    import VueIntlTelInput from '@/components/vue-intl-tel-input.vue';
 
     @Component({
         name: 'App',
         components: {
-            DmcTelInput,
+            VueIntlTelInput,
         },
     })
     export default class Input extends Vue {
-        phone = '+'
+        phone = '+380(9asd7)3008444'
     }
 </script>
 
 <style lang="scss">
-    //
+    @import '~bulma/sass/base/minireset'; // <- for sure will be available
     @import '~@/assets/scss/styles.scss';
+    @import '~bulma/sass/base/generic'; // <- can be removed
 </style>

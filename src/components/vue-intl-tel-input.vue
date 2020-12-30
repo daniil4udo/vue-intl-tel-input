@@ -1,152 +1,186 @@
 <template>
     <div>
-        regionCode - {{ regionCode }}
-        <B-Field
+        <!--  -->
+        <div
             :id="fieldId"
             ref="refPhoneField"
             :class="[
-                'iti',
-                isAnyMobile && 'iti-mobile'
+                'field viti',
+                { 'viti-mobile': isAnyMobile }
             ]"
-            :type="valdationClass"
-            :message="validationMessage"
-            :label="label"
             :disabled="disabled"
-            expanded
         >
-            <B-Dropdown
-                :id="dropdownId"
-                ref="refPhoneDropdown"
-                aria-role="list"
-                class="iti__dropdown"
-                scrollable
-                :position="dropdownOpenDirection"
-                :max-height="400"
-                :disabled="disabled || disabledDropdown || (!isMounted || isFetching)"
-                :tabindex="dropdownTabIndex"
-                @input="onSelect"
-                @active-change="onActiveChange"
-            >
-                <B-Button
-                    slot="trigger"
-                    slot-scope="{ active }"
-                    :loading="!isMounted || isFetching"
-                    :class="[
-                        'button is-outlined',
-                        'iti__button',
-                        valdationClass
-                    ]"
-                    type="button"
-                >
-                    <template v-if="isMounted && !isFetching">
-                        <template v-if="!getBoolean(hideFlags, 'button')">
-                            <div
-                                v-if="getBoolean(emojiFlags, 'button') && activeCountry.emoji"
-                                class="iti__eflag"
-                            >
-                                <span v-text="activeCountry.emoji.flag" />
-                            </div>
-                            <div
-                                v-else
-                                :class="`iti__flag flag-${activeCountry.iso2.toLowerCase()}`"
-                            />
-                        </template>
-                        <div v-if="!getBoolean(hideCountryCode, 'button')" class="iti__country">
-                            <span
-                                class="iti__country-dial"
-                                v-text="`+${activeCountry.dialCode}`"
-                            />
-                        </div>
-                    </template>
-                    <small
-                        :class="[
-                            'iti__arrow',
-                            active ? 'is-open' : 'is-closed'
-                        ]"
-                        v-text="'↑'"
-                    />
-                </B-Button>
-
-                <B-Field class="dropdown-item">
-                    <div class="control has-icons-right is-clearfix is-expanded">
-                        <input
-                            ref="refPhoneDropdownInput"
-                            v-model="dropdownSearch"
-                            class="input is-small iti__dropdown-input"
-                            :placeholder="dropdownPlaceholder"
-                            type="text"
-                            @focus="focusDropdownInput"
-                            @blur="blurDropdownInput"
-                        >
-                        <!-- TODO: add some svg to clear input -->
-                    </div>
-                </B-Field>
-
-                <template v-for="(c, i) in fileredCountries">
-                    <B-Dropdown-item
-                        :key="`${i}-item`"
-                        :value="c"
-                        aria-role="listitem"
-                        :class="{
-                            preffered: c.preferred,
-                            'is-active': activeCountry.iso2 === c.iso2
-                        }"
-                        :data-iso="c.iso2"
-                        :data-dial-code="c.dialCode"
-                    >
-                        <div class="media">
-                            <template v-if="!getBoolean(hideFlags, 'dropdown')">
-                                <div
-                                    v-if="getBoolean(emojiFlags, 'dropdown') && c.emoji"
-                                    class="iti__eflag--dropdown"
-                                >
-                                    <span v-text="c.emoji.flag" />
-                                </div>
-                                <div
-                                    v-else
-                                    :class="`iti__flag flag-${c.iso2.toLowerCase()}`"
-                                />
-                            </template>
-                            <div class="iti__country">
-                                <span
-                                    v-if="!getBoolean(hideCountryCode, 'dropdown') && c.dialCode"
-                                    class="iti__country-dial"
-                                    v-text="`+${c.dialCode}`"
-                                />
-                                <small v-if="!getBoolean(hideCountryName, 'dropdown')" v-html="c.name" />
-                            </div>
-                        </div>
-                    </B-Dropdown-item>
-                    <hr
-                        v-if="c.lastPreffered"
-                        :key="`${i}-line`"
-                        class="dropdown-divider"
-                    >
-                </template>
-            </B-Dropdown>
-            <B-Input
-                :id="inputId"
-                ref="refPhoneInput"
-                v-model="phone"
-                v-bind="$attrs"
-                expanded
-                type="tel"
-                class="iti__input"
-                :autocomplete="autocomplete"
-                :tabindex="inputTabIndex"
-                :name="`${name}-${Date.now()}`"
-                :disabled="disabled"
-                :placeholder="newPlaceholder"
-                @input="onInput"
-                @focus="focusInput"
-                @blur="blurInput"
-                @keypress.native="onKeyPress"
+            <label
+                v-if="label"
+                class="label viti__label"
+                v-text="label"
             />
-        </B-Field>
-        <p>activeCountry</p>
+            <div class="field-body">
+                <div class="field has-addons">
+                    <B-Dropdown
+                        :id="dropdownId"
+                        ref="refPhoneDropdown"
+                        aria-role="list"
+                        class="viti__dropdown"
+                        scrollable
+                        :position="dropdownOpenDirection"
+                        :triggers="dropdownTriggers"
+                        :max-height="dropdownHeight"
+                        :disabled="disabled || disabledDropdown || (!isMounted || isFetching)"
+                        :tabindex="dropdownTabIndex"
+                        @input="onSelect"
+                        @active-change="onActiveChange"
+                    >
+                        <template #trigger="{ active }">
+                            <button
+                                type="button"
+                                :class="[
+                                    'button viti__button is-outlined ',
+                                    { 'is-loading': !isMounted || isFetching },
+                                    valdationClass
+                                ]"
+                            >
+                                <span>
+                                    <template v-if="isMounted && !isFetching">
+                                        <template v-if="!getBoolean(hideFlags, 'button')">
+                                            <div
+                                                v-if="getBoolean(emojiFlags, 'button') && activeCountry.emoji"
+                                                class="viti__eflag"
+                                            >
+                                                <span v-text="activeCountry.emoji.flag" />
+                                            </div>
+                                            <div
+                                                v-else
+                                                :class="`viti__flag flag-${activeCountry.iso2.toLowerCase()}`"
+                                            />
+                                        </template>
+                                        <div v-if="!getBoolean(hideCountryCode, 'button')" class="viti__country">
+                                            <span
+                                                class="viti__country-dial"
+                                                v-text="`+${activeCountry.dialCode}`"
+                                            />
+                                        </div>
+                                    </template>
+                                    <!-- Dropdown Icon Slot -->
+                                    <slot name="arrow-icon" :active="active">
+                                        <small
+                                            :class="[
+                                                'viti__arrow',
+                                                active ? 'is-open' : 'is-closed'
+                                            ]"
+                                            v-text="'↑'"
+                                        />
+                                    </slot>
+                                </span>
+                            </button>
+                        </template>
+
+                        <div class="field dropdown-item">
+                            <div class="control has-icons-right is-clearfix is-expanded">
+                                <input
+                                    ref="refPhoneDropdownInput"
+                                    v-model="dropdownSearch"
+                                    type="text"
+                                    class="input is-small viti__dropdown-input"
+                                    :placeholder="dropdownPlaceholder"
+                                    @focus="focusDropdownInput"
+                                    @blur="blurDropdownInput"
+                                >
+                                <!-- TODO: add some svg to clear input -->
+                                <span class="icon is-right is-clickable">
+                                    <i class="mdi mdi-close-circle mdi-24px" />
+                                </span>
+                            </div>
+                        </div>
+
+                        <template v-for="(c, i) in fileredCountries">
+                            <B-Dropdown-item
+                                :key="`${i}-item`"
+                                :value="c"
+                                aria-role="listitem"
+                                class="viti__dropdown-item"
+                                :class="{
+                                    preffered: c.preferred,
+                                    'is-active': activeCountry.iso2 === c.iso2
+                                }"
+                                :data-iso="c.iso2"
+                                :data-dial-code="c.dialCode"
+                            >
+                                <div class="media">
+                                    <template v-if="!getBoolean(hideFlags, 'dropdown')">
+                                        <div
+                                            v-if="getBoolean(emojiFlags, 'dropdown') && c.emoji"
+                                            class="viti__eflag--dropdown"
+                                        >
+                                            <span v-text="c.emoji.flag" />
+                                        </div>
+                                        <div
+                                            v-else
+                                            :class="`viti__flag flag-${c.iso2.toLowerCase()}`"
+                                        />
+                                    </template>
+                                    <div class="viti__country">
+                                        <span
+                                            v-if="!getBoolean(hideCountryCode, 'dropdown') && c.dialCode"
+                                            class="viti__country-dial"
+                                            v-text="`+${c.dialCode}`"
+                                        />
+                                        <small v-if="!getBoolean(hideCountryName, 'dropdown')" v-html="c.name" />
+                                    </div>
+                                </div>
+                            </B-Dropdown-item>
+                            <hr
+                                v-if="c.lastPreffered"
+                                :key="`${i}-divider`"
+                                class="dropdown-divider"
+                            >
+                        </template>
+                    </B-Dropdown>
+                    <div
+                        :class="[
+                            'control viti__input has-icons-right',
+                            { 'is-expanded': isExpanded }
+                        ]"
+                    >
+                        <input
+                            :id="inputId"
+                            ref="refPhoneInput"
+                            v-model="phone"
+                            v-bind="$attrs"
+                            type="tel"
+                            :name="`${name}-${Date.now()}`"
+                            :disabled="disabled"
+                            :placeholder="newPlaceholder"
+                            :autocomplete="autocomplete"
+                            :tabindex="inputTabIndex"
+                            :class="[
+                                'input',
+                                valdationClass
+                            ]"
+                            @input="onInput($event.target.value, $event)"
+                            @focus="focusInput"
+                            @blur="blurInput"
+                            @keypress="onKeyPress"
+                        >
+                        <slot name="validation-icon" :valid="isValid">
+                            <!-- TODO: bindvalidation state -->
+                            <span class="icon is-right has-text-danger">
+                                <i class="mdi mdi-alert-circle mdi-24px" />
+                            </span>
+                        </slot>
+                    </div>
+                </div>
+            </div>
+            <p
+                v-if="validationMessage"
+                :class="[ 'help viti__error', valdationClass ]"
+                v-text="validationMessage"
+            />
+        </div>
+        <!--  -->
+        <p>Active Country</p>
         <pre>{{ activeCountry }}</pre>
-        <strong>newPlaceholder - {{ newPlaceholder }}</strong>
-        <p>phoneData</p>
+        <p>Phone Data</p>
         <pre>{{ phoneData }}</pre>
     </div>
 </template>
@@ -154,8 +188,7 @@
 <script lang="ts">
     import PhoneNumber from 'awesome-phonenumber';
 
-    import { BButton, BDropdown, BDropdownItem, BField, BInput } from '@/components/buefy';
-    import Dropdown from '@/mixin/useDropdown';
+    import { BDropdown, BDropdownItem } from '@/components/buefy';
     import Input from '@/mixin/useInput';
     import { isDefined, getBoolean, fetchISO, getDropdownPosition, isMobile } from '@/utils/';
     import { Component, Mixins, Ref, Watch } from '@/utils/decorators';
@@ -165,10 +198,10 @@
     @Component({
         name: 'VueIntlTelInput',
         components: {
-            BField, BInput, BButton, BDropdown, BDropdownItem,
+              BDropdown, BDropdownItem,
         },
     })
-    export default class VueIntlTelInput extends Mixins(Dropdown, Input) {
+    export default class VueIntlTelInput extends Mixins(Input) {
         isMounted = false;
         // Flag that shows loading if we are trying to fetch country ISO from https://ip2c.org/s
         isFetching = true;
@@ -177,10 +210,10 @@
         // Shorthand for binding imported method
         getBoolean = getBoolean.bind(this) // short hand to make method available in template
 
-        @Ref() readonly refPhoneField: BField;
+        @Ref() readonly refPhoneField: HTMLDivElement;
         @Ref() readonly refPhoneDropdown: BDropdown;
         @Ref() readonly refPhoneDropdownInput: HTMLInputElement;
-        @Ref() readonly refPhoneInput: BInput;
+        @Ref() readonly refPhoneInput: HTMLInputElement;
 
         get isValid() {
             return (this.phone !== '')
@@ -388,7 +421,7 @@
         async selectInput() {
             await this.$nextTick(() => {
                 // Accesing Buefy's input ref
-                this.refPhoneInput.$refs.input.select();
+                this.refPhoneInput.select();
             });
         }
     }
