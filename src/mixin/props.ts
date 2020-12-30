@@ -25,6 +25,17 @@ class DropdownProps extends Vue {
     }) dropdownPlaceholder: string;
 
     @Prop({
+        type: [ String, Number ],
+        default: () => 400,
+    }) dropdownHeight: string | number;
+
+    @Prop({
+        type: Array,
+        validator: t => [ 'click', 'hover', 'contextmenu', 'focus' ].some(Array.prototype.includes.bind(t)),
+        default: () => [ 'click' ],
+    }) dropdownTriggers: string | number;
+
+    @Prop({
         type: [ Boolean, Object ],
         default: () => false,
     }) hideCountryCode: boolean | IDropdowButton;
@@ -187,6 +198,11 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
         type: Boolean,
         default: () => false,
     }) disabled: boolean;
+
+    @Prop({
+        type: Boolean,
+        default: () => true,
+    }) isExpanded: boolean;
 
     @Prop({
         type: Function,
