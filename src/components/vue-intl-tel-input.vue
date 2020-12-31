@@ -196,7 +196,7 @@
 
     import { BDropdown, BDropdownItem } from '@/components/buefy';
     import Input from '@/mixin/useInput';
-    import { isDefined, getBoolean, fetchISO, getDropdownPosition, isMobile } from '@/utils/';
+    import { isDefined, getBoolean, fetchISO, getDropdownPosition } from '@/utils/';
     import { Component, Mixins, Ref, Watch } from '@/utils/decorators';
 
     import { ICountry } from './models';
@@ -212,7 +212,7 @@
         // Flag that shows loading if we are trying to fetch country ISO from https://ip2c.org/s
         isFetching = true;
         // Check if current browser / platfor is mobile
-        isMobile = isMobile.any();
+        isMobile = /Android.+Mobile|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         // Shorthand for binding imported method
         getBoolean = getBoolean.bind(this) // short hand to make method available in template
 
