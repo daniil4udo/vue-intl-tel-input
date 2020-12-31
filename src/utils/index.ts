@@ -1,10 +1,8 @@
 import _get from 'get-value';
-import _empty from 'lodash.isempty';
-import _uniqBy from 'lodash.uniqby';
 
 import { SUPPORTED_ISO } from '@/assets/constants';
 
-import { PropertyPath, IPhoneObject, DropdowPosition } from '../components/models';
+import { PropertyPath, IPhoneObject, DropdowPosition, ICountry } from '../components/models';
 
 export function isDefined<T>(v: T) {
     return v != null;
@@ -12,6 +10,30 @@ export function isDefined<T>(v: T) {
 
 export function has<T>(o: T, key: PropertyPath) {
     return isDefined(o) && Object.prototype.hasOwnProperty.call(o, key);
+}
+
+export function keyByIso(countriesArr: string[], getterfn, preferred = false) {
+    const m: Map<string, ICountry> = new Map();
+    const c = [ ...new Set(countriesArr) ];
+
+    for (let i = 0; i < c.length; i++) {
+        const countryData = getterfn(countriesArr[i]);
+
+        if (isDefined(countryData)) {
+            if (preferred) {
+                const isLastIndex = (j: number) => (countriesArr.length - 1) === j;
+
+                Object.assign(countryData, {
+                    preferred: true,
+                    lastPreffered: isLastIndex(i),
+                });
+            }
+
+            m.set(countriesArr[i], countryData);
+        }
+    }
+
+    return m;
 }
 
 export type AllTypes = 'primitive' | 'boolean' | 'number' | 'bigint' | 'string' | 'symbol' | 'null' | 'undefined' | 'object' | 'array' | 'arguments' | 'buffer' | 'function' | 'generatorfunction' | 'map' | 'weakmap' | 'set' | 'weakset' | 'regexp' | 'date';
@@ -92,17 +114,50 @@ export function isLocalStorageAccessSafe() {
  */
 export async function fetchISO() {
     try {
-        const response = await fetch('https://ip2c.org/s');
-        const responseText = await response.text();
+        const responseText = await (await fetch('https://ip2c.org/s')).text();
         const result = String(responseText || '').toUpperCase();
 
         if (result && result[0] === '1') {
-            return result.substr(2, 2);
+            return result.substr(2, 2).toUpperCase();
         }
     }
     catch (err) {
         throw new Error('[fetchISO]: Error while fetching country code');
     }
+}
+
+export async function getBowserLocale() {
+    const navigator = window.navigator || window.clientInformation;
+
+    const languageList: string[] = [];
+
+    if (navigator.languages) {
+        languageList.push(...navigator.languages);
+    }
+    if (navigator.language) {
+        languageList.push(navigator.language);
+    }
+    if (navigator.userLanguage) {
+        languageList.push(navigator.userLanguage);
+    }
+    if (navigator.browserLanguage) {
+        languageList.push(navigator.browserLanguage);
+    }
+    if (navigator.systemLanguage) {
+        languageList.push(navigator.systemLanguage);
+    }
+
+    const [ lang, iso ]: string[] = (languageList.find(l => l.includes('-')) || '').split('-');
+
+    if (iso) {
+        return iso.toUpperCase();
+    }
+    // fallback to US country
+    if (lang && lang.toLowerCase() === 'en') {
+        return 'GB';
+    }
+
+    return null;
 }
 
 /**
@@ -154,9 +209,3 @@ function padLeft(u, t: number) {
 function d(s: number) {
     return !!((s == 9 || s == 10 || s == 13 || s == 32));
 }
-
-export { isMobile } from 'buefy/src/utils/helpers.js';
-export {
-    _uniqBy as uniqBy,
-    _empty as isEmpty,
-};

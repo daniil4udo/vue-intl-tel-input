@@ -1,6 +1,6 @@
 import { countries } from '@/assets/all-countries';
 import Props from '@/mixin/props';
-import { toType, has, uniqBy, isSupportedCountry, isDefined } from '@/utils/';
+import { toType, isSupportedCountry, keyByIso } from '@/utils/';
 import { Component, Mixins } from '@/utils/decorators';
 
 import { ICountry, DropdowPosition } from '../components/models';
@@ -17,51 +17,31 @@ export default class Dropdown extends Mixins(Props) {
      */
     public activeCountry = { iso2: this.defaultCountry } as ICountry;
 
-    private get _preferred(): ICountry[] {
-        const isLastIndex = (i: number) => (this.preferredCountriesProxy.length - 1) === i;
-
-        return this.preferredCountriesProxy.reduce((a, iso2, i) => {
-            const c = this.getCountry(iso2);
-
-            if (isDefined(c)) {
-                a.push({
-                    ...c,
-                    preferred: true,
-                    lastPreffered: isLastIndex(i),
-                });
-            }
-
-            return a;
-        }, []);
+    private get _preferred(): Map<string, ICountry> {
+        return keyByIso(this.preferredCountriesProxy, this.getCountry, true);
     }
 
-    private get _processed(): Record<string, ICountry> {
+    private get _processed(): Map<string, ICountry> {
         // List countries after filtered
         if (this.onlyCountries.length !== 0) {
-            return this.onlyCountries.reduce((a, iso2) => Object.assign(a, { [iso2]: this.getCountry(iso2) }), {});
+            return keyByIso(this.onlyCountries, this.getCountry);
         }
 
         if (this.ignoredCountries.length !== 0) {
-            const filterIgnored = {};
-
-            for (const iso2 in countries) {
-                if (has(countries, iso2) && !this.ignoredCountries.includes(iso2)) {
-                    filterIgnored[iso2] = this.getCountry(iso2);
-                }
+            for (const iso of this.ignoredCountries) {
+                countries.delete(iso);
             }
-
-            return filterIgnored;
         }
 
         return countries;
     }
 
     private get _sorted(): ICountry[] {
-        return uniqBy([].concat(this._preferred, Object.values(this._processed)), 'iso2');
+        return Object.values(Object.fromEntries(new Map([ ...this._preferred, ...this._processed ])));
     }
 
     public get fileredCountries(): ICountry[] {
-        const matchInputCountry = (c = '') => String.prototype.includes.call(c.toLowerCase(), this.dropdownSearch.toLowerCase());
+        const matchInputCountry = (c = '') => String.prototype.includes.call(c.toString().toLowerCase(), this.dropdownSearch.toString().toLowerCase());
 
         if (this.dropdownSearch === '') {
             return this._sorted;
@@ -71,12 +51,17 @@ export default class Dropdown extends Mixins(Props) {
     }
 
     public get isEmojiFlagSupported(): boolean {
-        return this._sorted.every(c => c.emoji.supported);
+        for (let i = 0; i < this._sorted.length; i++) {
+            if (!this._sorted[i].emoji.supported) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public getCountry(iso2 = ''): ICountry {
-        if (isSupportedCountry(iso2) && has(this._processed, iso2)) {
-            return this._processed[iso2.toUpperCase()];
+        if (iso2 !== '' && isSupportedCountry(iso2) && this._processed.has(iso2)) {
+            return this._processed.get(iso2.toUpperCase());
         }
 
         return null;

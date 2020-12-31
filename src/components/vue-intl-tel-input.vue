@@ -86,8 +86,8 @@
                                     type="text"
                                     class="input is-small viti__dropdown-input"
                                     :placeholder="dropdownPlaceholder"
-                                    @focus="focusDropdownInput"
-                                    @blur="blurDropdownInput"
+                                    @focus="focus('focus-search', refPhoneDropdownInput, $event, true)"
+                                    @blur="blur('blur-search', refPhoneDropdownInput, $event, true)"
                                 >
                                 <!-- TODO: add some svg to clear input -->
                                 <span class="icon is-right is-clickable">
@@ -131,6 +131,7 @@
                                             class="viti__country-dial"
                                             v-text="`+${c.dialCode}`"
                                         />
+                                        <!-- TODO: Add Intl.DisplayName support -->
                                         <small v-if="!getBoolean(hideCountryName, 'dropdown')" v-html="c.name" />
                                     </div>
                                 </div>
@@ -164,12 +165,11 @@
                                 valdationClass
                             ]"
                             @input="onInput($event.target.value, $event)"
-                            @focus="focusInput"
-                            @blur="blurInput"
-                            @keypress="onKeyPress"
+                            @focus="focus( 'focus', refPhoneInput, $event, true)"
+                            @blur="blur( 'blur', refPhoneInput, $event, true)"
+                            @keypress="onKeyPress($event)"
                         >
                         <slot name="validation-icon" :valid="isValid">
-                            <!-- TODO: bindvalidation state -->
                             <span class="icon is-right has-text-danger">
                                 <i class="mdi mdi-alert-circle mdi-24px" />
                             </span>
@@ -196,7 +196,7 @@
 
     import { BDropdown, BDropdownItem } from '@/components/buefy';
     import Input from '@/mixin/useInput';
-    import { isDefined, getBoolean, fetchISO, getDropdownPosition } from '@/utils/';
+    import { isDefined, getBoolean, fetchISO, getDropdownPosition, getBowserLocale } from '@/utils/';
     import { Component, Mixins, Ref, Watch } from '@/utils/decorators';
 
     import { ICountry } from './models';
@@ -315,8 +315,9 @@
         async initCountry() {
             /**
              * 1. if already have PHONE passed from the parent - parse it
+             * In order to detec country we need at leas 1 number ater the +
              */
-            if (this.phone && this.testInternational(this.phone)) {
+            if (this.phone && this.testInternational(this.phone) && this.phone.length > 1) {
                 /**
                  * We could have used phone watcher
                  * But we have to set country regardles disabled options
@@ -352,12 +353,12 @@
             /**
              * 4. if don't have get fallback country from preffered or just a first option
              */
-            return this.preferredCountries[0] || this.fileredCountries[0].iso2;
+            return this.preferredCountries[0] || getBowserLocale() || this.fileredCountries[0].iso2;
         }
 
         onSelect(c: ICountry) {
             this.setActiveCountry(c);
-            this.focusInput();
+            this.focus('focus', this.refPhoneInput);
 
             // emit country change event for the actual country select
             this.$emit('input', this.phone, this.phoneData);
@@ -374,7 +375,7 @@
             }
         }
 
-        onInput(s: string, e: InputEvent) {
+        onInput(s: string, e?: InputEvent) {
             // TODO: Set custm HTML5 validation error msg
             // refPhoneInput.value.$refs.input.setCustomValidity(this.phoneData.valid ? '' : this.invalidMsg);
 
@@ -392,35 +393,25 @@
                 this.dropdownSearch = '';
                 this.dropdownOpenDirection = getDropdownPosition(this.refPhoneDropdown.$el);
 
-                this.focusDropdownInput();
+                this.focus('focus-search', this.refPhoneDropdownInput);
                 this.$emit('dropdown-active-change', state);
             }
         }
 
-        focusInput() {
+        focus(emitName = 'focus', el: HTMLInputElement, e?: FocusEvent, emit?: boolean) {
             this.$nextTick(() => {
-                this.refPhoneInput.focus();
-                this.$emit('focus-input');
-            });
-        }
+                el.focus();
 
-        blurInput() {
-            this.$nextTick(() => {
-                this.$emit('blur-input');
-            });
-        }
-
-        focusDropdownInput() {
-            this.$nextTick(() => {
-                this.refPhoneDropdownInput.focus();
-                this.$emit('focus-dropdown-input');
+                if (isDefined(emit)) {
+                    this.$emit(emitName, el, e);
+                }
             });
         }
 
         // TODO: fires twice
-        blurDropdownInput() {
+        blur(emitName = 'blur', el: HTMLInputElement, e?: FocusEvent) {
             this.$nextTick(() => {
-                this.$emit('blur-dropdown-input');
+                this.$emit(emitName, el, e);
             });
         }
 

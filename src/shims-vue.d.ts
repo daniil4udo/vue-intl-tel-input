@@ -15,3 +15,9 @@ type ObjectKeys<T> =
 declare interface ObjectConstructor {
   keys<T>(o: T): ObjectKeys<T>;
 }
+
+declare interface Navigator  {
+    userLanguage?: string;
+    browserLanguage?: string;
+    systemLanguage?: string;
+}

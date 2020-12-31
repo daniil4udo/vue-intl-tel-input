@@ -11,7 +11,7 @@ import { isEmojiUnicodeSupported, isoToEmoji } from '@/utils/emoji';
 
 import _countries from './countries.json';
 
-const countries: Record<string, ICountry> = {};
+const countries: Map<string, ICountry> = new Map();
 // const countriesIso: Set<string> = new Set();
 
 // loop over all of the countries above, restructuring the data to be objects with named keys
@@ -34,7 +34,7 @@ for (let i = 0; i < _countries.length; i++) {
     };
 
     // countriesIso.add(iso2);
-    Object.assign(countries, { [iso2]: countryDict });
+    countries.set(iso2, countryDict);
 }
 
 export {
