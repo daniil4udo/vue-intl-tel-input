@@ -1,8 +1,8 @@
-import PhoneNumber from 'awesome-phonenumber';
 import _get from 'get-value';
-import _has from 'has-value';
-import _hasValue from 'has-values';
-import _uniqBy from 'lodash/uniqBy';
+import _empty from 'lodash.isempty';
+import _uniqBy from 'lodash.uniqby';
+
+import { SUPPORTED_ISO } from '@/assets/constants';
 
 import { PropertyPath, IPhoneObject, DropdowPosition } from '../components/models';
 
@@ -11,7 +11,7 @@ export function isDefined<T>(v: T) {
 }
 
 export function has<T>(o: T, key: PropertyPath) {
-    return _has(o, key);
+    return isDefined(o) && Object.prototype.hasOwnProperty.call(o, key);
 }
 
 export type AllTypes = 'primitive' | 'boolean' | 'number' | 'bigint' | 'string' | 'symbol' | 'null' | 'undefined' | 'object' | 'array' | 'arguments' | 'buffer' | 'function' | 'generatorfunction' | 'map' | 'weakmap' | 'set' | 'weakset' | 'regexp' | 'date';
@@ -58,9 +58,8 @@ export function isCorrectISO(iso2 = '') {
     return true;
 }
 
-const supported = PhoneNumber.getSupportedRegionCodes().reduce((a, c) => ({ ...a, [c]: c }), {} as Record<string, string>);
 export function isSupportedCountry(iso2 = '') {
-    if (!isCorrectISO(iso2) || !has(supported, iso2.toUpperCase())) {
+    if (!isCorrectISO(iso2) || !has(SUPPORTED_ISO, iso2.toUpperCase())) {
         throw new TypeError(`[isCorrectISO]: iso2 country ${iso2} is not supported by awesome-phonenumber`);
     }
 
@@ -156,11 +155,8 @@ function d(s: number) {
     return !!((s == 9 || s == 10 || s == 13 || s == 32));
 }
 
-export function isEmpty<T>(o: T) {
-    return !_hasValue(o);
-}
-
 export { isMobile } from 'buefy/src/utils/helpers.js';
 export {
     _uniqBy as uniqBy,
+    _empty as isEmpty,
 };

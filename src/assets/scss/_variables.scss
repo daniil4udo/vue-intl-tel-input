@@ -1,0 +1,27 @@
+///
+/// Bulma Variables Overwrites
+///
+$primary: #2757a3 !default;
+$success: #18a57e !default;
+$warning: #ffd66b !default;
+$danger: #ef4f4f !default;
+///
+/// Buefy Variables Overwrites
+///
+$dropdown-content-padding-top: 0 !default;
+
+///
+/// VITI Variables
+///
+$dropdown-content-width: 400px !default;
+
+$flag-height: 15px !default;
+$flag-width: 20px !default;
+$flag-padding: 8px !default;
+// this border width is used for the popup and divider, but it is also
+// assumed to be the border width of the input, which we do not control
+
+// image related variables
+$flags-image-path: '../img/' !default;
+$flags-image-name: 'flags' !default;
+$flags-image-extension: 'png' !default;

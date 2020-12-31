@@ -1,3 +1,5 @@
+import PhoneNumber from 'awesome-phonenumber';
+
 import { Possibility, ParseMode, PhoneNumberTypes } from '@/components/models';
 
 export const PHONE_TYPE: PhoneNumberTypes[] = [
@@ -35,3 +37,5 @@ export const POSIBILITY: Possibility[] = [
 export const INTL = new RegExp(/^(0{2}|\+)/);
 
 export const VALID_CHAR = new RegExp(/^[\+]?[()\-\d\s]*$/);
+
+export const SUPPORTED_ISO = PhoneNumber.getSupportedRegionCodes().reduce((a, c) => ({ ...a, [c]: c }), {} as Record<string, string>);

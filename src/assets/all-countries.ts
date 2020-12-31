@@ -11,43 +11,33 @@ import { isEmojiUnicodeSupported, isoToEmoji } from '@/utils/emoji';
 
 import _countries from './countries.json';
 
-// const countriesArr: ICountry[] = [];
 const countries: Record<string, ICountry> = {};
-const countriesIso: Set<string> = new Set();
+// const countriesIso: Set<string> = new Set();
 
 // loop over all of the countries above, restructuring the data to be objects with named keys
-for (const c of _countries) {
-    /**
-     * We may want to encode to unicode
-     * name[2] is a non latinic c name
-     */
-    const names = String(c[0]).split(/([\\(||//)])/g);
-
-    // if (names.includes('(') && names.includes(')')) {
-    //     names[2] = escapeUnicode(names[2]);
-    // }
-
-    const iso2 = String(c[1]).toUpperCase();
+for (let i = 0; i < _countries.length; i++) {
+    const names = String(_countries[i][0]).split(/([\\(||//)])/g);
+    const iso2 = String(_countries[i][1]).toUpperCase();
 
     const countryDict: ICountry = {
-        name: [].concat(names).join(''), // c[0], // Country name,
+        name: [].concat(names).join(''), // _countries[i][0], // Country name,
         name_en: names[0],
         name_local: names[2],
         iso2, // iso2 code,
-        dialCode: String(c[2]), // International dial code,
-        priority: Number(c[3]) || 0, // Order (if >1 country with same dial code),
-        areaCodes: c[4] || null, // Area codes
+        dialCode: String(_countries[i][2]), // International dial code,
+        priority: Number(_countries[i][3]) || 0, // Order (if >1 country with same dial code),
+        areaCodes: _countries[i][4] || null, // Area codes
         emoji: {
             flag: isoToEmoji(iso2),
             supported: isEmojiUnicodeSupported(iso2),
         },
     };
 
-    countriesIso.add(iso2);
+    // countriesIso.add(iso2);
     Object.assign(countries, { [iso2]: countryDict });
 }
 
 export {
-    countriesIso,
+    // countriesIso,
     countries,
 };

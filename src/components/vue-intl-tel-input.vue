@@ -6,7 +6,7 @@
             ref="refPhoneField"
             :class="[
                 'field viti',
-                { 'viti-mobile': isAnyMobile }
+                { 'viti-mobile': isMobile }
             ]"
             :disabled="disabled"
         >
@@ -206,7 +206,7 @@
         // Flag that shows loading if we are trying to fetch country ISO from https://ip2c.org/s
         isFetching = true;
         // Check if current browser / platfor is mobile
-        isAnyMobile = isMobile.any();
+        isMobile = isMobile.any();
         // Shorthand for binding imported method
         getBoolean = getBoolean.bind(this) // short hand to make method available in template
 

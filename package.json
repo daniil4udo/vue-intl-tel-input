@@ -28,9 +28,9 @@
         "build:lib": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
         "build:lib:watch": "yarn build:lib --watch",
         "build:scss": "run-s build:scss:viti build:scss:core build:scss:vendor",
-        "build:scss:viti": "sass src/assets/scss/styles.scss | node ./build/banner.js > dist/vue-intl-tel-input.css && cleancss -O2 -o dist/vue-intl-tel-input.min.css dist/vue-intl-tel-input.css",
-        "build:scss:core": "sass src/assets/scss/viti.scss | node ./build/banner.js > dist/vue-intl-tel-input.core.css && cleancss -O2 -o dist/vue-intl-tel-input.core.min.css dist/vue-intl-tel-input.core.css",
-        "build:scss:vendor": "sass src/assets/scss/vendor.scss > dist/vue-intl-tel-input.vendor.css && cleancss -O2 -o dist/vue-intl-tel-input.vendor.min.css dist/vue-intl-tel-input.vendor.css",
+        "build:scss:viti": "sass src/assets/scss/styles.scss | node ./build/banner.js > dist/css/vue-intl-tel-input.css && cleancss -O2 -o dist/css/vue-intl-tel-input.min.css dist/css/vue-intl-tel-input.css",
+        "build:scss:core": "sass src/assets/scss/viti.scss | node ./build/banner.js > dist/css/vue-intl-tel-input.core.css && cleancss -O2 -o dist/css/vue-intl-tel-input.core.min.css dist/css/vue-intl-tel-input.core.css",
+        "build:scss:vendor": "sass src/assets/scss/vendor.scss > dist/css/vue-intl-tel-input.vendor.css && cleancss -O2 -o dist/css/vue-intl-tel-input.vendor.min.css dist/css/vue-intl-tel-input.vendor.css",
         "build:scss:watch": "sass src/assets/scss/styles.scss --watch",
         "build:ci": "yarn build --report",
         "lint": "run-s lint:all:*",
@@ -57,6 +57,8 @@
         "awesome-phonenumber": "^2.42.0",
         "buefy": "^0.9.4",
         "core-js": "^3.6.5",
+        "lodash.isempty": "^4.4.0",
+        "lodash.uniqby": "^4.7.0",
         "vue": "^2.6.11",
         "vue-class-component": "^7.2.6",
         "vue-property-decorator": "^9.1.2"
@@ -100,7 +102,6 @@
         "npm-run-all": "^4.1.5",
         "prettier": "^2.2.1",
         "rollup": "^2.35.1",
-        "rollup-plugin-babel": "^4.4.0",
         "rollup-plugin-postcss": "^4.0.0",
         "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-typescript2": "^0.29.0",
@@ -122,10 +123,23 @@
         "vue-svg-inline-loader": "^2.0.0",
         "vue-template-compiler": "^2.6.11"
     },
+    "peerDependencies": {
+        "buefy": "^0.9.4",
+        "core-js": "^3.6.5",
+        "lodash.isempty": "^4.4.0",
+        "lodash.uniqby": "^4.7.0"
+    },
     "files": [
         "dist/*.js",
+        "dist/css/*.css",
         "dist/vue-intl-tel-input.d.ts",
         "LICENSE",
         "README.md"
-    ]
+    ],
+    "resolutions": {
+        "lodash": "^4.17.19",
+        "postcss": "^7.0.0",
+        "autoprefixer": "^9.8.0",
+        "cssnano": "^4.1.0"
+    }
 }

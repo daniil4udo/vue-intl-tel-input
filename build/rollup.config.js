@@ -6,7 +6,7 @@ import node from '@rollup/plugin-node-resolve'
 import alias from '@rollup/plugin-alias';
 import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
-import babel from 'rollup-plugin-babel';
+// import babel from 'rollup-plugin-babel';
 import json from '@rollup/plugin-json';
 import { terser } from 'rollup-plugin-terser';
 import minimist from 'minimist';
@@ -29,10 +29,6 @@ const baseConfig = {
   input: 'src/index.ts',
   sourcemap: true,   // have source map even for production
   // banner: require('./banner'),
-  external: [
-    ...Object.keys(pkg.dependencies || {}),
-    ...Object.keys(pkg.peerDependencies || {}),
-  ],
   plugins: {
     node: {
       extensions: ['.vue', '.js', '.ts', '.css']
@@ -79,15 +75,17 @@ const baseConfig = {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
       runtimeHelpers: false,
     },
+    // TODO: update to postcss 8 once cssnano is ready
+    // https://github.com/CarbonPackages/Carbon.Rollup/issues/11
     postcss: {
-      extract: 'sprites.css',
+      extract: 'css/flags.css',
+      // modules: ['src', 'node_modules'],
       plugins: [
         require('autoprefixer'),
         require('cssnano'),
       ],
-      // modules: ['src', 'node_modules'],
       sourceMap: true,
-      extensions: [ '.scss', '.sass', '.css' ]
+      extensions: [ '.scss', '.sass', '.css' ],
     }
   },
 };
@@ -98,6 +96,8 @@ const external = [
   // list external dependencies, exactly the way it is written in the import statement.
   // eg. 'jquery'
   'vue',
+  // ...Object.keys(pkg.dependencies || {}),
+  ...Object.keys(pkg.peerDependencies || {}),
 ];
 
 // UMD/IIFE shared settings: output.globals

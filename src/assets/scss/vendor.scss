@@ -1,14 +1,4 @@
-///
-/// Bulma Variables Overwrites
-///
-$primary: #2757a3 !default;
-$success: #18a57e !default;
-$warning: #ffd66b !default;
-$danger: #ef4f4f !default;
-///
-/// Buefy Variables Overwrites
-///
-$dropdown-content-padding-top: 0 !default;
+@import 'variables';
 
 // TODO: fix issue with ~ aliases
 // Bulma
