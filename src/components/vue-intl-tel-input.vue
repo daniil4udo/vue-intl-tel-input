@@ -21,6 +21,8 @@
                         :id="dropdownId"
                         ref="refPhoneDropdown"
                         aria-role="list"
+                        aria-label="List of countries"
+                        role="list"
                         class="viti__dropdown"
                         scrollable
                         :position="dropdownOpenDirection"
@@ -31,9 +33,10 @@
                         @input="onSelect"
                         @active-change="onActiveChange"
                     >
-                        <template #trigger="{ active }">
+                        <template #trigger="{ active }" :aria-expanded="true">
                             <button
                                 type="button"
+                                :title="activeCountry.name_en + ': +' + activeCountry.dialCode"
                                 :class="[
                                     'button viti__button is-outlined ',
                                     { 'is-loading': !isMounted || isFetching },
@@ -98,7 +101,10 @@
                                 :key="`${i}-item`"
                                 :value="c"
                                 aria-role="listitem"
+                                :aria-selected="`${activeCountry.iso2 === c.iso2}`"
+                                role="listitem"
                                 class="viti__dropdown-item"
+                                :tabindex="-1"
                                 :class="{
                                     preffered: c.preferred,
                                     'is-active': activeCountry.iso2 === c.iso2
