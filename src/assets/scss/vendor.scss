@@ -24,6 +24,7 @@ $danger-light: findLightColor($danger) !default;
 $danger-dark: findDarkColor($danger) !default;
 
 $custom-colors: null !default;
+$shades: null !default; 
 $colors: mergeColorMaps((
     'primary': ($primary, $primary-invert, /* $primary-light, $primary-dark */),
     'success': ($success, $success-invert, /* $success-light, $success-dark */),
@@ -51,7 +52,7 @@ $colors: mergeColorMaps((
 ///
 /// Helpers
 ///
-// @import '../../../node_modules/bulma/sass/helpers/color';
+@import '../../../node_modules/bulma/sass/helpers/color';
 // @import '../../../node_modules/bulma/sass/helpers/flexbox';
 // @import '../../../node_modules/bulma/sass/helpers/float';
 @import '../../../node_modules/bulma/sass/helpers/other';

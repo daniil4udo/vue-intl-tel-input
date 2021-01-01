@@ -61,10 +61,7 @@
                                             />
                                         </template>
                                         <div v-if="!getBoolean(hideCountryCode, 'button')" class="viti__country">
-                                            <span
-                                                class="viti__country-dial"
-                                                v-text="`+${activeCountry.dialCode}`"
-                                            />
+                                            <span class="viti__country-dial" v-text="`+${activeCountry.dialCode}`" />
                                         </div>
                                         <!-- Dropdown Icon Slot -->
                                         <slot name="arrow-icon" :active="active">
@@ -95,9 +92,13 @@
                                     @blur="blur('blur-search', refPhoneDropdownInput, $event, true)"
                                 >
                                 <!-- TODO: add some svg to clear input -->
-                                <span class="icon is-small is-right is-clickable">
-                                    <i class="mdi mdi-close-circle mdi-24px" />
-                                </span>
+                                <!-- <span class="icon is-small is-right is-clickable" @click="dropdownSearch = ''">
+                                    <img
+                                        svg-inline
+                                        src="../assets/img/x-circle.svg"
+                                        alt="✕"
+                                    >
+                                </span> -->
                             </div>
                         </div>
 
@@ -174,23 +175,33 @@
                             :placeholder="newPlaceholder"
                             :autocomplete="autocomplete"
                             :tabindex="inputTabIndex"
-                            :class="[
-                                'input',
-                                valdationClass
-                            ]"
+                            :class="[ 'input', valdationClass ]"
                             @input="onInput($event.target.value, $event)"
                             @focus="focus( 'focus', refPhoneInput, $event, true)"
                             @blur="blur( 'blur', refPhoneInput, $event, true)"
                             @keypress="onKeyPress($event)"
                         >
                         <slot name="validation-icon" :valid="isValid">
-                            <span class="icon is-right has-text-danger">
-                                <i class="mdi mdi-alert-circle mdi-24px" />
+                            <span v-if="valdationClass" :class="[ 'icon is-right', valdationClass ]">
+                                <!-- cannot use dynamic path :( -->
+                                <img
+                                    v-if="validationReason"
+                                    svg-inline
+                                    class="has-text-danger"
+                                    src="../assets/img/x.svg"
+                                >
+                                <img
+                                    v-else
+                                    svg-inline
+                                    class="has-text-success"
+                                    src="../assets/img/check.svg"
+                                >
                             </span>
                         </slot>
                     </div>
                 </div>
             </div>
+            <!-- Validation Error message -->
             <p :class="[ 'help viti__error', valdationClass ]">
                 <component
                     :is="validationComponent"
@@ -202,9 +213,7 @@
                         :phone-data="phoneData"
                         :reason="validationReason"
                     >
-                        <span v-if="validationReason">
-                            Phone Number Error: {{ validationMessage }}
-                        </span>
+                        <span v-if="validationReason" v-text="`Phone Number Error: ${validationMessage}`" />
                     </slot>
                 </component>
             </p>
@@ -213,9 +222,6 @@
         <p>Active Country</p>
         <pre>{{ activeCountry }}</pre>
         <p>Phone Data</p>
-        isLazyFlags - {{ isLazyFlags }}
-        getBoolean(emojiFlags, 'button') - {{ getBoolean(emojiFlags, 'button') }}
-        getBoolean(emojiFlags, 'dropdown') - {{ getBoolean(emojiFlags, 'dropdown') }}
         <pre>{{ phoneData }}</pre>
         <!--  -->
     </div>

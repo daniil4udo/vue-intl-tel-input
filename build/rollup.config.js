@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import minimist from 'minimist';
 
+import svg from 'rollup-plugin-vue-inline-svg';
 import vue from 'rollup-plugin-vue';
 import node from '@rollup/plugin-node-resolve'
 import alias from '@rollup/plugin-alias';
@@ -132,6 +133,7 @@ if (!argv.format || argv.format === 'es') {
       json(baseConfig.plugins.json),
       typescript(baseConfig.plugins.typescript),
       ...baseConfig.plugins.preVue,
+      svg(),
       vue(baseConfig.plugins.vue),
       // babel({
       //   ...baseConfig.plugins.babel,
@@ -172,6 +174,7 @@ if (!argv.format || argv.format === 'cjs') {
       json(baseConfig.plugins.json),
       typescript(baseConfig.plugins.typescript),
       ...baseConfig.plugins.preVue,
+      svg(),
       vue({
         ...baseConfig.plugins.vue,
         template: {
@@ -209,6 +212,7 @@ if (!argv.format || argv.format === 'umd') {
       json(baseConfig.plugins.json),
       typescript(baseConfig.plugins.typescript),
       ...baseConfig.plugins.preVue,
+      svg(),
       vue(baseConfig.plugins.vue),
       // babel(baseConfig.plugins.babel),
       commonjs(),
