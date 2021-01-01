@@ -1,6 +1,11 @@
 <template>
     <div>
         <!--  -->
+        <p>Active Country</p>
+        <pre>{{ activeCountry }}</pre>
+        <p>Phone Data</p>
+        <pre>{{ phoneData }}</pre>
+        <!--  -->
         <div
             :id="fieldId"
             ref="refPhoneField"
@@ -28,7 +33,7 @@
                         :position="dropdownOpenDirection"
                         :triggers="dropdownTriggers"
                         :max-height="dropdownHeight"
-                        :disabled="disabled || disabledDropdown || (!isMounted || isFetching)"
+                        :disabled="disabled || disabledDropdown || !isMounted"
                         :tabindex="dropdownTabIndex"
                         @input="onSelect"
                         @active-change="onActiveChange"
@@ -39,12 +44,12 @@
                                 :title="activeCountry.name_en + ': +' + activeCountry.dialCode"
                                 :class="[
                                     'button viti__button is-outlined ',
-                                    { 'is-loading': !isMounted || isFetching },
+                                    { 'is-loading': !isMounted },
                                     valdationClass
                                 ]"
                             >
                                 <span>
-                                    <template v-if="isMounted && !isFetching">
+                                    <template v-if="isMounted">
                                         <template v-if="!getBoolean(hideFlags, 'button')">
                                             <div
                                                 v-if="getBoolean(emojiFlags, 'button') && activeCountry.emoji"
@@ -183,11 +188,6 @@
                 v-text="validationMessage"
             />
         </div>
-        <!--  -->
-        <p>Active Country</p>
-        <pre>{{ activeCountry }}</pre>
-        <p>Phone Data</p>
-        <pre>{{ phoneData }}</pre>
     </div>
 </template>
 
@@ -208,13 +208,12 @@
         },
     })
     export default class VueIntlTelInput extends Mixins(Input) {
-        isMounted = false;
         // Flag that shows loading if we are trying to fetch country ISO from https://ip2c.org/s
-        isFetching = true;
+        isMounted = false;
         // Check if current browser / platfor is mobile
         isMobile = /Android.+Mobile|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         // Shorthand for binding imported method
-        getBoolean = getBoolean.bind(this) // short hand to make method available in template
+        getBoolean = getBoolean.bind(this); // short hand to make method available in template
 
         @Ref() readonly refPhoneField: HTMLDivElement;
         @Ref() readonly refPhoneDropdown: BDropdown;
@@ -307,7 +306,6 @@
                 })
                 .finally(() => {
                     // Have this flag to avoid FOUC
-                    this.isFetching = false;
                     this.isMounted = true;
                 });
         }
