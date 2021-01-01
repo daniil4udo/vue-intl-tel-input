@@ -12,18 +12,19 @@ import { isEmojiUnicodeSupported, isoToEmoji } from '@/utils/emoji';
 import _countries from './countries.json';
 
 const countries: Map<string, ICountry> = new Map();
-// const countriesIso: Set<string> = new Set();
+const { length } = _countries;
+let supported = true;
 
 // loop over all of the countries above, restructuring the data to be objects with named keys
-for (let i = 0; i < _countries.length; i++) {
+for (let i = 0; i < length; i++) {
     const names = String(_countries[i][0]).split(/([\\(||//)])/g);
     const iso2 = String(_countries[i][1]).toUpperCase();
 
     const countryDict: ICountry = {
-        name: [].concat(names).join(''), // _countries[i][0], // Country name,
+        name: names.join(''), // Country name,
         name_en: names[0],
         name_local: names[2],
-        iso2, // iso2 code,
+        iso2,
         dialCode: String(_countries[i][2]), // International dial code,
         priority: Number(_countries[i][3]) || 0, // Order (if >1 country with same dial code),
         areaCodes: _countries[i][4] || null, // Area codes
@@ -33,11 +34,19 @@ for (let i = 0; i < _countries.length; i++) {
         },
     };
 
-    // countriesIso.add(iso2);
     countries.set(iso2, countryDict);
+
+    if (supported === true) {
+        /**
+         * Assuming emoji not supported
+         * if at leas 1 emoji in our country list is not supported
+         */
+        ({ supported } = countryDict.emoji);
+    }
 }
 
+// Hack for not to export mutable variable
+export const emojiFlagsSupport = supported;
 export {
-    // countriesIso,
     countries,
 };

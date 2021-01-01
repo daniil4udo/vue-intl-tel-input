@@ -1,11 +1,5 @@
 <template>
     <div>
-        <!--  -->
-        <p>Active Country</p>
-        <pre>{{ activeCountry }}</pre>
-        <p>Phone Data</p>
-        <pre>{{ phoneData }}</pre>
-        <!--  -->
         <div
             :id="fieldId"
             ref="refPhoneField"
@@ -59,7 +53,11 @@
                                             </div>
                                             <div
                                                 v-else
-                                                :class="`viti__flag flag-${activeCountry.iso2.toLowerCase()}`"
+                                                :class="[
+                                                    // Id css flags enabled, render css img only after first pixel intersecting
+                                                    isLazyFlags ? 'viti__lazy-flag' : 'viti__flag',
+                                                    `flag-${activeCountry.iso2.toLowerCase()}`
+                                                ]"
                                             />
                                         </template>
                                         <div v-if="!getBoolean(hideCountryCode, 'button')" class="viti__country">
@@ -127,7 +125,11 @@
                                         </div>
                                         <div
                                             v-else
-                                            :class="`viti__flag flag-${c.iso2.toLowerCase()}`"
+                                            :class="[
+                                                // Id css flags enabled, render css img only after first pixel intersecting
+                                                isLazyFlags ? 'viti__lazy-flag' : 'viti__flag',
+                                                `flag-${c.iso2.toLowerCase()}`
+                                            ]"
                                         />
                                     </template>
                                     <div class="viti__country">
@@ -188,6 +190,15 @@
                 v-text="validationMessage"
             />
         </div>
+        <!--  -->
+        <p>Active Country</p>
+        <pre>{{ activeCountry }}</pre>
+        <p>Phone Data</p>
+        isLazyFlags - {{ isLazyFlags }}
+        getBoolean(emojiFlags, 'button') - {{ getBoolean(emojiFlags, 'button') }}
+        getBoolean(emojiFlags, 'dropdown') - {{ getBoolean(emojiFlags, 'dropdown') }}
+        <pre>{{ phoneData }}</pre>
+        <!--  -->
     </div>
 </template>
 
@@ -212,8 +223,9 @@
         isMounted = false;
         // Check if current browser / platfor is mobile
         isMobile = /Android.+Mobile|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        // Shorthand for binding imported method
-        getBoolean = getBoolean.bind(this); // short hand to make method available in template
+        // IntersectionObserver
+        isLazyFlags = !getBoolean(this.emojiFlags, 'button') || !getBoolean(this.emojiFlags, 'dropdown');
+        observer = null as IntersectionObserver;
 
         @Ref() readonly refPhoneField: HTMLDivElement;
         @Ref() readonly refPhoneDropdown: BDropdown;
@@ -308,6 +320,25 @@
                     // Have this flag to avoid FOUC
                     this.isMounted = true;
                 });
+
+            /**
+             * No need to fire IO if user want to displat emoji flags
+             * If at least on prop doesnt ask for emoji - then load css flags
+             */
+            if (this.isLazyFlags) {
+                // Init IntersectionObserver for lazyload flag sprites sprite
+                this.initObserver()
+                    .then(() => {
+                        this.observer.observe(this.refPhoneField);
+                    });
+            }
+        }
+
+        destroyed() {
+            if (isDefined(this.observer)) {
+                this.observer.disconnect();
+                this.observer = null;
+            }
         }
 
         async initCountry() {
@@ -354,6 +385,41 @@
             return this.preferredCountries[0] || getBowserLocale() || this.fileredCountries[0].iso2;
         }
 
+        async initObserver() {
+            if (!('IntersectionObserver' in window) || !('IntersectionObserverEntry' in window) || !('intersectionRatio' in window.IntersectionObserverEntry.prototype)) {
+                this.isLazyFlags = false;
+            }
+
+            const options: IntersectionObserverInit = {
+                /**
+                 * IMPORTANT
+                 * always include 0 in the threshold. FF doesnt behave well without it
+                 */
+                threshold: [ 0 ], // as soon as even one pixel is visible, the callback will be run)
+            };
+
+            const handleIntersectionEvent: IntersectionObserverCallback = (entries: IntersectionObserverEntry[]) => {
+                /**
+                 * IMPORTANT:
+                 * Intersection observer on init return all entries with all the states
+                 * All next calls only changed state
+                 *
+                 * NOTE:
+                 * Assuming that entries array has only 1 entry
+                 * so no sense to loop through it
+                 */
+                if (entries[0].isIntersecting) {
+                    this.isLazyFlags = false;
+
+                    this.$nextTick(() => {
+                        this.observer.unobserve(this.refPhoneField);
+                    });
+                }
+            };
+
+            this.observer = new IntersectionObserver(handleIntersectionEvent, options);
+        }
+
         onSelect(c: ICountry) {
             this.setActiveCountry(c);
             this.focus('focus', this.refPhoneInput);
@@ -375,7 +441,7 @@
 
         onInput(s: string, e?: InputEvent) {
             // TODO: Set custm HTML5 validation error msg
-            // refPhoneInput.value.$refs.input.setCustomValidity(this.phoneData.valid ? '' : this.invalidMsg);
+            // refPhoneInput.value.setCustomValidity(this.phoneData.valid ? '' : this.invalidMsg);
 
             // TODO: Bind native event
             // Keep the current cursor position just in case the input reformatted
@@ -419,6 +485,9 @@
                 this.refPhoneInput.select();
             });
         }
+
+        // short hand to make method available in template
+        getBoolean = getBoolean.bind(this);
     }
 </script>
 

@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 
-import { countries } from '@/assets/all-countries';
+import { emojiFlagsSupport } from '@/assets/all-countries';
 import { PHONE_TYPE, NUMBER } from '@/assets/constants';
 import { isSupportedCountry, validationMessage } from '@/utils/';
 import { Component, Prop, Mixins, Vue } from '@/utils/decorators';
@@ -54,7 +54,7 @@ class DropdownProps extends Vue {
 
     @Prop({
         type: [ Boolean, Object ],
-        default: () => Object.values(countries).every(c => c.emoji.supported),
+        default: () => emojiFlagsSupport,
     }) emojiFlags: boolean | IDropdowButton;
 
     // whether or not to allow the dropdown
