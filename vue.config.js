@@ -129,7 +129,7 @@ module.exports = {
     },
 
     devServer: {
-        writeToDisk: true,
+        writeToDisk: false,
         overlay: {
             warnings: true,
             errors: true,

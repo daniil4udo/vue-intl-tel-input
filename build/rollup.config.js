@@ -1,6 +1,8 @@
 // rollup.config.js
 import fs from 'fs';
 import path from 'path';
+import minimist from 'minimist';
+
 import vue from 'rollup-plugin-vue';
 import node from '@rollup/plugin-node-resolve'
 import alias from '@rollup/plugin-alias';
@@ -9,9 +11,9 @@ import replace from '@rollup/plugin-replace';
 // import babel from 'rollup-plugin-babel';
 import json from '@rollup/plugin-json';
 import { terser } from 'rollup-plugin-terser';
-import minimist from 'minimist';
 import typescript from "rollup-plugin-typescript2";
 import postcss from 'rollup-plugin-postcss';
+import copy from 'rollup-plugin-copy';
 
 // Get browserslist config and remove ie from es build targets
 const esbrowserslist = fs.readFileSync('./.browserslistrc')
@@ -80,12 +82,13 @@ const baseConfig = {
     postcss: {
       extract: 'css/flags.css',
       // modules: ['src', 'node_modules'],
-      plugins: [
-        require('autoprefixer'),
-        require('cssnano'),
-      ],
       sourceMap: true,
       extensions: [ '.scss', '.sass', '.css' ],
+    },
+    copy: {
+      targets: [
+        { src: 'src/assets/img/**/*', dest: 'dist/img' }
+      ]
     }
   },
 };
@@ -94,9 +97,7 @@ const baseConfig = {
 // Refer to https://rollupjs.org/guide/en/#warning-treating-module-as-external-dependency
 const external = [
   // list external dependencies, exactly the way it is written in the import statement.
-  // eg. 'jquery'
   'vue',
-  // ...Object.keys(pkg.dependencies || {}),
   ...Object.keys(pkg.peerDependencies || {}),
 ];
 
@@ -104,12 +105,12 @@ const external = [
 // Refer to https://rollupjs.org/guide/en#output-globals for details
 const globals = {
   // Provide global variable names to replace your external imports
-  // eg. jquery: '$'
   vue: 'Vue',
 };
 
 // Customize configs for individual targets
 const buildFormats = [];
+
 if (!argv.format || argv.format === 'es') {
   const esConfig = {
     ...baseConfig,
@@ -144,6 +145,7 @@ if (!argv.format || argv.format === 'es') {
       //   ],
       // }),
       commonjs(),
+      copy(baseConfig.plugins.copy),
     ],
   };
   buildFormats.push(esConfig);
@@ -179,6 +181,7 @@ if (!argv.format || argv.format === 'cjs') {
       }),
       // babel(baseConfig.plugins.babel),
       commonjs(),
+      copy(baseConfig.plugins.copy),
     ],
   };
   buildFormats.push(umdConfig);
@@ -209,6 +212,7 @@ if (!argv.format || argv.format === 'umd') {
       vue(baseConfig.plugins.vue),
       // babel(baseConfig.plugins.babel),
       commonjs(),
+      copy(baseConfig.plugins.copy),
       terser({
         output: {
           ecma: 5,
