@@ -3,11 +3,11 @@
         <div
             :id="fieldId"
             ref="refPhoneField"
+            :disabled="disabled"
             :class="[
                 'field viti',
                 { 'viti-mobile': isMobile }
             ]"
-            :disabled="disabled"
         >
             <label
                 v-if="label"
@@ -35,7 +35,7 @@
                         <template #trigger="{ active }" :aria-expanded="true">
                             <button
                                 type="button"
-                                :title="activeCountry.name_en + ': +' + activeCountry.dialCode"
+                                :title="`${activeCountry.name_en}: ${activeCountry.dialCode}`"
                                 :class="[
                                     'button viti__button is-outlined ',
                                     { 'is-loading': !isMounted },
@@ -54,9 +54,9 @@
                                             <div
                                                 v-else
                                                 :class="[
-                                                    // Id css flags enabled, render css img only after first pixel intersecting
-                                                    isLazyFlags ? 'viti__lazy-flag' : 'viti__flag',
-                                                    `flag-${activeCountry.iso2.toLowerCase()}`
+                                                    // If css flags enabled, render css img only after first pixel intersecting
+                                                    `viti__fl${isLazyFlags ? '-lazy' : ''}`,
+                                                    `fl-${activeCountry.iso2.toLowerCase()}`
                                                 ]"
                                             />
                                         </template>
@@ -66,22 +66,24 @@
                                                 v-text="`+${activeCountry.dialCode}`"
                                             />
                                         </div>
+                                        <!-- Dropdown Icon Slot -->
+                                        <slot name="arrow-icon" :active="active">
+                                            <small
+                                                :class="[
+                                                    'viti__arrow',
+                                                    active ? 'is-open' : 'is-closed'
+                                                ]"
+                                                v-text="'↑'"
+                                            />
+                                        </slot>
                                     </template>
-                                    <!-- Dropdown Icon Slot -->
-                                    <slot name="arrow-icon" :active="active">
-                                        <small
-                                            :class="[
-                                                'viti__arrow',
-                                                active ? 'is-open' : 'is-closed'
-                                            ]"
-                                            v-text="'↑'"
-                                        />
-                                    </slot>
+                                    <!-- Flag Placeholder -->
+                                    <div v-else class="viti__fl-lazy" />
                                 </span>
                             </button>
                         </template>
 
-                        <div class="field dropdown-item">
+                        <div class="field dropdown-content dropdown-item">
                             <div class="control has-icons-right is-clearfix is-expanded">
                                 <input
                                     ref="refPhoneDropdownInput"
@@ -93,7 +95,7 @@
                                     @blur="blur('blur-search', refPhoneDropdownInput, $event, true)"
                                 >
                                 <!-- TODO: add some svg to clear input -->
-                                <span class="icon is-right is-clickable">
+                                <span class="icon is-small is-right is-clickable">
                                     <i class="mdi mdi-close-circle mdi-24px" />
                                 </span>
                             </div>
@@ -116,28 +118,33 @@
                                 :data-dial-code="c.dialCode"
                             >
                                 <div class="media">
+                                    <!-- Country flag -->
                                     <template v-if="!getBoolean(hideFlags, 'dropdown')">
+                                        <!-- Emoji -->
                                         <div
                                             v-if="getBoolean(emojiFlags, 'dropdown') && c.emoji"
                                             class="viti__eflag--dropdown"
                                         >
                                             <span v-text="c.emoji.flag" />
                                         </div>
+                                        <!-- Css flag -->
                                         <div
                                             v-else
                                             :class="[
                                                 // Id css flags enabled, render css img only after first pixel intersecting
-                                                isLazyFlags ? 'viti__lazy-flag' : 'viti__flag',
-                                                `flag-${c.iso2.toLowerCase()}`
+                                                `viti__fl${isLazyFlags ? '-lazy' : ''}`,
+                                                `fl-${c.iso2.toLowerCase()}`
                                             ]"
                                         />
                                     </template>
                                     <div class="viti__country">
+                                        <!-- Country dial code -->
                                         <span
                                             v-if="!getBoolean(hideCountryCode, 'dropdown') && c.dialCode"
                                             class="viti__country-dial"
                                             v-text="`+${c.dialCode}`"
                                         />
+                                        <!-- Contry name -->
                                         <!-- TODO: Add Intl.DisplayName support -->
                                         <small v-if="!getBoolean(hideCountryName, 'dropdown')" v-html="c.name" />
                                     </div>
@@ -184,11 +191,23 @@
                     </div>
                 </div>
             </div>
-            <p
-                v-if="validationMessage"
-                :class="[ 'help viti__error', valdationClass ]"
-                v-text="validationMessage"
-            />
+            <p :class="[ 'help viti__error', valdationClass ]">
+                <component
+                    :is="validationComponent"
+                    v-if="validationComponent"
+                    :name="errorAnimation"
+                >
+                    <slot
+                        name="validation-message"
+                        :phone-data="phoneData"
+                        :reason="validationReason"
+                    >
+                        <span v-if="validationReason">
+                            Phone Number Error: {{ validationMessage }}
+                        </span>
+                    </slot>
+                </component>
+            </p>
         </div>
         <!--  -->
         <p>Active Country</p>
@@ -205,6 +224,7 @@
 <script lang="ts">
     import PhoneNumber from 'awesome-phonenumber';
 
+    import { VALIDATION_MESSAGES } from '@/assets/constants';
     import { BDropdown, BDropdownItem } from '@/components/buefy';
     import Input from '@/mixin/useInput';
     import { isDefined, getBoolean, fetchISO, getDropdownPosition, getBowserLocale } from '@/utils/';
@@ -250,14 +270,20 @@
                 : 'is-success';
         }
 
-        get validationMessage() {
+        get validationComponent() {
+            return (this.errorAnimation && typeof this.errorAnimation === 'string')
+                ? 'transition'
+                : 'template';
+        }
+
+        get validationReason() {
             // TODO: make some simple validation in utils
 
             /**
              * 1. Don't trigger validation if input is empty
              */
             if (this.phone === '' || this.isValid) {
-                return '';
+                return null;
             }
 
             /**
@@ -265,20 +291,29 @@
              * while international inputs are restricted
              */
             if (this.disabledDropdown && (isDefined(this.regionCode) && this.activeCountry.iso2 !== this.regionCode)) {
-                return `Phone number error: country change is not allowed`;
+                return 'no-country-change';
             }
 
             /**
              * 3. If current phone type doesnt match to any of allowed ones
              */
             if (this.phoneData.type && this.phoneData.type !== 'unknown' && !this.allowedPhoneTypes.includes(this.phoneData.type)) {
-                return `Phone number error: ${this.phoneData.type.replaceAll('-', ' ')} is not allowed phone type.`;
+                return 'invalid-phone-type';
             }
 
             /**
              * 4. Generic
              */
-            return this.customInvalidMsg(this.phoneData);
+            if (this.phoneData && this.phoneData.possibility && this.phoneData.country.name_en) {
+                return this.phoneData.possibility;
+            }
+
+            // Most probable scenario that at this pooint we dont have country setted yet
+            return 'unknown';
+        }
+
+        get validationMessage() {
+            return VALIDATION_MESSAGES[this.validationReason];
         }
 
         @Watch('isValid', { immediate: true })
@@ -288,11 +323,11 @@
             }
 
             this.$nextTick(() => {
-                this.$emit('validate', value, this.phoneData);
+                this.$emit('validate', this.validationReason, this.phoneData);
             });
         }
 
-        mounted() {
+        async mounted() {
             if (this.defaultCountry && this.fetchCountry) {
                 throw new Error(`[VueIntlTelInput]: Do not use 'fetch-country' and 'default-country' options in the same time`);
             }
@@ -307,7 +342,7 @@
                     this.emojiFlags = false;
                 }
                 else if (!this.emojiFlags) {
-                    import(/* webpackChunkName: "flags-sprite" */ '@/assets/scss/sprite.scss');
+                    await import(/* webpackChunkName: "flags-sprite" */ '@/assets/scss/sprite.scss');
                 }
             }
 
@@ -327,10 +362,8 @@
              */
             if (this.isLazyFlags) {
                 // Init IntersectionObserver for lazyload flag sprites sprite
-                this.initObserver()
-                    .then(() => {
-                        this.observer.observe(this.refPhoneField);
-                    });
+                await this.initObserver();
+                this.observer.observe(this.refPhoneField);
             }
         }
 

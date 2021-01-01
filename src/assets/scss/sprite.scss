@@ -273,15 +273,17 @@ $item-position-map: (
 }
 
 .viti {
-    &__lazy-flag {
+    &__fl-lazy {
         width: 20px;
         height: $flag-height;
+        margin-right: 25px;
         background-color: #dbdbdb;
         background-image: none;
+        border-radius: 2px;
         box-shadow: 0 0 1px 0 #888888;
     }
 
-    &__flag {
+    &__fl {
         width: map-get($item-width-maps, $standard-country);
         height: $flag-height;
         // empty state
@@ -289,6 +291,7 @@ $item-position-map: (
         background-image: url('#{$flags-image-path}#{$flags-image-name}.#{$flags-image-extension}');
         background-repeat: no-repeat;
         background-position: $flag-width 0;
+        border-radius: 2px;
         box-shadow: 0 0 1px 0 #888888;
 
         @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
@@ -302,7 +305,7 @@ $item-position-map: (
 
         @each $key, $width in $item-width-maps {
             @if $width != map-get($item-width-maps, $standard-country) {
-                &.flag-#{$key} {
+                &.fl-#{$key} {
                     width: $width;
                 }
             }
@@ -316,7 +319,7 @@ $item-position-map: (
             $flag-height: nth($country, 1);
             $flag-position: nth($country, 2);
 
-            &.flag-#{$key} {
+            &.fl-#{$key} {
                 height: $flag-height;
                 background-position: #{$flag-position} 0;
             }

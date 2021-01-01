@@ -84,6 +84,10 @@ export type Possibility =
     | 'too-long'
     | 'too-short';
 
+export type CustomPossibility =
+    | 'no-country-change'
+    | 'invalid-phone-type';
+
 export type PhoneNumberTypes =
     | 'fixed-line'
     | 'fixed-line-or-mobile'
@@ -96,6 +100,7 @@ export type PhoneNumberTypes =
     | 'uan'
     | 'voip'
     | 'unknown'
+
 export type DropdowPosition =
     | 'is-top-right'
     | 'is-top-left'

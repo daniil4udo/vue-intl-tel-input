@@ -2,7 +2,7 @@ import _get from 'get-value';
 
 import { SUPPORTED_ISO } from '@/assets/constants';
 
-import { PropertyPath, IPhoneObject, DropdowPosition, ICountry } from '../components/models';
+import { PropertyPath, DropdowPosition, ICountry } from '../components/models';
 
 export function isDefined<T>(v: T) {
     return v != null;
@@ -42,26 +42,6 @@ export function toType<T>(val: T): AllTypes {
         .call(val)
         .match(/\s([a-zA-Z]+)/)[1]
         .toLowerCase();
-}
-/**
- * So user can add custom validation message base on phone Object :)
- * @returns {String} - either generic string or object with keys are posibilities and values are String
- */
-export function validationMessage(phoneData: IPhoneObject) {
-    if (phoneData && phoneData.possibility && phoneData.country.name_en) {
-        const template = `Phone number error: ${phoneData.possibility.replaceAll('-', ' ')} for ${phoneData.country.name_en}`;
-
-        switch (phoneData.possibility) {
-            case 'invalid-country-code': return template;
-            case 'too-long': return template;
-            case 'too-short': return template;
-        }
-
-        return `Phone number error: invalid phone for ${phoneData.country.name_en}`;
-    }
-
-    // Most probable scenario that at this pooint we dont have country setted yet
-    return 'Phone number error: country is unknown';
 }
 
 /**

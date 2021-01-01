@@ -51,7 +51,16 @@ $colors: mergeColorMaps((
 ///
 /// Helpers
 ///
-// @import '../../../node_modules/bulma/sass/helpers/_all';
+// @import '../../../node_modules/bulma/sass/helpers/color';
+// @import '../../../node_modules/bulma/sass/helpers/flexbox';
+// @import '../../../node_modules/bulma/sass/helpers/float';
+@import '../../../node_modules/bulma/sass/helpers/other';
+// @import '../../../node_modules/bulma/sass/helpers/overflow';
+// @import '../../../node_modules/bulma/sass/helpers/position';
+// @import '../../../node_modules/bulma/sass/helpers/spacing';
+// @import '../../../node_modules/bulma/sass/helpers/typography';
+// @import '../../../node_modules/bulma/sass/helpers/visibility';
+
 ///
 /// BUEFY
 ///

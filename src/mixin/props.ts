@@ -2,10 +2,10 @@
 
 import { emojiFlagsSupport } from '@/assets/all-countries';
 import { PHONE_TYPE, NUMBER } from '@/assets/constants';
-import { isSupportedCountry, validationMessage } from '@/utils/';
+import { isSupportedCountry } from '@/utils/';
 import { Component, Prop, Mixins, Vue } from '@/utils/decorators';
 
-import { IPhoneObject, IDropdowButton, PhoneNumberTypes, ParseMode } from '../components/models';
+import { IDropdowButton, PhoneNumberTypes, ParseMode } from '../components/models';
 
 const hasList = p => (Array.isArray(p) ? p.length > 0 : (p instanceof Set ? p.size > 0 : null));
 
@@ -207,7 +207,7 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
     }) isExpanded: boolean;
 
     @Prop({
-        type: Function,
-        default: (phoneData: IPhoneObject) => validationMessage(phoneData),
-    }) customInvalidMsg: (phoneData: IPhoneObject) => string;
+        type: [ Boolean, String ],
+        default: () => 'fade',
+    }) errorAnimation: boolean | string;
 }
