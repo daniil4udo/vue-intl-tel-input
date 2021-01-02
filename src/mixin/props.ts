@@ -14,83 +14,83 @@ class DropdownProps extends Vue {
     @Prop({
         type: String,
         default: () => null,
-    }) dropdownId: string;
+    }) dropdownId: Readonly<string>;
 
     @Prop({
         type: Number,
         default: () => 0,
-    }) dropdownTabIndex: number;
+    }) dropdownTabIndex: Readonly<number>;
 
     @Prop({
         type: String,
         default: () => 'Search by country name, code or ISO',
-    }) dropdownPlaceholder: string;
+    }) dropdownPlaceholder: Readonly<string>;
 
     @Prop({
         type: [ String, Number ],
         default: () => 400,
-    }) dropdownHeight: string | number;
+    }) dropdownHeight: Readonly<string | number>;
 
     @Prop({
         type: Array,
         validator: t => [ 'click', 'hover', 'contextmenu', 'focus' ].some(Array.prototype.includes.bind(t)),
         default: () => [ 'click' ],
-    }) dropdownTriggers: string | number;
+    }) dropdownTriggers: Readonly<string | number>;
 
     @Prop({
         type: [ Boolean, Object ],
         default: () => false,
-    }) hideCountryCode: boolean | IDropdowButton;
+    }) hideCountryCode: Readonly<boolean | IDropdowButton>;
 
     @Prop({
         type: [ Boolean, Object ],
         default: () => false,
-    }) hideCountryName: boolean | IDropdowButton;
+    }) hideCountryName: Readonly<boolean | IDropdowButton>;
 
     @Prop({
         type: [ Boolean, Object ],
         default: () => false,
-    }) hideFlags: boolean | IDropdowButton;
+    }) hideFlags: Readonly<boolean | IDropdowButton>;
 
     @Prop({
         type: [ Boolean, Object ],
         default: () => emojiFlagsSupport,
-    }) emojiFlags: boolean | IDropdowButton;
+    }) emojiFlags: Readonly<boolean | IDropdowButton>;
 
     // whether or not to allow the dropdown
     @Prop({
         type: Boolean,
         default: () => false,
-    }) disabledDropdown: boolean;
+    }) disabledDropdown: Readonly<boolean>;
 
     @Prop({
         type: Boolean,
         default: () => true,
-    }) fetchCountry: boolean;
+    }) fetchCountry: Readonly<boolean>;
 
     @Prop({
         type: String,
         validator: (iso2: string) => (iso2 !== '' ? isSupportedCountry(iso2) : true),
         default: () => '',
-    }) defaultCountry: string;
+    }) defaultCountry: Readonly<string>;
 
     @Prop({
         type: [ Array, Set ],
         validator: (iso2: string[]) => (hasList(iso2) ? Array.from(iso2).some(isSupportedCountry) : true),
         default: () => [],
-    }) onlyCountries: string[];
+    }) onlyCountries: Readonly<string[]>;
 
     @Prop({
         type: [ Array, Set ],
         validator: (iso2: string[]) => (hasList(iso2) ? Array.from(iso2).some(isSupportedCountry) : true),
         default: () => [],
-    }) ignoredCountries: string[];
+    }) ignoredCountries: Readonly<string[]>;
 
     @Prop({
         type: [ Array, Set ],
         validator: (iso2: string[]) => (hasList(iso2) ? Array.from(iso2).some(isSupportedCountry) : true),
         default: () => [],
-    }) preferredCountries: string[] | Set<string>;
+    }) preferredCountries: Readonly<string[] | Set<string>>;
 }
 
 @Component
@@ -99,43 +99,43 @@ class InputProps extends Vue {
         type: String,
         validator: (a: string) => [ 'on', 'off', 'tel' ].some(t => a.includes(t)),
         default: () => 'tel',
-    }) autocomplete: string;
+    }) autocomplete: Readonly<string>;
 
     @Prop({
         type: String,
         default: () => null,
-    }) inputId: string;
+    }) inputId: Readonly<string>;
 
     @Prop({
         type: Number,
         default: () => 1,
-    }) inputTabIndex: number;
+    }) inputTabIndex: Readonly<number>;
 
     @Prop({
         type: RegExp,
         default: () => null,
-    }) customRegExp: RegExp;
+    }) customRegExp: Readonly<RegExp>;
 
     @Prop({
         type: Boolean,
         default: () => true,
-    }) validCharactersOnly: boolean;
+    }) validCharactersOnly: Readonly<boolean>;
 
     @Prop({
         type: String,
         default: () => '5x xxx xxxx',
-    }) inputPlaceholder: string;
+    }) inputPlaceholder: Readonly<string>;
 
     @Prop({
         type: String,
         validator: (type: PhoneNumberTypes[]) => PHONE_TYPE.some(t => type.includes(t)),
         default: () => 'mobile',
-    }) placeholderNumberType: PhoneNumberTypes;
+    }) placeholderNumberType: Readonly<PhoneNumberTypes>;
 
     @Prop({
         type: Boolean,
         default: () => true,
-    }) dynamicPlaceholder: boolean;
+    }) dynamicPlaceholder: Readonly<boolean>;
 }
 
 @Component
@@ -149,65 +149,65 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
     @Prop({
         type: [ String, Number ],
         default: () => '',
-    }) value: string;
+    }) value: Readonly<string>;
     // v-model
 
     @Prop({
         type: String,
         default: () => 'en',
-    }) locale: string;
+    }) locale: Readonly<string>;
 
     @Prop({
         type: String,
         default: () => null,
-    }) fieldId: string;
+    }) fieldId: Readonly<string>;
 
     // to show dial use 'international' mode
     @Prop({
         type: String,
         validator: (mode: ParseMode) => NUMBER.some(m => m === mode),
         default: () => 'national',
-    }) mode: ParseMode;
+    }) mode: Readonly<ParseMode>;
 
     @Prop({
         type: Boolean,
         default: () => true,
-    }) automaticFormatting: boolean;
+    }) automaticFormatting: Readonly<boolean>;
 
     @Prop({
         type: Array,
         validator: (type: PhoneNumberTypes[]) => PHONE_TYPE.some(t => type.includes(t)),
         default: () => [ 'mobile', 'fixed-line', 'fixed-line-or-mobile' ],
-    }) allowedPhoneTypes: PhoneNumberTypes[];
+    }) allowedPhoneTypes: Readonly<PhoneNumberTypes[]>;
 
     @Prop({
         type: Boolean,
         default: () => false,
-    }) required: boolean;
+    }) required: Readonly<boolean>;
 
     // Date.now() will be appended to keep name unique for multiple instances
     @Prop({
         type: String,
         default: () => 'vue-intl-tel-input',
-    }) name: string;
+    }) name: Readonly<string>;
 
     @Prop({
         type: String,
         default: () => 'International Phone Input',
-    }) label: string;
+    }) label: Readonly<string>;
 
     @Prop({
         type: Boolean,
         default: () => false,
-    }) disabled: boolean;
+    }) disabled: Readonly<boolean>;
 
     @Prop({
         type: Boolean,
         default: () => true,
-    }) isExpanded: boolean;
+    }) isExpanded: Readonly<boolean>;
 
     @Prop({
         type: [ Boolean, String ],
         default: () => 'fade',
-    }) errorAnimation: boolean | string;
+    }) errorAnimation: Readonly<boolean | string>;
 }
