@@ -160,7 +160,7 @@ if (!argv.format || argv.format === 'cjs') {
     output: {
       compact: true,
       // file: 'dist/vue-intl-tel-input.ssr.js',
-      entryFileNames: 'vue-intl-tel-input.ssr.js',   // .."chunks created from entry points"; default is: '[name].js'
+      entryFileNames: 'vue-intl-tel-input.cjs.js',   // .."chunks created from entry points"; default is: '[name].js'
       dir: 'dist',
       format: 'cjs',
       name: 'VueIntlTelInput',

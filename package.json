@@ -14,10 +14,10 @@
     "version": "0.1.0",
     "license": "MIT",
     "description": "International telephone input on top of Buefy",
-    "main": "dist/vue-intl-tel-input.cjs.js",
-    "unpkg": "dist/vue-intl-tel-input.global.js",
-    "jsdelivr": "dist/vue-intl-tel-input.global.js",
-    "module": "dist/vue-intl-tel-input.esm-bundler.js",
+    "main": "dist/vue-intl-tel-input.esm.js",
+    "module": "dist/vue-intl-tel-input.esm.js",
+    "unpkg": "dist/vue-intl-tel-input.umd.js",
+    "cjs": "dist/vue-intl-tel-input.min.js",
     "types": "dist/vue-intl-tel-input.d.ts",
     "sideEffects": false,
     "scripts": {
@@ -41,7 +41,6 @@
         "lint:markdownlint": "markdownlint --fix",
         "lint:prettier": "prettier --write --loglevel warn",
         "lint:stylelint": "stylelint --fix",
-        "lint:putout": "putout --fix",
         "test": "run-s test:unit test:e2e",
         "test:unit": "cross-env VUE_APP_TEST=unit vue-cli-service test:unit",
         "test:e2e": "cross-env VUE_APP_TEST=e2e vue-cli-service test:e2e --headless",
@@ -55,8 +54,7 @@
     "dependencies": {
         "awesome-phonenumber": "^2.43.0",
         "buefy": "^0.9.4",
-        "core-js": "^3.8.1",
-        "vue": "^2.6.11",
+        "vue": "^2.6.12",
         "vue-class-component": "^7.2.6",
         "vue-property-decorator": "^9.1.2"
     },
@@ -83,6 +81,7 @@
         "autoprefixer": "^9.8.0",
         "chromedriver": "87",
         "clean-css-cli": "^4.3.0",
+        "core-js": "^3.8.1",
         "cross-env": "^7.0.3",
         "eslint": "^6.7.2",
         "eslint-import-resolver-alias": "^1.1.2",
@@ -125,11 +124,12 @@
         "stylelint-webpack-plugin": "^2.1.1",
         "typescript": "~3.9.3",
         "vue-svg-inline-loader": "^2.0.0",
-        "vue-template-compiler": "^2.6.11"
+        "vue-template-compiler": "^2.6.12"
     },
     "peerDependencies": {
         "awesome-phonenumber": "^2.43.0",
-        "core-js": "^3.8.1"
+        "buefy": "^0.9.4",
+        "vue": "^2.6.12"
     },
     "files": [
         "dist/*.js",
