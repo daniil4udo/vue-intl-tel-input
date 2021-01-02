@@ -17,7 +17,7 @@ let supported = true;
 
 // loop over all of the countries above, restructuring the data to be objects with named keys
 for (let i = 0; i < length; i++) {
-    const names = String(_countries[i][0]).split(/([\\(||//)])/g);
+    const names = String(_countries[i][0]).split(/([()/\\|])/g);
     const iso2 = String(_countries[i][1]).toUpperCase();
 
     const countryDict: ICountry = {
