@@ -58,7 +58,7 @@ export function isSupportedCountry(iso2 = '') {
     return true;
 }
 
-export function getBooleanProp<T>(prop: T, path: string): boolean {
+export function getBool<T>(prop: T, path: string): boolean {
     return typeof prop === 'boolean' ? prop : !!prop[path];
 }
 

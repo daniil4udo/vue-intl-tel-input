@@ -44,9 +44,9 @@
                             >
                                 <span>
                                     <template v-if="isMounted">
-                                        <template v-if="!getBooleanProp(hideFlags, 'button')">
+                                        <template v-if="!getBool(hideFlags, 'button')">
                                             <div
-                                                v-if="getBooleanProp(emojiFlags, 'button') && activeCountry.emoji"
+                                                v-if="getBool(emojiFlags, 'button') && activeCountry.emoji"
                                                 class="viti__eflag"
                                             >
                                                 <span v-text="activeCountry.emoji.flag" />
@@ -60,7 +60,7 @@
                                                 ]"
                                             />
                                         </template>
-                                        <div v-if="!getBooleanProp(hideCountryCode, 'button')" class="viti__country">
+                                        <div v-if="!getBool(hideCountryCode, 'button')" class="viti__country">
                                             <span class="viti__country-dial" v-text="`+${activeCountry.dialCode}`" />
                                         </div>
                                         <!-- Dropdown Icon Slot -->
@@ -120,10 +120,10 @@
                             >
                                 <div class="media">
                                     <!-- Country flag -->
-                                    <template v-if="!getBooleanProp(hideFlags, 'dropdown')">
+                                    <template v-if="!getBool(hideFlags, 'dropdown')">
                                         <!-- Emoji -->
                                         <div
-                                            v-if="getBooleanProp(emojiFlags, 'dropdown') && c.emoji"
+                                            v-if="getBool(emojiFlags, 'dropdown') && c.emoji"
                                             class="viti__eflag--dropdown"
                                         >
                                             <span v-text="c.emoji.flag" />
@@ -141,13 +141,13 @@
                                     <div class="viti__country">
                                         <!-- Country dial code -->
                                         <span
-                                            v-if="!getBooleanProp(hideCountryCode, 'dropdown') && c.dialCode"
+                                            v-if="!getBool(hideCountryCode, 'dropdown') && c.dialCode"
                                             class="viti__country-dial"
                                             v-text="`+${c.dialCode}`"
                                         />
                                         <!-- Contry name -->
                                         <!-- TODO: Add Intl.DisplayName support -->
-                                        <small v-if="!getBooleanProp(hideCountryName, 'dropdown')" v-html="c.name" />
+                                        <small v-if="!getBool(hideCountryName, 'dropdown')" v-html="c.name" />
                                     </div>
                                 </div>
                             </B-Dropdown-item>
@@ -219,6 +219,8 @@
             </p>
         </div>
         <!--  -->
+        getBool(emojiFlags, 'button') - {{ getBool(emojiFlags, 'button') }}
+        getBool(emojiFlags, 'dropdown') - {{ getBool(emojiFlags, 'dropdown') }}
         <p>Active Country</p>
         <pre>{{ activeCountry }}</pre>
         <p>Phone Data</p>
@@ -233,7 +235,7 @@
     import { VALIDATION_MESSAGES } from '@/assets/constants';
     import { BDropdown, BDropdownItem } from '@/components/buefy';
     import Input from '@/mixin/useInput';
-    import { isDefined, getBooleanProp, fetchISO, getDropdownPosition, getBowserLocale } from '@/utils/';
+    import { isDefined, getBool, fetchISO, getDropdownPosition, getBowserLocale } from '@/utils/';
     import { Component, Mixins, Ref, Watch } from '@/utils/decorators';
 
     import { ICountry } from './models';
@@ -253,7 +255,7 @@
         isMobile = /Android.+Mobile|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
         // IntersectionObserver
-        isLazyFlags = !getBooleanProp(this.emojiFlags, 'button') || !getBooleanProp(this.emojiFlags, 'dropdown');
+        isLazyFlags = !getBool(this.emojiFlags, 'dropdown') || !getBool(this.emojiFlags, 'dropdown');
         observer = null as IntersectionObserver;
 
         @Ref() readonly refPhoneField: HTMLDivElement;
@@ -338,22 +340,22 @@
 
         async mounted() {
             if (this.defaultCountry && this.fetchCountry) {
-                throw new Error(`[VueIntlTelInput]: Do not use 'fetch-country' and 'default-country' options in the same time`);
+                console.warn(`[VueIntlTelInput]: Do not use 'fetch-country' and 'default-country' options in the same time`);
             }
 
-            if (this.hideFlags && this.emojiFlags) {
+            if ((getBool(this.hideFlags, 'button') && getBool(this.emojiFlags, 'button')) || (getBool(this.hideFlags, 'dropdown') && getBool(this.emojiFlags, 'dropdown'))) {
                 throw new Error(`[VueIntlTelInput]: Do not use 'hide-flags' and 'emoji-flags' options in the same time`);
             }
 
             /**
              *
              */
-            if (!this.hideFlags) {
-                if (this.emojiFlags && !this.isEmojiFlagSupported) {
+            if (!getBool(this.hideFlags, 'button') || !getBool(this.hideFlags, 'dropdown')) {
+                if ((getBool(this.emojiFlags, 'button') && getBool(this.emojiFlags, 'dropdown')) && !this.isEmojiFlagSupported) {
                     // TODO: make computed to avoid modifying props
-                    this.emojiFlags = false;
+                    // this.emojiFlags = false;
                 }
-                else if (!this.emojiFlags) {
+                if (!getBool(this.emojiFlags, 'button') || !getBool(this.emojiFlags, 'dropdown')) {
                     import(/* webpackChunkName: "flags-sprite" */ '@/assets/scss/sprite.scss')
                         .then(() => {
                             this.isLoadedFlags = true;
@@ -540,7 +542,7 @@
         }
 
         // short hand to make method available in template
-        getBooleanProp = getBooleanProp.bind(this);
+        getBool = getBool.bind(this);
     }
 </script>
 
