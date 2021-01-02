@@ -247,8 +247,11 @@
     export default class VueIntlTelInput extends Mixins(Input) {
         // Flag that shows loading if we are trying to fetch country ISO from https://ip2c.org/s
         isMounted = false;
+        isLoadedFlags = false;
+
         // Check if current browser / platfor is mobile
         isMobile = /Android.+Mobile|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
         // IntersectionObserver
         isLazyFlags = !getBooleanProp(this.emojiFlags, 'button') || !getBooleanProp(this.emojiFlags, 'dropdown');
         observer = null as IntersectionObserver;
@@ -342,17 +345,26 @@
                 throw new Error(`[VueIntlTelInput]: Do not use 'hide-flags' and 'emoji-flags' options in the same time`);
             }
 
+            /**
+             *
+             */
             if (!this.hideFlags) {
                 if (this.emojiFlags && !this.isEmojiFlagSupported) {
                     // TODO: make computed to avoid modifying props
                     this.emojiFlags = false;
                 }
                 else if (!this.emojiFlags) {
-                    await import(/* webpackChunkName: "flags-sprite" */ '@/assets/scss/sprite.scss');
+                    import(/* webpackChunkName: "flags-sprite" */ '@/assets/scss/sprite.scss')
+                        .then(() => {
+                            this.isLoadedFlags = true;
+                        });
                 }
             }
 
-            // Allow set country only on mout (if dropdown disabled)
+            /**
+             * Find proper country base on initial inputs
+             * Allow set country only on mout (if dropdown is disabled)
+             */
             this.initCountry()
                 .then(country => {
                     this.setActiveCountry(country);
@@ -368,8 +380,10 @@
              */
             if (this.isLazyFlags) {
                 // Init IntersectionObserver for lazyload flag sprites sprite
-                await this.initObserver();
-                this.observer.observe(this.refPhoneField);
+                this.initObserver()
+                    .then(() => {
+                        this.observer.observe(this.refPhoneField);
+                    });
             }
         }
 
