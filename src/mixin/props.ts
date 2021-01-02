@@ -108,7 +108,7 @@ class InputProps extends Vue {
 
     @Prop({
         type: Number,
-        default: () => 0,
+        default: () => 1,
     }) inputTabIndex: number;
 
     @Prop({
