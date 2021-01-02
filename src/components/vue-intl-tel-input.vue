@@ -44,9 +44,9 @@
                             >
                                 <span>
                                     <template v-if="isMounted">
-                                        <template v-if="!getBoolean(hideFlags, 'button')">
+                                        <template v-if="!getBooleanProp(hideFlags, 'button')">
                                             <div
-                                                v-if="getBoolean(emojiFlags, 'button') && activeCountry.emoji"
+                                                v-if="getBooleanProp(emojiFlags, 'button') && activeCountry.emoji"
                                                 class="viti__eflag"
                                             >
                                                 <span v-text="activeCountry.emoji.flag" />
@@ -60,7 +60,7 @@
                                                 ]"
                                             />
                                         </template>
-                                        <div v-if="!getBoolean(hideCountryCode, 'button')" class="viti__country">
+                                        <div v-if="!getBooleanProp(hideCountryCode, 'button')" class="viti__country">
                                             <span class="viti__country-dial" v-text="`+${activeCountry.dialCode}`" />
                                         </div>
                                         <!-- Dropdown Icon Slot -->
@@ -120,10 +120,10 @@
                             >
                                 <div class="media">
                                     <!-- Country flag -->
-                                    <template v-if="!getBoolean(hideFlags, 'dropdown')">
+                                    <template v-if="!getBooleanProp(hideFlags, 'dropdown')">
                                         <!-- Emoji -->
                                         <div
-                                            v-if="getBoolean(emojiFlags, 'dropdown') && c.emoji"
+                                            v-if="getBooleanProp(emojiFlags, 'dropdown') && c.emoji"
                                             class="viti__eflag--dropdown"
                                         >
                                             <span v-text="c.emoji.flag" />
@@ -141,13 +141,13 @@
                                     <div class="viti__country">
                                         <!-- Country dial code -->
                                         <span
-                                            v-if="!getBoolean(hideCountryCode, 'dropdown') && c.dialCode"
+                                            v-if="!getBooleanProp(hideCountryCode, 'dropdown') && c.dialCode"
                                             class="viti__country-dial"
                                             v-text="`+${c.dialCode}`"
                                         />
                                         <!-- Contry name -->
                                         <!-- TODO: Add Intl.DisplayName support -->
-                                        <small v-if="!getBoolean(hideCountryName, 'dropdown')" v-html="c.name" />
+                                        <small v-if="!getBooleanProp(hideCountryName, 'dropdown')" v-html="c.name" />
                                     </div>
                                 </div>
                             </B-Dropdown-item>
@@ -233,7 +233,7 @@
     import { VALIDATION_MESSAGES } from '@/assets/constants';
     import { BDropdown, BDropdownItem } from '@/components/buefy';
     import Input from '@/mixin/useInput';
-    import { isDefined, getBoolean, fetchISO, getDropdownPosition, getBowserLocale } from '@/utils/';
+    import { isDefined, getBooleanProp, fetchISO, getDropdownPosition, getBowserLocale } from '@/utils/';
     import { Component, Mixins, Ref, Watch } from '@/utils/decorators';
 
     import { ICountry } from './models';
@@ -250,7 +250,7 @@
         // Check if current browser / platfor is mobile
         isMobile = /Android.+Mobile|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         // IntersectionObserver
-        isLazyFlags = !getBoolean(this.emojiFlags, 'button') || !getBoolean(this.emojiFlags, 'dropdown');
+        isLazyFlags = !getBooleanProp(this.emojiFlags, 'button') || !getBooleanProp(this.emojiFlags, 'dropdown');
         observer = null as IntersectionObserver;
 
         @Ref() readonly refPhoneField: HTMLDivElement;
@@ -526,7 +526,7 @@
         }
 
         // short hand to make method available in template
-        getBoolean = getBoolean.bind(this);
+        getBooleanProp = getBooleanProp.bind(this);
     }
 </script>
 

@@ -1,6 +1,6 @@
 import { countries } from '@/assets/all-countries';
 import Props from '@/mixin/props';
-import { toType, isSupportedCountry, keyByIso } from '@/utils/';
+import { isSupportedCountry, keyByIso } from '@/utils/';
 import { Component, Mixins } from '@/utils/decorators';
 
 import { ICountry, DropdowPosition } from '../components/models';
@@ -72,7 +72,7 @@ export default class Dropdown extends Mixins(Props) {
             return this.activeCountry;
         }
 
-        if (toType(c) !== 'string' && toType(c) !== 'object') {
+        if (typeof c !== 'string' && typeof c !== 'object') {
             throw new TypeError(`[setActiveCountry]: Country argument has to be a string or an object. Got ${typeof c}`);
         }
 

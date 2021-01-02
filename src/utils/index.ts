@@ -1,14 +1,12 @@
-import _get from 'get-value';
-
 import { SUPPORTED_ISO } from '@/assets/constants';
 
-import { PropertyPath, DropdowPosition, ICountry } from '../components/models';
+import { DropdowPosition, ICountry } from '../components/models';
 
 export function isDefined<T>(v: T) {
     return v != null;
 }
 
-export function has<T>(o: T, key: PropertyPath) {
+export function has<T>(o: T, key: string) {
     return isDefined(o) && Object.prototype.hasOwnProperty.call(o, key);
 }
 
@@ -36,14 +34,6 @@ export function keyByIso(countriesArr: string[], getterfn, preferred = false) {
     return m;
 }
 
-export type AllTypes = 'primitive' | 'boolean' | 'number' | 'bigint' | 'string' | 'symbol' | 'null' | 'undefined' | 'object' | 'array' | 'arguments' | 'buffer' | 'function' | 'generatorfunction' | 'map' | 'weakmap' | 'set' | 'weakset' | 'regexp' | 'date';
-export function toType<T>(val: T): AllTypes {
-    return {}.toString
-        .call(val)
-        .match(/\s([a-zA-Z]+)/)[1]
-        .toLowerCase();
-}
-
 /**
  * Check if input is looks like ISO2 – 2 letters (case insensetive)
  * @param iso2 {String}
@@ -68,10 +58,8 @@ export function isSupportedCountry(iso2 = '') {
     return true;
 }
 
-export function getBoolean<T>(prop: T, path: string): boolean {
-    return typeof prop === 'boolean'
-        ? prop
-        : _get(prop, path, false);
+export function getBooleanProp<T>(prop: T, path: string): boolean {
+    return typeof prop === 'boolean' ? prop : !!prop[path];
 }
 
 export function isLocalStorageAccessSafe() {
@@ -159,33 +147,4 @@ export function setCaretPosition(ctrl: HTMLInputElement, pos: number) {
         ctrl.focus();
         ctrl.setSelectionRange(pos, pos);
     }
-}
-
-// String to Unicode
-export function strEncodeUTF16(x: string) {
-    const z = [];
-    const strLen = x.length;
-    const trimSpaces = false; // whitespaces
-    const s = '\\u';
-    let charCode;
-    for (let v = 0; v < strLen; v++) {
-        charCode = x.charCodeAt(v);
-        if (trimSpaces == false && d(charCode) == true) {
-            z.push(x.charAt(v));
-        }
-        else {
-            z.push(s);
-            z.push(padLeft(charCode.toString(16), 4));
-        }
-    }
-    return z.join('');
-}
-function padLeft(u, t: number) {
-    if (!t || u.length >= t) {
-        return u;
-    }
-    return (10 ** (t - u.length)).toString().slice(1) + u;
-}
-function d(s: number) {
-    return !!((s == 9 || s == 10 || s == 13 || s == 32));
 }

@@ -1,41 +1,6 @@
-export type Many<T> = T | ReadonlyArray<T>;
-export type PropertyPath = Many<PropertyName>;
-export type PropertyName = string | number | symbol;
-
 export interface IDropdowButton {
     button: boolean;
     dropdown: boolean;
-}
-
-export interface IProps extends IInputProps, IDropdownProps {
-    value?: string;
-    mode?: keyof INumber;
-    allowedPhoneTypes?: PhoneNumberTypes[];
-    required?: boolean;
-    name?: string;
-    invalidMsg?: string;
-    disabled?: boolean;
-}
-export interface IDropdownProps {
-    dropdownTabIndex?: number;
-    dropdownPlaceholder?: string;
-    hideCountryCode?: boolean | IDropdowButton;
-    hideCountryName?: boolean | IDropdowButton;
-    hideFlags?: boolean | IDropdowButton;
-    emojiFlags?: boolean | IDropdowButton;
-    disabledDropdown?: boolean;
-    fetchCountry?: boolean;
-    defaultCountry?: string;
-    onlyCountries?: string[];
-    ignoredCountries?: string[];
-    preferredCountries?: string[];
-}
-export interface IInputProps {
-    inputTabIndex?: number;
-    customRegExp?: RegExp;
-    validCharactersOnly?: boolean;
-    inputPlaceholder?: string;
-    dynamicPlaceholder?: boolean;
 }
 
 export interface IEmojiCountry {
