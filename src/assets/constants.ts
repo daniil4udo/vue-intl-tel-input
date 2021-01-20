@@ -33,6 +33,9 @@ export const POSIBILITY: Possibility[] = [
     'too-short',
 ];
 
+// https://en.wikipedia.org/wiki/List_of_North_American_Numbering_Plan_area_codes#Non-geographic_area_codes
+export const REGIONLESS_NANP_NUMBERS = [ '800', '822', '833', '844', '855', '866', '877', '880', '881', '882', '883', '884', '885', '886', '887', '888', '889' ];
+
 // Test string for first '+' or first two '0's
 export const INTL = new RegExp(/^(0{2}|\+)/);
 
