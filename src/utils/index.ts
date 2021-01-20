@@ -1,6 +1,12 @@
+import { isEmpty } from 'lodash';
+
 import { SUPPORTED_ISO } from '@/assets/constants';
 
-import { DropdowPosition, ICountry } from '../components/models';
+import { DropdowPosition } from '../components/models';
+
+export {
+    isEmpty,
+};
 
 export function isDefined<T>(v: T) {
     return v != null;
@@ -10,28 +16,14 @@ export function has<T>(o: T, key: string) {
     return isDefined(o) && Object.prototype.hasOwnProperty.call(o, key);
 }
 
-export function keyByIso(countriesArr: string[], getterfn, preferred = false) {
-    const m: Map<string, ICountry> = new Map();
-    const c = [ ...new Set(countriesArr) ];
+export function toUpper(str: string | number) {
+    return str.toString().toUpperCase() || '';
+}
 
-    for (let i = 0; i < c.length; i++) {
-        const countryData = getterfn(countriesArr[i]);
-
-        if (isDefined(countryData)) {
-            if (preferred) {
-                const isLastIndex = (j: number) => (countriesArr.length - 1) === j;
-
-                Object.assign(countryData, {
-                    preferred: true,
-                    lastPreffered: isLastIndex(i),
-                });
-            }
-
-            m.set(countriesArr[i], countryData);
-        }
-    }
-
-    return m;
+export function createUniqueArray(a?: readonly any[]) {
+    return !isEmpty(a)
+        ? Array.from(new Set(a.map(toUpper)))
+        : [];
 }
 
 /**
@@ -51,7 +43,7 @@ export function isCorrectISO(iso2 = '') {
 }
 
 export function isSupportedCountry(iso2 = '') {
-    if (!isCorrectISO(iso2) || !has(SUPPORTED_ISO, iso2.toUpperCase())) {
+    if (!isCorrectISO(iso2) || !has(SUPPORTED_ISO, toUpper(iso2))) {
         throw new TypeError(`[isCorrectISO]: iso2 country ${iso2} is not supported by awesome-phonenumber`);
     }
 
@@ -82,11 +74,10 @@ export function isLocalStorageAccessSafe() {
  */
 export async function fetchISO() {
     try {
-        const responseText = await (await fetch('https://ip2c.org/s')).text();
-        const result = String(responseText || '').toUpperCase();
+        const result = await (await fetch('https://ip2c.org/s')).text();
 
         if (result && result[0] === '1') {
-            return result.substr(2, 2).toUpperCase();
+            return toUpper(result.substr(2, 2));
         }
     }
     catch (err) {
