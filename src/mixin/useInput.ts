@@ -1,9 +1,9 @@
 import PhoneNumber from 'awesome-phonenumber';
+import { Component, Mixins, Watch } from 'vue-property-decorator';
 
 import { INTL, VALID_CHAR } from '@/assets/constants';
 import Dropdown from '@/mixin/useDropdown';
 import { isDefined } from '@/utils/';
-import { Component, Mixins, Watch } from '@/utils/decorators';
 
 import { IPhoneObject, INumber, ParseMode } from '../components/models';
 
@@ -55,7 +55,7 @@ export default class Input extends Mixins(Dropdown) {
     }
 
     public get newMode(): keyof INumber {
-        if (this.customRegExp) {
+        if (this.customRegexp) {
             return 'input';
         }
 
@@ -122,8 +122,8 @@ export default class Input extends Mixins(Dropdown) {
     }
 
     @Watch('regionCode', { immediate: false })
-    onRegionCode(iso2: string) {
-        if (isDefined(iso2) && !this.disabledDropdown) {
+    onRegionCode(iso2: string, o: string) {
+        if (!this.disabledDropdown && iso2 !== this.activeCountry.iso2) { // iso comparsion prevent multiple events firing
             this.setActiveCountry(iso2);
 
             /**
@@ -152,10 +152,10 @@ export default class Input extends Mixins(Dropdown) {
     }
 
     public testCustomValidate(phone = this.phone): boolean {
-        if (this.customRegExp instanceof RegExp) {
-            return this.customRegExp.test(phone);
+        if (this.customRegexp instanceof RegExp) {
+            return this.customRegexp.test(phone);
         }
 
-        throw new TypeError(`[testCustomValidate]: phone in customRegExp has to be a RegExp. Got ${typeof this.customRegExp}`);
+        throw new TypeError(`[testCustomValidate]: phone in customRegexp has to be a RegExp. Got ${typeof this.customRegexp}`);
     }
 }

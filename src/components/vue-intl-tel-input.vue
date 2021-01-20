@@ -102,7 +102,7 @@
                             </div>
                         </div>
 
-                        <template v-for="(c, i) in fileredCountries">
+                        <template v-for="(c, i) in countriez">
                             <B-Dropdown-item
                                 :key="`${i}-item`"
                                 :value="c"
@@ -231,12 +231,13 @@
 
 <script lang="ts">
     import PhoneNumber from 'awesome-phonenumber';
+    import { Component, Mixins, Ref, Watch } from 'vue-property-decorator';
 
+    import { emojiFlagsSupport } from '@/assets/all-countries';
     import { VALIDATION_MESSAGES } from '@/assets/constants';
     import { BDropdown, BDropdownItem } from '@/components/buefy';
     import Input from '@/mixin/useInput';
     import { isDefined, getBool, fetchISO, getDropdownPosition, getBowserLocale } from '@/utils/';
-    import { Component, Mixins, Ref, Watch } from '@/utils/decorators';
 
     import { ICountry } from './models';
 
@@ -247,7 +248,11 @@
         },
     })
     export default class VueIntlTelInput extends Mixins(Input) {
-        // Flag that shows loading if we are trying to fetch country ISO from https://ip2c.org/s
+        /**
+         * FLAGS
+         * Flag that shows loading if we are trying to fetch country ISO from https://ip2c.org/s
+         * And if flag loaded (in case using flags sprites instead of emoji)
+         */
         isMounted = false;
         isLoadedFlags = false;
 
@@ -338,23 +343,23 @@
             });
         }
 
-        async mounted() {
-            if (this.defaultCountry && this.fetchCountry) {
+        created() {
+            if (this.defaultCountry && this.autoCountry) {
                 console.warn(`[VueIntlTelInput]: Do not use 'fetch-country' and 'default-country' options in the same time`);
             }
+
+            this.processCountriesData();
 
             if ((getBool(this.hideFlags, 'button') && getBool(this.emojiFlags, 'button')) || (getBool(this.hideFlags, 'dropdown') && getBool(this.emojiFlags, 'dropdown'))) {
                 throw new Error(`[VueIntlTelInput]: Do not use 'hide-flags' and 'emoji-flags' options in the same time`);
             }
 
-            /**
-             *
-             */
             if (!getBool(this.hideFlags, 'button') || !getBool(this.hideFlags, 'dropdown')) {
-                if ((getBool(this.emojiFlags, 'button') && getBool(this.emojiFlags, 'dropdown')) && !this.isEmojiFlagSupported) {
+                if ((getBool(this.emojiFlags, 'button') && getBool(this.emojiFlags, 'dropdown')) && !emojiFlagsSupport) {
                     // TODO: make computed to avoid modifying props
                     // this.emojiFlags = false;
                 }
+
                 if (!getBool(this.emojiFlags, 'button') || !getBool(this.emojiFlags, 'dropdown')) {
                     import(/* webpackChunkName: "flags-sprite" */ '@/assets/scss/sprite.scss')
                         .then(() => {
@@ -375,7 +380,9 @@
                     // Have this flag to avoid FOUC
                     this.isMounted = true;
                 });
+        }
 
+        mounted() {
             /**
              * No need to fire IO if user want to displat emoji flags
              * If at least on prop doesnt ask for emoji - then load css flags
@@ -416,7 +423,7 @@
                  */
 
                 if (isDefined(code)) {
-                    return code;
+                    return Promise.resolve(code);
                 }
             }
 
@@ -424,20 +431,20 @@
              * 2. if phone is empty, but have DEFAULT COUNTRY
              */
             if (this.defaultCountry) {
-                return this.defaultCountry;
+                return Promise.resolve(this.defaultCountry);
             }
 
             /**
              * 3. if don't have DEFAULT COUNTRY but fetch country is allowed - FETCH
              */
-            if (this.fetchCountry) {
+            if (this.autoCountry) {
                 return fetchISO();
             }
 
             /**
              * 4. if don't have get fallback country from preffered or just a first option
              */
-            return this.preferredCountries[0] || getBowserLocale() || this.fileredCountries[0].iso2;
+            return Promise.resolve(getBowserLocale() || this.countriez[0].iso2);
         }
 
         async initObserver() {
@@ -487,7 +494,7 @@
             const { key } = e;
 
             const isValidCharactersOnly = this.validCharactersOnly && !this.testCharacters(key);
-            const isCustomValidate = this.customRegExp && !this.testCustomValidate(key);
+            const isCustomValidate = this.customRegexp && !this.testCustomValidate(key);
 
             if (isValidCharactersOnly || isCustomValidate) {
                 e.preventDefault();
@@ -517,11 +524,11 @@
             }
         }
 
-        focus(emitName = 'focus', el: HTMLInputElement, e?: FocusEvent, emit?: boolean) {
+        focus(emitName = 'focus', el: HTMLInputElement, e?: FocusEvent, emit = false) {
             this.$nextTick(() => {
                 el.focus();
 
-                if (isDefined(emit)) {
+                if (emit === true) {
                     this.$emit(emitName, el, e);
                 }
             });

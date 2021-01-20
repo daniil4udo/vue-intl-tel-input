@@ -1,13 +1,13 @@
 /* eslint-disable max-classes-per-file */
 
+import { Component, Prop, Mixins, Vue } from 'vue-property-decorator';
+
+// TODO: reorganize emoji helpers
 import { emojiFlagsSupport } from '@/assets/all-countries';
 import { PHONE_TYPE, NUMBER } from '@/assets/constants';
-import { isSupportedCountry } from '@/utils/';
-import { Component, Prop, Mixins, Vue } from '@/utils/decorators';
+import { isSupportedCountry, isEmpty } from '@/utils/';
 
 import { IDropdowButton, PhoneNumberTypes, ParseMode } from '../components/models';
-
-const hasList = p => (Array.isArray(p) ? p.length > 0 : (p instanceof Set ? p.size > 0 : null));
 
 @Component
 class DropdownProps extends Vue {
@@ -63,34 +63,39 @@ class DropdownProps extends Vue {
         default: () => false,
     }) disabledDropdown: Readonly<boolean>;
 
+    // TODO: add ability to allow user specify own geo IP lookupp function
     @Prop({
-        type: Boolean,
+        type: [ Boolean, Function ],
         default: () => true,
-    }) fetchCountry: Readonly<boolean>;
+    }) autoCountry: Readonly<boolean>;
 
+    // initial country
     @Prop({
         type: String,
         validator: (iso2: string) => (iso2 !== '' ? isSupportedCountry(iso2) : true),
         default: () => '',
     }) defaultCountry: Readonly<string>;
 
+    // display only these countries
     @Prop({
-        type: [ Array, Set ],
-        validator: (iso2: string[]) => (hasList(iso2) ? Array.from(iso2).some(isSupportedCountry) : true),
+        type: Array,
+        validator: (iso2: string[]) => (isEmpty(iso2) ? true : iso2.some(isSupportedCountry)),
         default: () => [],
     }) onlyCountries: Readonly<string[]>;
 
+    // don't display these countries
     @Prop({
-        type: [ Array, Set ],
-        validator: (iso2: string[]) => (hasList(iso2) ? Array.from(iso2).some(isSupportedCountry) : true),
+        type: Array,
+        validator: (iso2: string[]) => (isEmpty(iso2) ? true : iso2.some(isSupportedCountry)),
         default: () => [],
     }) ignoredCountries: Readonly<string[]>;
 
+    // the countries at the top of the list.
     @Prop({
-        type: [ Array, Set ],
-        validator: (iso2: string[]) => (hasList(iso2) ? Array.from(iso2).some(isSupportedCountry) : true),
+        type: Array,
+        validator: (iso2: string[]) => (isEmpty(iso2) ? true : iso2.some(isSupportedCountry)),
         default: () => [],
-    }) preferredCountries: Readonly<string[] | Set<string>>;
+    }) preferredCountries: Readonly<string[]>;
 }
 
 @Component
@@ -114,7 +119,7 @@ class InputProps extends Vue {
     @Prop({
         type: RegExp,
         default: () => null,
-    }) customRegExp: Readonly<RegExp>;
+    }) customRegexp: Readonly<RegExp>;
 
     @Prop({
         type: Boolean,
@@ -146,17 +151,20 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
      */
 
     // for v-model to work
+    // TODO: switch to PropSync
     @Prop({
         type: [ String, Number ],
         default: () => '',
     }) value: Readonly<string>;
     // v-model
 
+    // TODO: add locales
     @Prop({
-        type: String,
-        default: () => 'en',
-    }) locale: Readonly<string>;
+        type: Object,
+        default: () => {},
+    }) localizedCountries: Readonly<Record<string, string>>;
 
+    // native input alert, ID of the entire field
     @Prop({
         type: String,
         default: () => null,
@@ -180,6 +188,7 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
         default: () => [ 'mobile', 'fixed-line', 'fixed-line-or-mobile' ],
     }) allowedPhoneTypes: Readonly<PhoneNumberTypes[]>;
 
+    // native input alert
     @Prop({
         type: Boolean,
         default: () => false,
@@ -196,6 +205,7 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
         default: () => 'International Phone Input',
     }) label: Readonly<string>;
 
+    // native input alert
     @Prop({
         type: Boolean,
         default: () => false,
@@ -206,6 +216,7 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
         default: () => true,
     }) isExpanded: Readonly<boolean>;
 
+    // transition name for appearing & disapearing error message underneath the input
     @Prop({
         type: [ Boolean, String ],
         default: () => 'fade',

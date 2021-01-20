@@ -7,18 +7,23 @@
 // - It is supported by libphonenumber (it must be listed on this page): https://github.com/googlei18n/libphonenumber/blob/master/resources/ShortNumberMetadata.xml
 
 import { ICountry } from '@/components/models';
+import { isSupportedCountry, toUpper } from '@/utils/';
 import { isEmojiUnicodeSupported, isoToEmoji } from '@/utils/emoji';
 
 import _countries from './countries.json';
 
-const countries: Map<string, ICountry> = new Map();
-const { length } = _countries;
+const countries: Record<string, ICountry> = {};
 let supported = true;
 
 // loop over all of the countries above, restructuring the data to be objects with named keys
-for (let i = 0; i < length; i++) {
+for (let i = 0; i < _countries.length; i++) {
     const names = String(_countries[i][0]).split(/([()/\\|])/g);
-    const iso2 = String(_countries[i][1]).toUpperCase();
+    const iso2 = toUpper(_countries[i][1] as string);
+
+    if (!isSupportedCountry(iso2)) {
+        // method will thor an error anyways
+        break;
+    }
 
     const countryDict: ICountry = {
         name: names.join(''), // Country name,
@@ -27,14 +32,14 @@ for (let i = 0; i < length; i++) {
         iso2,
         dialCode: String(_countries[i][2]), // International dial code,
         priority: Number(_countries[i][3]) || 0, // Order (if >1 country with same dial code),
-        areaCodes: _countries[i][4] || null, // Area codes
+        areaCodes: _countries[i][4] ? [].concat(_countries[i][4]) : null, // Area codes
         emoji: {
             flag: isoToEmoji(iso2),
-            supported: isEmojiUnicodeSupported(iso2),
+            supported: isEmojiUnicodeSupported(iso2), // has to be added for all emojies, some browser has partial support for emoji flags
         },
     };
 
-    countries.set(iso2, countryDict);
+    countries[iso2] = countryDict;
 
     if (supported === true) {
         /**
@@ -47,6 +52,4 @@ for (let i = 0; i < length; i++) {
 
 // Hack for not to export mutable variable
 export const emojiFlagsSupport = supported;
-export {
-    countries,
-};
+export default countries;
