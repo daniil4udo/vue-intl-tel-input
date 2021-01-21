@@ -1,229 +1,221 @@
 <template>
-    <div>
-        <div
-            :id="fieldId"
-            ref="refPhoneField"
-            :disabled="disabled"
-            :class="[
-                'field viti',
-                { 'viti-mobile': isMobile }
-            ]"
-        >
-            <label
-                v-if="label"
-                class="label viti__label"
-                v-text="label"
-            />
-            <div class="field-body">
-                <div class="field has-addons">
-                    <B-Dropdown
-                        :id="dropdownId"
-                        ref="refPhoneDropdown"
-                        aria-role="list"
-                        aria-label="List of countries"
-                        role="list"
-                        class="viti__dropdown"
-                        scrollable
-                        :position="dropdownOpenDirection"
-                        :triggers="dropdownTriggers"
-                        :max-height="dropdownHeight"
-                        :disabled="disabled || disabledDropdown || !isMounted"
-                        :tabindex="dropdownTabIndex"
-                        @input="onSelect"
-                        @active-change="onActiveChange"
-                    >
-                        <template #trigger="{ active }" :aria-expanded="true">
-                            <button
-                                type="button"
-                                :title="`${activeCountry.name_en}: ${activeCountry.dialCode}`"
-                                :class="[
-                                    'button viti__button is-outlined ',
-                                    { 'is-loading': !isMounted },
-                                    valdationClass
-                                ]"
-                            >
-                                <span>
-                                    <template v-if="isMounted">
-                                        <template v-if="!getBool(hideFlags, 'button')">
-                                            <div
-                                                v-if="getBool(emojiFlags, 'button') && activeCountry.emoji"
-                                                class="viti__eflag"
-                                            >
-                                                <span v-text="activeCountry.emoji.flag" />
-                                            </div>
-                                            <div
-                                                v-else
-                                                :class="[
-                                                    // If css flags enabled, render css img only after first pixel intersecting
-                                                    `viti__fl${isLazyFlags ? '-lazy' : ''}`,
-                                                    `fl-${activeCountry.iso2.toLowerCase()}`
-                                                ]"
-                                            />
-                                        </template>
-                                        <div v-if="!getBool(hideCountryCode, 'button')" class="viti__country">
-                                            <span class="viti__country-dial" v-text="`+${activeCountry.dialCode}`" />
+    <div
+        :id="fieldId"
+        ref="refPhoneField"
+        :disabled="disabled"
+        :class="[
+            'field viti',
+            { 'viti-mobile': isMobile }
+        ]"
+    >
+        <label
+            v-if="label"
+            class="label viti__label"
+            v-text="label"
+        />
+        <div class="field-body">
+            <div class="field has-addons">
+                <B-Dropdown
+                    :id="dropdownId"
+                    ref="refPhoneDropdown"
+                    aria-role="list"
+                    aria-label="List of countries"
+                    role="list"
+                    class="viti__dropdown"
+                    scrollable
+                    :position="dropdownOpenDirection"
+                    :triggers="dropdownTriggers"
+                    :max-height="dropdownHeight"
+                    :disabled="disabled || disabledDropdown || !isMounted"
+                    :tabindex="dropdownTabIndex"
+                    @input="onSelect"
+                    @active-change="onActiveChange"
+                >
+                    <template #trigger="{ active }" :aria-expanded="true">
+                        <button
+                            type="button"
+                            :title="`${activeCountry.name_en}: ${activeCountry.dialCode}`"
+                            :class="[
+                                'button viti__button is-outlined ',
+                                { 'is-loading': !isMounted },
+                                valdationClass
+                            ]"
+                        >
+                            <span>
+                                <template v-if="isMounted">
+                                    <template v-if="!getBool(hideFlags, 'button')">
+                                        <div
+                                            v-if="getBool(emojiFlags, 'button') && activeCountry.emoji"
+                                            class="viti__eflag"
+                                        >
+                                            <span v-text="activeCountry.emoji.flag" />
                                         </div>
-                                        <!-- Dropdown Icon Slot -->
-                                        <slot name="arrow-icon" :active="active">
-                                            <small
-                                                :class="[
-                                                    'viti__arrow',
-                                                    active ? 'is-open' : 'is-closed'
-                                                ]"
-                                                v-text="'↑'"
-                                            />
-                                        </slot>
+                                        <div
+                                            v-else
+                                            :class="[
+                                                // If css flags enabled, render css img only after first pixel intersecting
+                                                `viti__fl${isLazyFlags ? '-lazy' : ''}`,
+                                                `fl-${activeCountry.iso2.toLowerCase()}`
+                                            ]"
+                                        />
                                     </template>
-                                    <!-- Flag Placeholder -->
-                                    <div v-else class="viti__fl-lazy" />
-                                </span>
-                            </button>
-                        </template>
+                                    <div v-if="!getBool(hideCountryCode, 'button')" class="viti__country">
+                                        <span class="viti__country-dial" v-text="`+${activeCountry.dialCode}`" />
+                                    </div>
+                                    <!-- Dropdown Icon Slot -->
+                                    <slot name="arrow-icon" :active="active">
+                                        <small
+                                            :class="[
+                                                'viti__arrow',
+                                                active ? 'is-open' : 'is-closed'
+                                            ]"
+                                            v-text="'↑'"
+                                        />
+                                    </slot>
+                                </template>
+                                <!-- Flag Placeholder -->
+                                <div v-else class="viti__fl-lazy" />
+                            </span>
+                        </button>
+                    </template>
 
-                        <div class="field dropdown-content dropdown-item">
-                            <div class="control has-icons-right is-clearfix is-expanded">
-                                <input
-                                    ref="refPhoneDropdownInput"
-                                    v-model="dropdownSearch"
-                                    type="text"
-                                    class="input is-small viti__dropdown-input"
-                                    :placeholder="dropdownPlaceholder"
-                                    @focus="focus('focus-search', refPhoneDropdownInput, $event, true)"
-                                    @blur="blur('blur-search', refPhoneDropdownInput, $event, true)"
-                                >
-                                <!-- TODO: add some svg to clear input -->
-                                <!-- <span class="icon is-small is-right is-clickable" @click="dropdownSearch = ''">
+                    <div class="field dropdown-content dropdown-item">
+                        <div class="control has-icons-right is-clearfix is-expanded">
+                            <input
+                                ref="refPhoneDropdownInput"
+                                v-model="dropdownSearch"
+                                type="text"
+                                class="input is-small viti__dropdown-input"
+                                :placeholder="dropdownPlaceholder"
+                                @focus="focus('focus-search', refPhoneDropdownInput, $event, true)"
+                                @blur="blur('blur-search', refPhoneDropdownInput, $event, true)"
+                            >
+                            <!-- TODO: add some svg to clear input -->
+                            <!-- <span class="icon is-small is-right is-clickable" @click="dropdownSearch = ''">
                                     <img
                                         svg-inline
                                         src="../assets/img/x-circle.svg"
                                         alt="✕"
                                     >
                                 </span> -->
-                            </div>
                         </div>
-
-                        <template v-for="(c, i) in fileredCountriez">
-                            <B-Dropdown-item
-                                :key="`${i}-item`"
-                                :value="c"
-                                aria-role="listitem"
-                                :aria-selected="`${activeCountry.iso2 === c.iso2}`"
-                                role="listitem"
-                                class="viti__dropdown-item"
-                                :tabindex="-1"
-                                :class="{
-                                    preffered: c.preferred,
-                                    'is-active': activeCountry.iso2 === c.iso2
-                                }"
-                                :data-iso="c.iso2"
-                                :data-dial-code="c.dialCode"
-                            >
-                                <div class="media">
-                                    <!-- Country flag -->
-                                    <template v-if="!getBool(hideFlags, 'dropdown')">
-                                        <!-- Emoji -->
-                                        <div
-                                            v-if="getBool(emojiFlags, 'dropdown') && c.emoji"
-                                            class="viti__eflag--dropdown"
-                                        >
-                                            <span v-text="c.emoji.flag" />
-                                        </div>
-                                        <!-- Css flag -->
-                                        <div
-                                            v-else
-                                            :class="[
-                                                // Id css flags enabled, render css img only after first pixel intersecting
-                                                `viti__fl${isLazyFlags ? '-lazy' : ''}`,
-                                                `fl-${c.iso2.toLowerCase()}`
-                                            ]"
-                                        />
-                                    </template>
-                                    <div class="viti__country">
-                                        <!-- Country dial code -->
-                                        <span
-                                            v-if="!getBool(hideCountryCode, 'dropdown') && c.dialCode"
-                                            class="viti__country-dial"
-                                            v-text="`+${c.dialCode}`"
-                                        />
-                                        <!-- Contry name -->
-                                        <!-- TODO: Add Intl.DisplayName support -->
-                                        <small v-if="!getBool(hideCountryName, 'dropdown')" v-html="c.name" />
-                                    </div>
-                                </div>
-                            </B-Dropdown-item>
-                            <hr
-                                v-if="c.lastPreffered"
-                                :key="`${i}-divider`"
-                                class="dropdown-divider"
-                            >
-                        </template>
-                    </B-Dropdown>
-                    <div
-                        :class="[
-                            'control viti__input has-icons-right',
-                            { 'is-expanded': isExpanded }
-                        ]"
-                    >
-                        <input
-                            :id="inputId"
-                            ref="refPhoneInput"
-                            v-model="phoneValue"
-                            v-bind="$attrs"
-                            type="tel"
-                            :name="`${name}-${Date.now()}`"
-                            :disabled="disabled"
-                            :placeholder="newPlaceholder"
-                            :autocomplete="autocomplete"
-                            :tabindex="inputTabIndex"
-                            :class="[ 'input', valdationClass ]"
-                            @input="onInput($event.target.value, $event)"
-                            @focus="focus( 'focus', refPhoneInput, $event, true)"
-                            @blur="blur( 'blur', refPhoneInput, $event, true)"
-                            @keypress="onKeyPress($event)"
-                        >
-                        <slot name="validation-icon" :valid="isValid">
-                            <span v-if="valdationClass" :class="[ 'icon is-right', valdationClass ]">
-                                <!-- cannot use dynamic path :( -->
-                                <img
-                                    v-if="validationReason"
-                                    svg-inline
-                                    class="has-text-danger"
-                                    src="../assets/img/x.svg"
-                                >
-                                <img
-                                    v-else
-                                    svg-inline
-                                    class="has-text-success"
-                                    src="../assets/img/check.svg"
-                                >
-                            </span>
-                        </slot>
                     </div>
+
+                    <template v-for="(c, i) in fileredCountriez">
+                        <B-Dropdown-item
+                            :key="`${i}-item`"
+                            :value="c"
+                            aria-role="listitem"
+                            :aria-selected="`${activeCountry.iso2 === c.iso2}`"
+                            role="listitem"
+                            class="viti__dropdown-item"
+                            :tabindex="-1"
+                            :class="{
+                                preffered: c.preferred,
+                                'is-active': activeCountry.iso2 === c.iso2
+                            }"
+                            :data-iso="c.iso2"
+                            :data-dial-code="c.dialCode"
+                        >
+                            <div class="media">
+                                <!-- Country flag -->
+                                <template v-if="!getBool(hideFlags, 'dropdown')">
+                                    <!-- Emoji -->
+                                    <div
+                                        v-if="getBool(emojiFlags, 'dropdown') && c.emoji"
+                                        class="viti__eflag--dropdown"
+                                    >
+                                        <span v-text="c.emoji.flag" />
+                                    </div>
+                                    <!-- Css flag -->
+                                    <div
+                                        v-else
+                                        :class="[
+                                            // Id css flags enabled, render css img only after first pixel intersecting
+                                            `viti__fl${isLazyFlags ? '-lazy' : ''}`,
+                                            `fl-${c.iso2.toLowerCase()}`
+                                        ]"
+                                    />
+                                </template>
+                                <div class="viti__country">
+                                    <!-- Country dial code -->
+                                    <span
+                                        v-if="!getBool(hideCountryCode, 'dropdown') && c.dialCode"
+                                        class="viti__country-dial"
+                                        v-text="`+${c.dialCode}`"
+                                    />
+                                    <!-- Contry name -->
+                                    <!-- TODO: Add Intl.DisplayName support -->
+                                    <small v-if="!getBool(hideCountryName, 'dropdown')" v-html="c.name" />
+                                </div>
+                            </div>
+                        </B-Dropdown-item>
+                        <hr
+                            v-if="c.lastPreffered"
+                            :key="`${i}-divider`"
+                            class="dropdown-divider"
+                        >
+                    </template>
+                </B-Dropdown>
+                <div
+                    :class="[
+                        'control viti__input has-icons-right',
+                        { 'is-expanded': isExpanded }
+                    ]"
+                >
+                    <input
+                        :id="inputId"
+                        ref="refPhoneInput"
+                        v-model="phoneValue"
+                        v-bind="$attrs"
+                        type="tel"
+                        :name="`${name}-${Date.now()}`"
+                        :disabled="disabled"
+                        :placeholder="newPlaceholder"
+                        :autocomplete="autocomplete"
+                        :tabindex="inputTabIndex"
+                        :class="[ 'input', valdationClass ]"
+                        @input="onInput($event.target.value, $event)"
+                        @focus="focus( 'focus', refPhoneInput, $event, true)"
+                        @blur="blur( 'blur', refPhoneInput, $event, true)"
+                        @keypress="onKeyPress($event)"
+                    >
+                    <slot name="validation-icon" :valid="isValid">
+                        <span v-if="valdationClass" :class="[ 'icon is-right', valdationClass ]">
+                            <!-- cannot use dynamic path :( -->
+                            <img
+                                v-if="validationReason"
+                                svg-inline
+                                class="has-text-danger"
+                                src="../assets/img/x.svg"
+                            >
+                            <img
+                                v-else
+                                svg-inline
+                                class="has-text-success"
+                                src="../assets/img/check.svg"
+                            >
+                        </span>
+                    </slot>
                 </div>
             </div>
-            <!-- Validation Error message -->
-            <p :class="[ 'help viti__error', valdationClass ]">
-                <component
-                    :is="validationComponent"
-                    v-if="validationComponent"
-                    :name="errorAnimation"
-                >
-                    <slot
-                        name="validation-message"
-                        :phone-data="phoneData"
-                        :reason="validationReason"
-                    >
-                        <span v-if="validationReason" v-text="`Phone Number Error: ${validationMessage}`" />
-                    </slot>
-                </component>
-            </p>
         </div>
-        <!--  -->
-        <p>Active Country</p>
-        <pre>{{ activeCountry }}</pre>
-        <p>Phone Data</p>
-        <pre>{{ phoneData }}</pre>
-        <!--  -->
+        <!-- Validation Error message -->
+        <p :class="[ 'help viti__error', valdationClass ]">
+            <component
+                :is="validationComponent"
+                v-if="validationComponent"
+                :name="errorAnimation"
+            >
+                <slot
+                    name="validation-message"
+                    :phone-data="phoneData"
+                    :reason="validationReason"
+                >
+                    <span v-if="validationReason" v-text="`Phone Number Error: ${validationMessage}`" />
+                </slot>
+            </component>
+        </p>
     </div>
 </template>
 

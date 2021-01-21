@@ -1,6 +1,5 @@
 <template>
     <div id="app" class="container">
-        {{ phone }}
         <VueIntlTelInput
             :phone.sync="phone"
 
@@ -39,7 +38,17 @@
             :disabled="false"
             is-expanded
             :error-animation="'fade'"
+
+            @validate="onValidate"
+            @country-changed="onCountryChanged"
+            @preferred-changed="onPreferredChanged"
         />
+        <!--  -->
+        <p>Active Country</p>
+        <pre>{{ activeCountry }}</pre>
+        <p>Phone Data</p>
+        <pre>{{ phoneData }}</pre>
+        <!--  -->
     </div>
 </template>
 
@@ -57,6 +66,23 @@
     export default class Input extends Vue {
         phone = '+380(9asd7)3008444';
         preferred = [ 'ua' ];
+
+        phoneData = null;
+
+        activeCountry = null
+        preferredCountry = null;
+
+        onValidate(...args) {
+            this.phoneData = args[1];
+        }
+
+        onCountryChanged(...args) {
+            this.activeCountry = args[1];
+        }
+
+        onPreferredChanged(...args) {
+            this.preferredCountry = args[1];
+        }
     }
 </script>
 
