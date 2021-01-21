@@ -1,6 +1,6 @@
 import PhoneNumber from 'awesome-phonenumber';
 
-import { Possibility, CustomPossibility, ParseMode, PhoneNumberTypes } from '@/components/models';
+import { Possibility, CustomPossibility, ParseMode, PhoneNumberTypes } from '@/components/types';
 
 export const PHONE_TYPE: PhoneNumberTypes[] = [
     'fixed-line',

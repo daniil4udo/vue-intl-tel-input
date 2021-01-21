@@ -7,7 +7,7 @@ import { emojiFlagsSupport } from '@/assets/all-countries';
 import { PHONE_TYPE, NUMBER } from '@/assets/constants';
 import { isSupportedCountry, isEmpty } from '@/utils/';
 
-import { IDropdowButton, PhoneNumberTypes, ParseMode } from '../components/models';
+import { IDropdowButton, PhoneNumberTypes, ParseMode } from '../components/types';
 
 @Component
 class DropdownProps extends Vue {

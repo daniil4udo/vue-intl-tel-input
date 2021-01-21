@@ -4,7 +4,7 @@ import allCountries from '@/assets/all-countries';
 import Props from '@/mixin/props';
 import { toUpper, has, createUniqueArray, isEmpty } from '@/utils/';
 
-import { ICountry, DropdowPosition } from '../components/models';
+import { ICountry, DropdowPosition } from '../components/types';
 
 @Component
 export default class Dropdown extends Mixins(Props) {
@@ -63,8 +63,6 @@ export default class Dropdown extends Mixins(Props) {
      * Proccess countries dictionary
      * with ONLY / IGNORED / PREFERRED countries data
      */
-
-    // prepare all of the country data, including onlyCountries, ignoredCountries and
     public processCountriesData() {
         /**
          * – DEFAULT, ONLY and PREFERRED countries can intersect among each other
@@ -121,7 +119,8 @@ export default class Dropdown extends Mixins(Props) {
             this.countriez = {};
 
             for (const iso2 of this._onlyCountries) {
-                this.countriez[iso2] = allCountries[iso2];
+                // this.countriez[iso2] = allCountries[iso2];
+                this.countriez[iso2] = this.getCountry(iso2, true);
             }
         }
         else {

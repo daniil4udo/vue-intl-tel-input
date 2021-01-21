@@ -6,9 +6,8 @@
 // - It has a flag in the region-flags project: https://github.com/behdad/region-flags/tree/gh-pages/png
 // - It is supported by libphonenumber (it must be listed on this page): https://github.com/googlei18n/libphonenumber/blob/master/resources/ShortNumberMetadata.xml
 
-import { ICountry } from '@/components/models';
-import { isSupportedCountry, toUpper } from '@/utils/';
-import { isEmojiUnicodeSupported, isoToEmoji } from '@/utils/emoji';
+import { ICountry } from '@/components/types';
+import { isSupportedCountry, toUpper, isEmojiUnicodeSupported, isoToEmoji } from '@/utils';
 
 import _countries from './countries.json';
 

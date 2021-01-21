@@ -237,9 +237,9 @@
     import { VALIDATION_MESSAGES } from '@/assets/constants';
     import { BDropdown, BDropdownItem } from '@/components/buefy';
     import Input from '@/mixin/useInput';
-    import { isDefined, getBool, fetchISO, getDropdownPosition, getBowserLocale } from '@/utils/';
+    import { isDefined, getBool, fetchISO, getDropdownPosition, getBowserLocale } from '@/utils';
 
-    import { ICountry } from './models';
+    import { ICountry } from './types';
 
     @Component({
         name: 'VueIntlTelInput',

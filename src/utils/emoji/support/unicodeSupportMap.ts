@@ -1,4 +1,4 @@
-import { isLocalStorageAccessSafe } from '@/utils/';
+import { isLocalStorageAccessSafe } from '@/utils/isLocalStorageAccessSafe';
 
 import { IResultMap, IUnicodeSupportTestMap } from '../types';
 

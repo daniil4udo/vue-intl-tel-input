@@ -5,7 +5,7 @@ import { INTL, VALID_CHAR } from '@/assets/constants';
 import Dropdown from '@/mixin/useDropdown';
 import { isDefined } from '@/utils/';
 
-import { IPhoneObject, INumber, ParseMode } from '../components/models';
+import { IPhoneObject, INumber, ParseMode } from '../components/types';
 
 @Component
 export default class Input extends Mixins(Dropdown) {
