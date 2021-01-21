@@ -1,8 +1,7 @@
 <template>
     <div id="app" class="container">
-        {{ phone }}
         <VueIntlTelInput
-            v-model="phone"
+            :value.sync="phone"
 
             :emoji-flags="{ button: false, dropdown: true, }"
             :dropdown-id="null"

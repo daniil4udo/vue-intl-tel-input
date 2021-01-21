@@ -11,7 +11,6 @@ import { IPhoneObject, INumber, ParseMode } from '../components/types';
 export default class Input extends Mixins(Dropdown) {
     public cursorPosition = 0;
 
-    // V-MODEL TODO: REFACCTOR TO USE SYNC (VUE3)
     public get phone(): string {
         return String(this.value).trim();
     }
@@ -22,7 +21,7 @@ export default class Input extends Mixins(Dropdown) {
          * Returns full response for cases @input is used
          * and parent wants to return the whole response.
          */
-        this.$emit('input', v, this.phoneData);
+        this.$emit('update:value', v, this.phoneData);
     }
     // end V-MODEL
 

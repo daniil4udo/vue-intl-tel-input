@@ -485,7 +485,7 @@
             this.focus('focus', this.refPhoneInput);
 
             // emit country change event for the actual country select
-            this.$emit('input', this.phone, this.phoneData);
+            this.$emit('update:value', this.phone, this.phoneData);
         }
 
         onKeyPress(e: KeyboardEvent) {

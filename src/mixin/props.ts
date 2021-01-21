@@ -151,7 +151,6 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
      */
 
     // for v-model to work
-    // TODO: switch to PropSync
     @Prop({
         type: [ String, Number ],
         default: () => '',
