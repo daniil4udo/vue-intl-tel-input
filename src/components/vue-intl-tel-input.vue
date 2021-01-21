@@ -219,8 +219,6 @@
             </p>
         </div>
         <!--  -->
-        getBool(emojiFlags, 'button') - {{ getBool(emojiFlags, 'button') }}
-        getBool(emojiFlags, 'dropdown') - {{ getBool(emojiFlags, 'dropdown') }}
         <p>Active Country</p>
         <pre>{{ activeCountry }}</pre>
         <p>Phone Data</p>

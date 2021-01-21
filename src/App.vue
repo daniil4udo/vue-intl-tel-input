@@ -1,7 +1,9 @@
 <template>
     <div id="app" class="container">
+        {{ phone }}
         <VueIntlTelInput
             v-model="phone"
+
             :emoji-flags="{ button: false, dropdown: true, }"
             :dropdown-id="null"
             :dropdown-tab-index="0"
@@ -17,7 +19,7 @@
 
             :default-country="'AE'"
             :ignored-countries="['gb']"
-            :preferred-countries="p"
+            :preferred-countries="preferred"
 
             :autocomplete="'tel'"
             :input-id="null"
@@ -38,10 +40,6 @@
             is-expanded
             :error-animation="'fade'"
         />
-
-        <button @click="onClick">
-            Click
-        </button>
     </div>
 </template>
 
@@ -58,11 +56,7 @@
     })
     export default class Input extends Vue {
         phone = '+380(9asd7)3008444';
-        p = [ 'ua' ];
-
-        onClick() {
-            this.p = [ 'us' ];
-        }
+        preferred = [ 'ua' ];
     }
 </script>
 
