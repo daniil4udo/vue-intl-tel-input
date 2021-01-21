@@ -283,7 +283,7 @@ export default class Dropdown extends Mixins(Props) {
             this.$set(this._preferredCountries, this._preferredCountries.length, this.activeCountry.iso2);
             this._processPreferredCountries();
 
-            this.$emit('preferred-changed', this._preferredCountries);
+            this.$emit('preferred-changed', this.activeCountry.iso2, this._preferredCountries);
         }
 
         this.$emit('country-changed', this.activeCountry.iso2, this.activeCountry);
