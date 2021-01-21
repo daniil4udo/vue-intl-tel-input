@@ -47,16 +47,23 @@ export default class Dropdown extends Mixins(Props) {
     public dropdownSearch = '';
     public dropdownOpenDirection = 'is-bottom-right' as DropdowPosition;
 
-    // public get fileredCountries(): Record<string, ICountry> {
-    //     const matchInputCountry = (c = '') => String.prototype.includes.call(toUpper(c), toUpper(this.dropdownSearch));
+    public get fileredCountriez(): Record<string, ICountry> {
+        const matchInputCountry = (c = '') => String.prototype.includes.call(toUpper(c), toUpper(this.dropdownSearch));
 
-    //     if (this.dropdownSearch === '') {
-    //         return this.countriez;
-    //     }
+        if (this.dropdownSearch === '') {
+            return this.countriez;
+        }
 
-    //     return this.countriez.filter(option => [ option.name, option.dialCode, option.iso2, option.emoji.flag ].some(matchInputCountry));
-    //     // return this.countriez;
-    // }
+        const f = {};
+        for (const iso2 in this.countriez) {
+            if (has(this.countriez, iso2) && [ this.countriez[iso2].name, this.countriez[iso2].dialCode, this.countriez[iso2].iso2 ].some(matchInputCountry)) {
+                f[iso2] = this.countriez[iso2];
+            }
+        }
+
+        return f;
+        // return this.countriez;
+    }
 
     /**
      *

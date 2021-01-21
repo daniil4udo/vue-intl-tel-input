@@ -102,7 +102,7 @@
                             </div>
                         </div>
 
-                        <template v-for="(c, i) in countriez">
+                        <template v-for="(c, i) in fileredCountriez">
                             <B-Dropdown-item
                                 :key="`${i}-item`"
                                 :value="c"
