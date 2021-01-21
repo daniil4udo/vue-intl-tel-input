@@ -154,7 +154,7 @@ export default class Props extends Mixins(DropdownProps, InputProps) {
     @Prop({
         type: [ String, Number ],
         default: () => '',
-    }) value: Readonly<string>;
+    }) phone: Readonly<string>;
     // v-model
 
     // TODO: add locales

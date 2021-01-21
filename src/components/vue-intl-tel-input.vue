@@ -167,7 +167,7 @@
                         <input
                             :id="inputId"
                             ref="refPhoneInput"
-                            v-model="phone"
+                            v-model="phoneValue"
                             v-bind="$attrs"
                             type="tel"
                             :name="`${name}-${Date.now()}`"
@@ -267,7 +267,7 @@
         @Ref() readonly refPhoneInput: HTMLInputElement;
 
         get isValid() {
-            return (this.phone !== '')
+            return (this.phoneValue !== '')
                 && this.phoneData.valid
                 && this.activeCountry.iso2 === this.regionCode
                 && this.allowedPhoneTypes.includes(this.phoneData.type);
@@ -275,7 +275,7 @@
 
         get valdationClass() {
             // TODO: make some simple validation in utils
-            if (this.phone === '') {
+            if (this.phoneValue === '') {
                 return '';
             }
 
@@ -296,7 +296,7 @@
             /**
              * 1. Don't trigger validation if input is empty
              */
-            if (this.phone === '' || this.isValid) {
+            if (this.phoneValue === '' || this.isValid) {
                 return null;
             }
 
@@ -333,7 +333,7 @@
         @Watch('isValid', { immediate: true })
         watchPhoneValidity(value = false) {
             if (value) {
-                this.phone = this.formattedPhone;
+                this.phoneValue = this.formattedPhone;
             }
 
             this.$nextTick(() => {
@@ -406,13 +406,13 @@
              * 1. if already have PHONE passed from the parent - parse it
              * In order to detec country we need at leas 1 number ater the +
              */
-            if (this.phone && this.testInternational(this.phone) && this.phone.length > 1) {
+            if (this.phoneValue && this.testInternational(this.phoneValue) && this.phoneValue.length > 1) {
                 /**
                  * We could have used phone watcher
                  * But we have to set country regardles disabled options
                  * so better keep logic separated
                  */
-                const code = PhoneNumber.call(null, this.phone).getRegionCode();
+                const code = PhoneNumber.call(null, this.phoneValue).getRegionCode();
 
                 /**
                  * KNOWN BUG of AWESOME-PHONE
@@ -485,7 +485,7 @@
             this.focus('focus', this.refPhoneInput);
 
             // emit country change event for the actual country select
-            this.$emit('update:value', this.phone, this.phoneData);
+            this.$emit('update:phone', this.phoneValue, this.phoneData);
         }
 
         onKeyPress(e: KeyboardEvent) {

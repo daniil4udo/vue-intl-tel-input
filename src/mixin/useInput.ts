@@ -11,17 +11,17 @@ import { IPhoneObject, INumber, ParseMode } from '../components/types';
 export default class Input extends Mixins(Dropdown) {
     public cursorPosition = 0;
 
-    public get phone(): string {
-        return String(this.value).trim();
+    public get phoneValue(): string {
+        return String(this.phone).trim();
     }
 
-    public set phone(v) {
+    public set phoneValue(v) {
         /**
          * Returns response.number to assign it to v-model (if being used)
          * Returns full response for cases @input is used
          * and parent wants to return the whole response.
          */
-        this.$emit('update:value', v, this.phoneData);
+        this.$emit('update:phone', v, this.phoneData);
     }
     // end V-MODEL
 
@@ -68,7 +68,7 @@ export default class Input extends Mixins(Dropdown) {
             }
         }
 
-        if (!this.phone || !this.phoneData.isIntlInput) {
+        if (!this.phoneValue || !this.phoneData.isIntlInput) {
             return 'national';
         }
 
@@ -82,20 +82,20 @@ export default class Input extends Mixins(Dropdown) {
             key = this.newMode;
         }
 
-        return this.phoneData.number[key] || this.phone;
+        return this.phoneData.number[key] || this.phoneValue;
     }
 
     public get phoneData(): IPhoneObject {
-        const parserPhone = new PhoneNumber(this.phone, this.activeCountry.iso2).toJSON();
+        const parserPhone = new PhoneNumber(this.phoneValue, this.activeCountry.iso2).toJSON();
 
         return {
             ...parserPhone,
-            isIntlInput: this.testInternational(this.phone),
+            isIntlInput: this.testInternational(this.phoneValue),
             country: this.activeCountry,
         };
     }
 
-    @Watch('phone', { immediate: true })
+    @Watch('phoneValue', { immediate: true })
     onPhoneChanged(p: string, valuePrev: string) {
         if (isDefined(p) && p !== '') {
             /**
@@ -106,7 +106,7 @@ export default class Input extends Mixins(Dropdown) {
                 p = this.normalizeInput(p);
 
                 this.$nextTick(() => {
-                    this.phone = p;
+                    this.phoneValue = p;
                 });
             }
 
@@ -128,31 +128,31 @@ export default class Input extends Mixins(Dropdown) {
             /**
              * In case user start input with +, format it base on this.mode
              */
-            this.phone = this.formattedPhone;
+            this.phoneValue = this.formattedPhone;
         }
     }
 
-    public testCharacters(phone = this.phone): boolean {
-        return VALID_CHAR.test(phone);
+    public testCharacters(p = this.phoneValue): boolean {
+        return VALID_CHAR.test(p);
     }
 
-    public normalizeInput(phone = this.phone): string {
-        return phone.replace(/[^()\-\+\d\s]+/gi, '');
+    public normalizeInput(p = this.phoneValue): string {
+        return p.replace(/[^()\-\+\d\s]+/gi, '');
     }
 
-    public testInternational(phone = this.phone): boolean {
-        return INTL.test(phone);
+    public testInternational(p = this.phoneValue): boolean {
+        return INTL.test(p);
     }
 
-    public normalizeIntlInput(phone = this.phone): string {
-        return this.testInternational(phone)
-            ? phone.replace(INTL, '+')
-            : phone;
+    public normalizeIntlInput(p = this.phoneValue): string {
+        return this.testInternational(p)
+            ? p.replace(INTL, '+')
+            : p;
     }
 
-    public testCustomValidate(phone = this.phone): boolean {
+    public testCustomValidate(p = this.phoneValue): boolean {
         if (this.customRegexp instanceof RegExp) {
-            return this.customRegexp.test(phone);
+            return this.customRegexp.test(p);
         }
 
         throw new TypeError(`[testCustomValidate]: phone in customRegexp has to be a RegExp. Got ${typeof this.customRegexp}`);
