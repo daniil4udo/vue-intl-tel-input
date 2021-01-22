@@ -336,7 +336,7 @@
         }
 
         created() {
-            if (this.defaultCountry && this.autoCountry) {
+            if (this.defaultCountry && this.fetchCountry) {
                 console.warn(`[VueIntlTelInput]: Do not use 'fetch-country' and 'default-country' options in the same time`);
             }
 
@@ -429,7 +429,7 @@
             /**
              * 3. if don't have DEFAULT COUNTRY but fetch country is allowed - FETCH
              */
-            if (this.autoCountry) {
+            if (this.fetchCountry) {
                 return fetchISO();
             }
 

@@ -12,11 +12,6 @@ import { IDropdowButton, PhoneNumberTypes, ParseMode } from '../components/types
 @Component
 class DropdownProps extends Vue {
     @Prop({
-        type: Object,
-    })
-    dropdown
-
-    @Prop({
         type: String,
         default: () => null,
     })
@@ -83,7 +78,7 @@ class DropdownProps extends Vue {
         type: [ Boolean, Function ],
         default: () => true,
     })
-    autoCountry: Readonly<boolean>;
+    fetchCountry: Readonly<boolean>;
 
     // initial country
     @Prop({

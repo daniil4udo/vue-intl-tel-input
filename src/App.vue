@@ -1,5 +1,6 @@
 <template>
     <div id="app" class="container">
+        {{ phone }}
         <VueIntlTelInput
             :phone.sync="phone"
 
@@ -14,7 +15,7 @@
             :hide-flags="false"
             :disabled-dropdown="false"
 
-            :auto-country="true"
+            :fetch-country="true"
 
             :default-country="'AE'"
             :ignored-countries="['gb']"
@@ -23,9 +24,9 @@
             :autocomplete="'tel'"
             :input-id="null"
             :input-tab-index="1"
+            :input-placeholder="'5x xxx xxxx'"
             :custom-regexp="null"
             :valid-characters-only="true"
-            :input-placeholder="'5x xxx xxxx'"
             :placeholder-number-type="'mobile'"
             :dynamic-placeholder="true"
             :field-id="'vue-tel-input'"
@@ -64,7 +65,7 @@
         },
     })
     export default class Input extends Vue {
-        phone = '+380(9asd7)3008444';
+        phone = '+';
         preferred = [ 'ua' ];
 
         phoneData = null;
