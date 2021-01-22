@@ -1,4 +1,6 @@
-export async function getBowserLocale() {
+import { toUpper } from './toUpper';
+
+export function getBowserLocale(defaultIso = 'GB') {
     const navigator = window.navigator || window.clientInformation;
 
     const languageList: string[] = [];
@@ -19,13 +21,13 @@ export async function getBowserLocale() {
         languageList.push(navigator.systemLanguage);
     }
 
-    const [ lang, iso ]: string[] = (languageList.find(l => l.includes('-')) || '').split('-');
+    const [ lang, iso ]: string[] = toUpper(languageList.find(l => l.includes('-')) || languageList[0]).split('-');
 
     if (iso) {
-        return iso.toUpperCase();
+        return iso;
     }
     // fallback to US country
-    if (lang && lang.toLowerCase() === 'en') {
+    if (lang === 'EN') {
         return 'GB';
     }
 

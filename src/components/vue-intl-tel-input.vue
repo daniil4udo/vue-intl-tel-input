@@ -436,7 +436,7 @@
             /**
              * 4. if don't have get fallback country from preffered or just a first option
              */
-            return Promise.resolve(getBowserLocale() || this.countriez[0].iso2);
+            return Promise.resolve(getBowserLocale() || Object.values(this.fileredCountriez)[0].iso2);
         }
 
         async initObserver() {
