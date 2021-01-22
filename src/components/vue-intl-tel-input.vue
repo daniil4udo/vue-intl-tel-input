@@ -169,15 +169,15 @@
                         v-model="phoneValue"
                         v-bind="$attrs"
                         type="tel"
-                        :name="`${name}-${Date.now()}`"
+                        :name="uuName"
                         :disabled="disabled"
                         :placeholder="newPlaceholder"
                         :autocomplete="autocomplete"
                         :tabindex="inputTabIndex"
                         :class="[ 'input', valdationClass ]"
                         @input="onInput($event.target.value, $event)"
-                        @focus="focus( 'focus', refPhoneInput, $event, true)"
-                        @blur="blur( 'blur', refPhoneInput, $event, true)"
+                        @focus="focus('focus', refPhoneInput, $event, true)"
+                        @blur="blur('blur', refPhoneInput, $event, true)"
                         @keypress="onKeyPress($event)"
                     >
                     <slot name="validation-icon" :valid="isValid">
@@ -227,7 +227,7 @@
     import { VALIDATION_MESSAGES } from '@/assets/constants';
     import { BDropdown, BDropdownItem } from '@/components/buefy';
     import Input from '@/mixin/useInput';
-    import { isDefined, getBool, fetchISO, getDropdownPosition, getBowserLocale } from '@/utils';
+    import { isDefined, getBool, fetchISO, getDropdownPosition, getBowserLocale, uuid } from '@/utils';
 
     import { ICountry } from './types';
 
@@ -245,6 +245,8 @@
          */
         isMounted = false;
         isLoadedFlags = false;
+
+        uuName = `${this.name}-${uuid()}`
 
         // Check if current browser / platfor is mobile
         isMobile = /Android.+Mobile|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -524,7 +526,6 @@
             });
         }
 
-        // TODO: fires twice
         blur(emitName = 'blur', el: HTMLInputElement, e?: FocusEvent) {
             this.$nextTick(() => {
                 this.$emit(emitName, el, e);

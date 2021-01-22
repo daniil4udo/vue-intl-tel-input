@@ -12,3 +12,4 @@ export * from './isDefined';
 export * from './isLocalStorageAccessSafe';
 export * from './setCaretPosition';
 export * from './toUpper';
+export * from './uuid';
